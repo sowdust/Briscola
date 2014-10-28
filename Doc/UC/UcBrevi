@@ -2,6 +2,7 @@ ATTORE:		Mazziere
 OBIETTIVO:	Gestire la partita secondo le regole
 USE CASE:	Inizializza tavolo
 		Crea un nuovo tavolo dandogli nome e strutture necessarie
+		Si registra al servizio "pagine gialle" - elenco tavoli
 		Resta in attesa di 5 giocatori
 		Chiude il tavolo
 USE CASE:	Gestione asta
@@ -21,6 +22,10 @@ USE CASE:	Conclusione partita
 
 ATTORE:		Giocatore ancora senza squadra
 OBIETTIVO:	Definire un rapporto squadre / carte possedute a lui vantaggioso
+USE CASE:	Inizia una partita
+		Cerca un tavolo libero
+		Si propone come giocatore
+		Eventualmente gioca
 USE CASE:	Partecipa all'asta
 		In base alle proposte già fatte (richiedibili al mazziere) fa un'offerta al ribasso o abbandona l'asta.
 
