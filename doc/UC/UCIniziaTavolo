@@ -1,0 +1,16 @@
+GIOCATORE	--------can i play?----------->	MAZZIERI[..]
+
+1) GIOCATORE waits
+   GIOCATORE	--------can i play?----------->	MAZZIERI[..]
+
+2) GIOCATORE	<---------- sì ----------------	MAZZIERE
+  2a) MAZZIERE waits
+  
+  2b) GIOCATORE	----------- grazie! ---------->	MAZZIERE
+      MAZZIERE iscrive GIOCATORE
+  
+  2ba)GIOCATORE	<---------- prego ------------- MAZZIERE
+      GIOCATORE è iscritto con MAZZIERE
+      
+  2bb)GIOCATORE waits
+  
