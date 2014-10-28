@@ -33,11 +33,33 @@ import jade.lang.acl.MessageTemplate;
 public class GiocatoreAgent extends Agent {
 
     private Short state = 0;
+    private String name;
+    private GiocatoreGUI gui;
 
     @Override
     protected void setup() {
-        System.out.println("Giocatore " + getAID().getName() + " iscritto alla piattaforma");
+
+        Object[] args = getArguments();
+
+        if (args != null && args.length > 0) {
+            name = (String) args[0];
+        } else {
+            name = "Random Name";
+        }
+
+        gui = new GiocatoreGUI(this);
+        gui.setVisible(true);
+
+        say("Giocatore " + getAID().getName() + " iscritto alla piattaforma");
         addBehaviour(new IscrivitiBehaviour(state));
+    }
+
+    public String getRealName() {
+        return name;
+    }
+
+    public void say(String s) {
+        gui.say(s);
     }
 
     /**
@@ -90,10 +112,11 @@ public class GiocatoreAgent extends Agent {
             try {
 
                 confirmMsg = responseMsg.createReply();
-                confirmMsg.setContent(briscola.common.Messages.CONFIRM_PLAYER);
+                confirmMsg.setContent(name);
+                confirmMsg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                 myAgent.send(confirmMsg);
                 state = 2;
-                System.out.println("Reply spedita. State " + state);
+                say("Reply spedita. State " + state);
             } catch (Exception e) {
                 e.printStackTrace();
                 state = 0;
@@ -101,14 +124,16 @@ public class GiocatoreAgent extends Agent {
         }
 
         public void getReply(ACLMessage responseMsg, ACLMessage confirmMsg) {
-            System.out.println("Cercando risposte...");
-            MessageTemplate confirmation = MessageTemplate.MatchContent(briscola.common.Messages.CONFIRM_TABLE);
+            say("Cercando risposte...");
+            String content = myAgent.getName() + briscola.common.Messages.CONFIRM_TABLE;
+
+            MessageTemplate confirmation = MessageTemplate.MatchContent(content);
             confirmMsg = myAgent.receive(confirmation);
             if (confirmMsg != null) {
-                System.out.println(getAID().getName() + " è definitivamente iscritto");
+                say(getAID().getName() + " è definitivamente iscritto");
                 state = 3;
             } else {
-                System.out.println("Messaggio conferma non trovato");
+                say("Messaggio conferma non trovato");
                 state = 2;
                 block();
             }
@@ -126,11 +151,11 @@ public class GiocatoreAgent extends Agent {
                     MessageTemplate response = MessageTemplate.MatchContent(briscola.common.Messages.YOU_CAN_PLAY);
                     responseMsg = myAgent.receive(response);
                     if (responseMsg != null) {
-                        System.out.println(getAID().getName() + " ha trovato un tavolo libero");
+                        say(getAID().getName() + " ha trovato un tavolo libero");
                         state = 1;
                         sendReply(responseMsg, confirmMsg);
                     } else {
-                        System.out.println(getAID().getName() + " nessun tavolo libero. Riprovo.");
+                        say(getAID().getName() + " nessun tavolo libero. Riprovo.");
                         block();
                     }
                     break;

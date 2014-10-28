@@ -27,6 +27,7 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import static jade.lang.acl.MessageTemplate.MatchPerformative;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,8 @@ public class MazziereAgent extends Agent {
 
     private String name;
     private Tavolo table;
-    private List<AID> players;
+    private List<Player> players;
+    private MazziereGUI gui;
 
     @Override
     protected void setup() {
@@ -58,7 +60,11 @@ public class MazziereAgent extends Agent {
         } else {
             name = "Gianni";
         }
-        System.out.println("Mazziere " + name + " al suo servizio");
+
+        gui = new MazziereGUI(this);
+        gui.setVisible(true);
+
+        say("Mazziere " + name + " al suo servizio");
 
         //  REGISTER TO YELLOW PAGES
         DFAgentDescription dfd = new DFAgentDescription();
@@ -70,18 +76,38 @@ public class MazziereAgent extends Agent {
         try {
             DFService.register(this, dfd);
         } catch (FIPAException fe) {
-            System.out.println("Errore durante la registrazione alle pagine gialle");
+            say("Errore durante la registrazione alle pagine gialle");
             fe.printStackTrace();
         }
         addBehaviour(new ApriTavoloBehaviour());
     }
 
-    void addPlayer(AID agente) {
-        players.add(agente);
+    String getRealName() {
+        return name;
+    }
+
+    void addPlayer(AID agente, String name) {
+        Player player = new Player(agente, name);
+        players.add(player);
+        gui.addPlayer(player);
+    }
+
+    protected void takeDown() {
+        say("Felice di aver giocato con voi. Addio!");
+        gui.dispose();
+        super.takeDown();
     }
 
     List<AID> getPlayers() {
-        return players;
+        List<AID> r = new ArrayList();
+        for (Player p : players) {
+            r.add(p.getAID());
+        }
+        return r;
+    }
+
+    void say(String s) {
+        gui.addLine(s);
     }
 
     /**
@@ -94,7 +120,7 @@ public class MazziereAgent extends Agent {
         private final HashMap<AID, Long> requesters;
 
         public ApriTavoloBehaviour() {
-            System.out.println("Aprendo tavolo");
+            say("Preparo e registro subito il tavolo");
             requesters = new HashMap<>();
             requests = 0;
         }
@@ -109,13 +135,12 @@ public class MazziereAgent extends Agent {
                 if (requestMsg != null) {
                     AID agentName = requestMsg.getSender();
                     if (((MazziereAgent) myAgent).getPlayers().contains(agentName)) {
-                        System.out.println("Agente già iscritto");
+                        say("Agente " + agentName.getName() + " già iscritto");
                         return;
                     }
                     Long reqTime = requesters.get(agentName);
                     //  se agente sconosciuto
                     if (reqTime == null || ((System.currentTimeMillis() - reqTime) > briscola.common.Names.WAIT_FOR_CONFIRMATION)) {
-                        System.out.println("reqTime " + reqTime);
                         requesters.put(agentName, System.currentTimeMillis());
                         myAgent.addBehaviour(new OffriPosizioneBehaviour(requestMsg, agentName, requests));
                     }
@@ -124,7 +149,7 @@ public class MazziereAgent extends Agent {
                     block();
                 }
             } else {
-                System.out.println("Siamo già a 5 richieste..");
+                say("Siamo già a 5 richieste..");
             }
         }
 
@@ -149,7 +174,7 @@ public class MazziereAgent extends Agent {
 
         @Override
         public void action() {
-            System.out.println("Posizione offerta a " + requester.getName());
+            say("Posizione offerta a " + requester.getName());
             ++requests;
             ACLMessage proposal = originalMsg.createReply();
             proposal.setContent(briscola.common.Messages.YOU_CAN_PLAY);
@@ -174,18 +199,19 @@ public class MazziereAgent extends Agent {
 
         @Override
         public void action() {
-            System.out.println("In attesa di conferma da " + agent.getName());
-            MessageTemplate confirmation = MessageTemplate.and(MessageTemplate.MatchSender(agent), MessageTemplate.MatchContent(briscola.common.Messages.CONFIRM_PLAYER));
+            say("In attesa di conferma da " + agent.getName());
+            MessageTemplate confirmation = MessageTemplate.and(MessageTemplate.MatchSender(agent), MatchPerformative(ACLMessage.ACCEPT_PROPOSAL));
 
             //MessageTemplate confirmation = MessageTemplate.MatchContent(briscola.common.Messages.CONFIRM_PLAYER);
             ACLMessage confirmationMsg = myAgent.receive(confirmation);
             if (confirmationMsg != null) {
                 --requests;
-                ((MazziereAgent) myAgent).addPlayer(agent);
+                ((MazziereAgent) myAgent).addPlayer(agent, confirmationMsg.getContent());
                 ACLMessage confirmTable = confirmationMsg.createReply();
-                confirmTable.setContent(briscola.common.Messages.CONFIRM_TABLE);
+                String content = agent.getName() + briscola.common.Messages.CONFIRM_TABLE;
+                confirmTable.setContent(content);
                 myAgent.send(confirmTable);
-                System.out.println("Aggiunto giocatore # " + ((MazziereAgent) myAgent).getPlayers().size() + ": " + agent);
+                say("Aggiunto giocatore # " + ((MazziereAgent) myAgent).getPlayers().size() + ": " + agent.getName());
                 done = true;
             } else {
                 block();
@@ -205,4 +231,5 @@ public class MazziereAgent extends Agent {
         }
 
     }
+
 }
