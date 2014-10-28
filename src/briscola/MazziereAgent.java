@@ -49,6 +49,8 @@ public class MazziereAgent extends Agent {
     private Tavolo table;
     private List<Player> players;
     private MazziereGUI gui;
+    private DFAgentDescription dfd;
+    private ServiceDescription sd;
 
     @Override
     protected void setup() {
@@ -67,9 +69,9 @@ public class MazziereAgent extends Agent {
         say("Mazziere " + name + " al suo servizio");
 
         //  REGISTER TO YELLOW PAGES
-        DFAgentDescription dfd = new DFAgentDescription();
+        dfd = new DFAgentDescription();
         dfd.setName(getAID());
-        ServiceDescription sd = new ServiceDescription();
+        sd = new ServiceDescription();
         sd.setType(briscola.common.Names.MAZZIERE);
         sd.setName(name);
         dfd.addServices(sd);
@@ -90,11 +92,16 @@ public class MazziereAgent extends Agent {
         Player player = new Player(agente, name);
         players.add(player);
         gui.addPlayer(player);
+        if (players.size() == 5) {
+            dfd.removeServices(sd);
+            // GIOCA PARTITA addBehaviour()
+        }
     }
 
     protected void takeDown() {
         say("Felice di aver giocato con voi. Addio!");
         gui.dispose();
+        dfd.removeServices(sd);
         super.takeDown();
     }
 
