@@ -1,0 +1,58 @@
+ATTORE:		Mazziere
+OBIETTIVO:	Gestire la partita secondo le regole
+USE CASE:	Inizializza tavolo
+		Crea un nuovo tavolo dandogli nome e strutture necessarie
+		Resta in attesa di 5 giocatori
+		Chiude il tavolo
+USE CASE:	Gestione asta
+		Stabilisce un ordine nel tavolo
+		Distribuisce le carte
+		A turno, raccoglie le offerte dei giocatori
+		Dopo un giro di passo dichiara conclusa l'asta
+		(Chiede la briscola al vincitore)
+USE CASE:	Gestione partita
+		In base alle regole e alla fine dell'azione precedente, determina l'ordine di mano
+		Raccoglie, (a turno) le giocate dei 5
+		In base alle regole, consegna il punteggio al giocatore cui spetta la presa
+USE CASE:	Conclusione partita
+		Conta i punti dei vari giocatori
+		Dichiara il vincitore
+		Chiude/Libera il tavolo
+
+ATTORE:		Giocatore ancora senza squadra
+OBIETTIVO:	Definire un rapporto squadre / carte possedute a lui vantaggioso
+USE CASE:	Partecipa all'asta
+		In base alle proposte già fatte (richiedibili al mazziere) fa un'offerta al ribasso o abbandona l'asta.
+
+ATTORE:		Giaguaro (vincitore asta)
+OBIETTIVO:	Totalizzare insieme al socio il massimo numero di punti
+USE CASE:	Dichiara la briscola
+		Spedisce un messaggio al mazziere (e agli altri giocaotori?) comunicando il seme regnante.
+USE CASE:	Giocata
+		Osserva le carte giocate in questa mano
+		In base a questo, aggiorna i propri belief sulla formazione delle squadre
+		In base a questo, gioca la carta più vantaggiosa
+
+ATTORE:		Socio
+OBIETTIVO:	Totalizzare insieme al giaguaro il massimo numero di punti
+SOTTO-OBIETTIVO:Celare il proprio ruolo
+USE CASE:	Giocata
+		Osserva le carte giocate in questa mano
+		Se non ancora allo scoperto, tenta di celare la propria identità
+		Mantenendo presente il punto precedente, gioca la carta più vantaggiosa
+
+ATTORE:		Popolano
+OBIETTIVO:	Totalizzare insieme agli altri 2 popolano il massimo numero di punti
+SOTTO-OBIETTIVO:Palesare l'identità del socio
+USE CASE:	Giocata
+		Osserva le carte giocate in questa mano
+		In base a questo, aggiorna i propri belief sulla formazione delle squadre
+		Tiene a mente che è nel suo interesse palesare l'identità del socio
+		Gioca la carta a lui più conveniente
+		
+		
+		
+
+
+		
+		
