@@ -17,21 +17,14 @@
 package briscola;
 
 import briscola.behaviours.mazziere.OpenTable;
-import briscola.behaviours.mazziere.WaitForSubscriptionConfirmation;
 import briscola.objects.Table;
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
-import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
-import static jade.lang.acl.MessageTemplate.MatchPerformative;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -123,6 +116,10 @@ public class MazziereAgent extends Agent {
 
     public ServiceDescription getServiceDesc() {
         return sd;
+    }
+
+    public Table getTable() {
+        return table;
     }
 
 }

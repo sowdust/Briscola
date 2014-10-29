@@ -16,7 +16,6 @@
  */
 package briscola.behaviours.mazziere;
 
-import briscola.behaviours.mazziere.OfferAChair;
 import briscola.MazziereAgent;
 import jade.core.AID;
 import jade.core.behaviours.Behaviour;
@@ -74,7 +73,7 @@ public class OpenTable extends Behaviour {
         if (((MazziereAgent) myAgent).getPlayers().size() == 5) {
             mazziere.getDFA().removeServices(mazziere.getServiceDesc());
             mazziere.say("Tavolo al completo");
-            // addBehaviour(iniziaPartita);
+            myAgent.addBehaviour(new ManageBid(mazziere));
             return true;
         }
         return false;

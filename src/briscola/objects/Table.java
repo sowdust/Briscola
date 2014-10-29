@@ -29,4 +29,8 @@ public class Table {
         deck = new Deck();
     }
 
+    public Deck getDeck() {
+        return deck;
+    }
+
 }

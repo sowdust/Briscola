@@ -32,6 +32,7 @@ public class Deck {
 
     public Deck() {
         this.cards = new ArrayList<>(CARDS_IN_DECK);
+        this.load();
     }
 
     public void show() {
@@ -49,7 +50,8 @@ public class Deck {
         }
     }
 
-    public void mischia() {
+    public void shuffle() {
         Collections.shuffle(cards);
     }
+
 }
