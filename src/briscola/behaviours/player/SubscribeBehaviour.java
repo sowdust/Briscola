@@ -46,7 +46,6 @@ public class SubscribeBehaviour extends Behaviour {
     ServiceDescription sd = new ServiceDescription();
     AID[] mazzieri;
     FindTable findBeh;
-    StopLooking stopL;
     ACLMessage responseMsg = null;
     ACLMessage confirmMsg = null;
 
@@ -128,40 +127,6 @@ public class SubscribeBehaviour extends Behaviour {
             default:
                 break;
         }
-    }
-
-    private class StopLooking extends Behaviour {
-
-        /**
-         * process to stop
-         */
-        FindTable process;
-        /**
-         * variable to check
-         */
-        Short state;
-
-        public StopLooking(FindTable process, Short state) {
-            this.state = state;
-            this.process = process;
-        }
-
-        @Override
-        public void action() {
-            System.out.println("stop looking...");
-        }
-
-        @Override
-        public boolean done() {
-            if (state != 0) {
-                System.out.println("STOPPED!");
-
-                process.stop();
-                return true;
-            }
-            return false;
-        }
-
     }
 
     private class FindTable extends TickerBehaviour {
