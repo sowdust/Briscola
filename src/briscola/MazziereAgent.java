@@ -16,7 +16,9 @@
  */
 package briscola;
 
-import briscola.common.Tavolo;
+import briscola.behaviours.mazziere.OpenTable;
+import briscola.behaviours.mazziere.WaitForSubscriptionConfirmation;
+import briscola.objects.Table;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -46,7 +48,7 @@ import java.util.List;
 public class MazziereAgent extends Agent {
 
     private String name;
-    private Tavolo table;
+    private Table table;
     private List<Player> players;
     private MazziereGUI gui;
     private DFAgentDescription dfd;
@@ -56,6 +58,7 @@ public class MazziereAgent extends Agent {
     protected void setup() {
         Object[] args = getArguments();
         players = new ArrayList<>();
+        table = new Table();
 
         if (args != null && args.length > 0) {
             name = (String) args[0];
@@ -81,23 +84,20 @@ public class MazziereAgent extends Agent {
             say("Errore durante la registrazione alle pagine gialle");
             fe.printStackTrace();
         }
-        addBehaviour(new ApriTavoloBehaviour());
+        addBehaviour(new OpenTable(this));
     }
 
-    String getRealName() {
+    public String getRealName() {
         return name;
     }
 
-    void addPlayer(AID agente, String name) {
+    public void addPlayer(AID agente, String name) {
         Player player = new Player(agente, name);
         players.add(player);
         gui.addPlayer(player);
-        if (players.size() == 5) {
-            dfd.removeServices(sd);
-            // GIOCA PARTITA addBehaviour()
-        }
     }
 
+    @Override
     protected void takeDown() {
         say("Felice di aver giocato con voi. Addio!");
         gui.dispose();
@@ -105,7 +105,7 @@ public class MazziereAgent extends Agent {
         super.takeDown();
     }
 
-    List<AID> getPlayers() {
+    public List<AID> getPlayers() {
         List<AID> r = new ArrayList();
         for (Player p : players) {
             r.add(p.getAID());
@@ -113,130 +113,16 @@ public class MazziereAgent extends Agent {
         return r;
     }
 
-    void say(String s) {
+    public void say(String s) {
         gui.addLine(s);
     }
 
-    /**
-     * Behaviour the mazziere keeps while he's waiting for 5 players to join the
-     * table
-     */
-    private class ApriTavoloBehaviour extends Behaviour {
-
-        private final Integer requests;
-        private final HashMap<AID, Long> requesters;
-
-        public ApriTavoloBehaviour() {
-            say("Preparo e registro subito il tavolo");
-            requesters = new HashMap<>();
-            requests = 0;
-        }
-
-        @Override
-        public void action() {
-
-            if (requests + ((MazziereAgent) myAgent).getPlayers().size() < 5) {
-                MessageTemplate request = MessageTemplate.MatchContent(briscola.common.Messages.CAN_I_PLAY);
-                ACLMessage requestMsg = myAgent.receive(request);
-
-                if (requestMsg != null) {
-                    AID agentName = requestMsg.getSender();
-                    if (((MazziereAgent) myAgent).getPlayers().contains(agentName)) {
-                        say("Agente " + agentName.getName() + " già iscritto");
-                        return;
-                    }
-                    Long reqTime = requesters.get(agentName);
-                    //  se agente sconosciuto
-                    if (reqTime == null || ((System.currentTimeMillis() - reqTime) > briscola.common.Names.WAIT_FOR_CONFIRMATION)) {
-                        requesters.put(agentName, System.currentTimeMillis());
-                        myAgent.addBehaviour(new OffriPosizioneBehaviour(requestMsg, agentName, requests));
-                    }
-
-                } else {
-                    block();
-                }
-            } else {
-                say("Siamo già a 5 richieste..");
-            }
-        }
-
-        @Override
-        public boolean done() {
-            return ((MazziereAgent) myAgent).getPlayers().size() == 5;
-        }
-
+    public DFAgentDescription getDFA() {
+        return dfd;
     }
 
-    private class OffriPosizioneBehaviour extends OneShotBehaviour {
-
-        AID requester;
-        Integer requests;
-        ACLMessage originalMsg;
-
-        public OffriPosizioneBehaviour(ACLMessage originalMsg, AID agent, Integer requests) {
-            this.requester = agent;
-            this.requests = requests;
-            this.originalMsg = originalMsg;
-        }
-
-        @Override
-        public void action() {
-            say("Posizione offerta a " + requester.getName());
-            ++requests;
-            ACLMessage proposal = originalMsg.createReply();
-            proposal.setContent(briscola.common.Messages.YOU_CAN_PLAY);
-            myAgent.send(proposal);
-            myAgent.addBehaviour(new WaitForConfirmationBehaviour(requests, requester));
-        }
-
-    }
-
-    private class WaitForConfirmationBehaviour extends Behaviour {
-
-        private long start;
-        private boolean done;
-        private Integer requests;
-        private AID agent;
-
-        public WaitForConfirmationBehaviour(Integer requests, AID agent) {
-            this.start = System.currentTimeMillis();
-            this.requests = requests;
-            this.agent = agent;
-        }
-
-        @Override
-        public void action() {
-            say("In attesa di conferma da " + agent.getName());
-            MessageTemplate confirmation = MessageTemplate.and(MessageTemplate.MatchSender(agent), MatchPerformative(ACLMessage.ACCEPT_PROPOSAL));
-
-            //MessageTemplate confirmation = MessageTemplate.MatchContent(briscola.common.Messages.CONFIRM_PLAYER);
-            ACLMessage confirmationMsg = myAgent.receive(confirmation);
-            if (confirmationMsg != null) {
-                --requests;
-                ((MazziereAgent) myAgent).addPlayer(agent, confirmationMsg.getContent());
-                ACLMessage confirmTable = confirmationMsg.createReply();
-                String content = agent.getName() + briscola.common.Messages.CONFIRM_TABLE;
-                confirmTable.setContent(content);
-                myAgent.send(confirmTable);
-                say("Aggiunto giocatore # " + ((MazziereAgent) myAgent).getPlayers().size() + ": " + agent.getName());
-                done = true;
-            } else {
-                block();
-            }
-        }
-
-        @Override
-        public boolean done() {
-            if (done) {
-                return true;
-            }
-            if ((System.currentTimeMillis() - start) > briscola.common.Names.WAIT_FOR_CONFIRMATION) {
-                --requests;
-                return true;
-            }
-            return false;
-        }
-
+    public ServiceDescription getServiceDesc() {
+        return sd;
     }
 
 }

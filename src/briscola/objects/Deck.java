@@ -17,6 +17,7 @@
 package briscola.objects;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Deck {
@@ -27,7 +28,6 @@ public class Deck {
     public static void main(String[] args) {
         Deck deck = new Deck();
         deck.load();
-        //deck.show();
     }
 
     public Deck() {
@@ -50,6 +50,6 @@ public class Deck {
     }
 
     public void mischia() {
-        // Collection.shuffle(cards);
+        Collections.shuffle(cards);
     }
 }

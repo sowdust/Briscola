@@ -27,16 +27,16 @@ public class Player {
     AID agent;
     String name;
 
-    Player(AID agent, String name) {
+    public Player(AID agent, String name) {
         this.agent = agent;
         this.name = name;
     }
 
-    AID getAID() {
+    public AID getAID() {
         return agent;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 

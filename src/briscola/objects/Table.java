@@ -14,13 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package briscola.objects;
 
 /**
- * 
+ * Class that represents the table
+ *
  * @author mat
  */
-class Cards {
+public class Table {
+
+    private final Deck deck;
+
+    public Table() {
+        deck = new Deck();
+    }
 
 }

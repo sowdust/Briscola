@@ -20,14 +20,14 @@ package briscola;
  *
  * @author mat
  */
-public class GiocatoreGUI extends javax.swing.JFrame {
+public class PlayerGiocatoreGUI extends javax.swing.JFrame {
 
-    private GiocatoreAgent agent;
+    private PlayerAgent agent;
 
     /**
      * Creates new form PlayerGUI
      */
-    public GiocatoreGUI(GiocatoreAgent agent) {
+    public PlayerGiocatoreGUI(PlayerAgent agent) {
         this.agent = agent;
         initComponents();
     }
@@ -59,12 +59,14 @@ public class GiocatoreGUI extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(169, 169, 169)
-                .addComponent(nameLabel)
-                .addContainerGap(153, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(169, 169, 169)
+                        .addComponent(nameLabel)
+                        .addGap(0, 141, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -112,21 +114,23 @@ public class GiocatoreGUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GiocatoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerGiocatoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GiocatoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerGiocatoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GiocatoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerGiocatoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GiocatoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PlayerGiocatoreGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                //new GiocatoreGUI().setVisible(true);
+                //new PlayerGiocatoreGUI().setVisible(true);
             }
         });
     }
