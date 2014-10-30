@@ -16,16 +16,64 @@
  */
 package briscola;
 
+import jade.core.AID;
 import jade.core.Agent;
+import jade.lang.acl.ACLMessage;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
-/**
- *
- * @author mat
- */
 public class GeneralAgent extends Agent {
 
     protected String name;
     protected List<Player> players;
+    private String chatID;
 
+    public void sendMessage(List<Player> rcp, int type, String content) {
+        ACLMessage m = new ACLMessage(type);
+        for (Player p : rcp) {
+            m.addReceiver(p.getAID());
+        }
+        m.setContent(content);
+        m.setPerformative(type);
+        send(m);
+    }
+
+    public void sendMessage(Player rcp, int type, String content) {
+        ACLMessage m = new ACLMessage(type);
+        m.addReceiver(rcp.getAID());
+        m.setContent(content);
+        m.setPerformative(type);
+        send(m);
+    }
+
+    public void sendMessage(AID rcp, int type, String content) {
+        ACLMessage m = new ACLMessage(type);
+        m.addReceiver(rcp);
+        m.setContent(content);
+        m.setPerformative(type);
+        send(m);
+    }
+
+    public void sendMessage(List<Player> rcp, int type, Serializable content) throws IOException {
+        ACLMessage m = new ACLMessage(type);
+        for (Player p : rcp) {
+            m.addReceiver(p.getAID());
+        }
+        m.setContentObject((Serializable) content);
+        m.setPerformative(type);
+        send(m);
+    }
+
+    public void sendMessage(Player rcp, int type, Serializable content) throws IOException {
+        ACLMessage m = new ACLMessage(type);
+        m.addReceiver(rcp.getAID());
+        m.setContentObject((Serializable) content);
+        m.setPerformative(type);
+        send(m);
+    }
+
+    public void setChatID(String uniqueKey) {
+        this.chatID = uniqueKey;
+    }
 }

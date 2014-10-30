@@ -17,6 +17,7 @@
 package briscola;
 
 import briscola.behaviours.player.SubscribeBehaviour;
+import jade.core.AID;
 import java.util.List;
 
 /**
@@ -26,6 +27,7 @@ import java.util.List;
 public class PlayerAgent extends GeneralAgent {
 
     private PlayerGUI gui;
+    private AID mazziereAID;
 
     @Override
     protected void setup() {
@@ -58,5 +60,13 @@ public class PlayerAgent extends GeneralAgent {
         for (Player p : players) {
             gui.addPlayer(p);
         }
+    }
+
+    public void setMazziereAID(AID sender) {
+        this.mazziereAID = sender;
+    }
+
+    public AID getMazziereAID() {
+        return mazziereAID;
     }
 }

@@ -26,28 +26,40 @@ import java.util.List;
 
 public class BeginGame extends Behaviour {
 
-    boolean done;
+    short received;
     PlayerAgent player;
 
     public BeginGame(PlayerAgent player) {
         this.player = player;
-        this.done = false;
+        this.received = 0;
     }
 
     @Override
     public void action() {
 
-        MessageTemplate info = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-        ACLMessage infoMsg = myAgent.receive(info);
-        if (infoMsg != null) {
+        //  template for message containing players list
+        ACLMessage infoPlayersMsg = myAgent.receive(MessageTemplate.and(MessageTemplate.MatchPerformative(briscola.common.Names.ACL_SEND_PLAYERS), MessageTemplate.MatchSender(player.getMazziereAID())));
+
+        // template for message containing chat conversation-id
+        ACLMessage infoChatMsg = myAgent.receive(MessageTemplate.and(MessageTemplate.MatchPerformative(briscola.common.Names.ACL_SEND_CHAT_ID), MessageTemplate.MatchSender(player.getMazziereAID())));
+
+        if (infoPlayersMsg != null) {
             try {
-                List<Player> players = (List<Player>) infoMsg.getContentObject();
+                List<Player> players = (List<Player>) infoPlayersMsg.getContentObject();
                 player.setPlayers(players);
                 player.say("Ricevute info giocatori");
-                done = true;
+                ++received;
             } catch (UnreadableException ex) {
                 ex.printStackTrace();
             }
+        } else {
+            block();
+        }
+
+        if (infoChatMsg != null) {
+            player.setChatID(infoChatMsg.getContent());
+            player.say("Ricevute info chat: " + infoChatMsg.getContent());
+            ++received;
         } else {
             block();
         }
@@ -55,7 +67,11 @@ public class BeginGame extends Behaviour {
 
     @Override
     public boolean done() {
-        return done;
+        if (received == 2) {
+            //  send confirm : we have received all info
+            player.sendMessage(player.getMazziereAID(), ACLMessage.CONFIRM, briscola.common.Messages.INFO_RECEIVED);
+            return true;
+        }
+        return false;
     }
-
 }

@@ -22,11 +22,14 @@ import jade.core.behaviours.CyclicBehaviour;
  *
  * @author mat
  */
-public class GetMessage extends CyclicBehaviour {
+public class GetChatMessage extends CyclicBehaviour {
 
     @Override
     public void action() {
 
+        //MessageTemplate info = MessageTemplate.MatchPerformative(ACLMessage.CFP);
+        //MessageTemplate info2 = MessageTemplate.MatchSender(player.getMazziereAID());
+        //ACLMessage infoMsg = myAgent.receive(MessageTemplate.and(info, info2));
     }
 
 }

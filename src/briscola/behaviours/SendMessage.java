@@ -70,6 +70,7 @@ public class SendMessage extends OneShotBehaviour {
         for (Player p : rcp) {
             m.addReceiver(p.getAID());
         }
+
         if (ob == null) {
             m.setContent(content);
         } else {
@@ -79,6 +80,7 @@ public class SendMessage extends OneShotBehaviour {
                 System.out.println(e);
             }
         }
+        m.setPerformative(type);
         myAgent.send(m);
     }
 }

@@ -101,6 +101,7 @@ public class SubscribeBehaviour extends Behaviour {
         confirmMsg = myAgent.receive(confirmation);
         if (confirmMsg != null) {
             player.say(player.getAID().getName() + " è definitivamente iscritto");
+            player.setMazziereAID(confirmMsg.getSender());
             state = 3;
         } else {
             player.say("Messaggio conferma non trovato");
