@@ -22,11 +22,13 @@ package briscola.common;
  */
 public class Names {
 
-    public static final String MAZZIERE = "mazziere";
     //public static final int WAIT_TO_PLAY = 10000;
     public static final int WAIT_FOR_CONFIRMATION = 10000;
     public static final long RETRY_EVERY = 5000;
+    public static final int ACL_CHAT = 99;
     public static final int ACL_SEND_PLAYERS = 100;
-    public static int ACL_SEND_CHAT_ID = 101;
+    public static final int ACL_SEND_CHAT_ID = 101;
+    public static final String UNKNOWN = "intruso";
+    public static final String MAZZIERE = "mazziere";
 
 }

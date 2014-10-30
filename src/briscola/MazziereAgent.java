@@ -46,6 +46,7 @@ public class MazziereAgent extends GeneralAgent {
 
     @Override
     protected void setup() {
+        this.mazziereAID = this.getAID();
         Object[] args = getArguments();
         players = new ArrayList<>();
         table = new Table();

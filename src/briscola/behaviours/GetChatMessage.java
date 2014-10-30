@@ -36,10 +36,13 @@ public class GetChatMessage extends CyclicBehaviour {
     @Override
     public void action() {
 
-        MessageTemplate info = MessageTemplate.MatchConversationId(agent.getChatID());
+        MessageTemplate info1 = MessageTemplate.MatchConversationId(agent.getChatID());
+        MessageTemplate info2 = MessageTemplate.MatchPerformative(briscola.common.Names.ACL_CHAT);
+        MessageTemplate info = MessageTemplate.and(info1, info2);
+
         ACLMessage chatMsg = myAgent.receive(info);
         if (chatMsg != null) {
-            agent.say(chatMsg.getContent());
+            agent.printChat(chatMsg.getSender(), chatMsg.getContent());
         } else {
             block();
         }

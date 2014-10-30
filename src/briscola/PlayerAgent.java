@@ -26,9 +26,6 @@ import java.util.List;
  */
 public class PlayerAgent extends GeneralAgent {
 
-    //private PlayerGUI gui;
-    private AID mazziereAID;
-
     @Override
     protected void setup() {
 
