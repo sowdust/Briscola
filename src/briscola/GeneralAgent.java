@@ -27,6 +27,7 @@ public class GeneralAgent extends Agent {
 
     protected String name;
     protected List<Player> players;
+    protected GeneralGUI gui;
     private String chatID;
 
     public void sendMessage(List<Player> rcp, int type, String content) {
@@ -75,5 +76,13 @@ public class GeneralAgent extends Agent {
 
     public void setChatID(String uniqueKey) {
         this.chatID = uniqueKey;
+    }
+
+    public String getChatID() {
+        return chatID;
+    }
+
+    public void say(String s) {
+        gui.say(s);
     }
 }

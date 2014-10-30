@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class PlayerAgent extends GeneralAgent {
 
-    private PlayerGUI gui;
+    //private PlayerGUI gui;
     private AID mazziereAID;
 
     @Override
@@ -49,10 +49,6 @@ public class PlayerAgent extends GeneralAgent {
 
     public String getRealName() {
         return name;
-    }
-
-    public void say(String s) {
-        gui.say(s);
     }
 
     public void setPlayers(List<Player> players) {

@@ -17,6 +17,7 @@
 package briscola.behaviours.mazziere;
 
 import briscola.MazziereAgent;
+import briscola.behaviours.GetChatMessage;
 import jade.core.AID;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
@@ -52,12 +53,13 @@ public class BeginGame extends Behaviour {
             UUID uniqueKey = UUID.randomUUID();
             mazziere.setChatID(uniqueKey.toString());
             mazziere.say("Chat id: " + uniqueKey);
+            myAgent.addBehaviour(new GetChatMessage(mazziere));
 
             try {
                 //  send players list
                 mazziere.sendMessage(mazziere.getPlayers(), briscola.common.Names.ACL_SEND_PLAYERS, (Serializable) mazziere.getPlayers());
                 //  send chat_id list
-                mazziere.sendMessage(mazziere.getPlayers(), briscola.common.Names.ACL_SEND_CHAT_ID, uniqueKey);
+                mazziere.sendMessage(mazziere.getPlayers(), briscola.common.Names.ACL_SEND_CHAT_ID, uniqueKey.toString());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

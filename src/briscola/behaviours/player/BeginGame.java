@@ -18,6 +18,7 @@ package briscola.behaviours.player;
 
 import briscola.Player;
 import briscola.PlayerAgent;
+import briscola.behaviours.GetChatMessage;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -59,6 +60,7 @@ public class BeginGame extends Behaviour {
         if (infoChatMsg != null) {
             player.setChatID(infoChatMsg.getContent());
             player.say("Ricevute info chat: " + infoChatMsg.getContent());
+            myAgent.addBehaviour(new GetChatMessage(player));
             ++received;
         } else {
             block();

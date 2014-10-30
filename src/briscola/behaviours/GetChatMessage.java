@@ -16,7 +16,10 @@
  */
 package briscola.behaviours;
 
+import briscola.GeneralAgent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 
 /**
  *
@@ -24,12 +27,22 @@ import jade.core.behaviours.CyclicBehaviour;
  */
 public class GetChatMessage extends CyclicBehaviour {
 
+    GeneralAgent agent;
+
+    public GetChatMessage(GeneralAgent agent) {
+        this.agent = agent;
+    }
+
     @Override
     public void action() {
 
-        //MessageTemplate info = MessageTemplate.MatchPerformative(ACLMessage.CFP);
-        //MessageTemplate info2 = MessageTemplate.MatchSender(player.getMazziereAID());
-        //ACLMessage infoMsg = myAgent.receive(MessageTemplate.and(info, info2));
+        MessageTemplate info = MessageTemplate.MatchConversationId(agent.getChatID());
+        ACLMessage chatMsg = myAgent.receive(info);
+        if (chatMsg != null) {
+            agent.say(chatMsg.getContent());
+        } else {
+            block();
+        }
     }
 
 }

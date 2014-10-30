@@ -40,7 +40,7 @@ import java.util.List;
 public class MazziereAgent extends GeneralAgent {
 
     private Table table;
-    private MazziereGUI gui;
+    //private MazziereGUI gui;
     private DFAgentDescription dfd;
     private ServiceDescription sd;
 
@@ -105,10 +105,6 @@ public class MazziereAgent extends GeneralAgent {
             r.add(p.getAID());
         }
         return r;
-    }
-
-    public void say(String s) {
-        gui.say(s);
     }
 
     public DFAgentDescription getDFA() {
