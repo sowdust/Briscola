@@ -5,6 +5,10 @@ USE CASE:	Inizializza tavolo
 		Si registra al servizio "pagine gialle" - elenco tavoli
 		Resta in attesa di 5 giocatori
 		Chiude il tavolo
+USE CASE:	Inizia partita
+OBIETTIVO:	Comunicare a tutti i giocatori le informazioni utili
+		Comunica ai giocatori gli avversari
+		Avvia il servizio di chat		
 USE CASE:	Gestione asta
 		Stabilisce un ordine nel tavolo
 		Distribuisce le carte
@@ -19,6 +23,7 @@ USE CASE:	Conclusione partita
 		Conta i punti dei vari giocatori
 		Dichiara il vincitore
 		Chiude/Libera il tavolo
+
 
 ATTORE:		Giocatore ancora senza squadra
 OBIETTIVO:	Definire un rapporto squadre / carte possedute a lui vantaggioso

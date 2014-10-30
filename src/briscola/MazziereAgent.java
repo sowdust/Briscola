@@ -19,7 +19,6 @@ package briscola;
 import briscola.behaviours.mazziere.OpenTable;
 import briscola.objects.Table;
 import jade.core.AID;
-import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -38,11 +37,9 @@ import java.util.List;
  *
  * @author mat
  */
-public class MazziereAgent extends Agent {
+public class MazziereAgent extends GeneralAgent {
 
-    private String name;
     private Table table;
-    private List<Player> players;
     private MazziereGUI gui;
     private DFAgentDescription dfd;
     private ServiceDescription sd;
@@ -98,7 +95,11 @@ public class MazziereAgent extends Agent {
         super.takeDown();
     }
 
-    public List<AID> getPlayers() {
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public List<AID> getPlayersAID() {
         List<AID> r = new ArrayList();
         for (Player p : players) {
             r.add(p.getAID());
@@ -107,7 +108,7 @@ public class MazziereAgent extends Agent {
     }
 
     public void say(String s) {
-        gui.addLine(s);
+        gui.say(s);
     }
 
     public DFAgentDescription getDFA() {

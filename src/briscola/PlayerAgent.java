@@ -17,24 +17,15 @@
 package briscola;
 
 import briscola.behaviours.player.SubscribeBehaviour;
-import jade.core.AID;
-import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.domain.FIPAException;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
+import java.util.List;
 
 /**
  *
  * @author mat
  */
-public class PlayerAgent extends Agent {
+public class PlayerAgent extends GeneralAgent {
 
-    private String name;
-    private PlayerGiocatoreGUI gui;
+    private PlayerGUI gui;
 
     @Override
     protected void setup() {
@@ -47,7 +38,7 @@ public class PlayerAgent extends Agent {
             name = "Random Name";
         }
 
-        gui = new PlayerGiocatoreGUI(this);
+        gui = new PlayerGUI(this);
         gui.setVisible(true);
 
         say("Giocatore " + getAID().getName() + " iscritto alla piattaforma");
@@ -62,8 +53,10 @@ public class PlayerAgent extends Agent {
         gui.say(s);
     }
 
-    /**
-     * The player looks for a table that is missing players and registers to it
-     * by its name
-     */
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+        for (Player p : players) {
+            gui.addPlayer(p);
+        }
+    }
 }

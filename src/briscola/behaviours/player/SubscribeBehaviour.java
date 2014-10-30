@@ -71,7 +71,11 @@ public class SubscribeBehaviour extends Behaviour {
 
     @Override
     public boolean done() {
-        return state == 3;
+        if (state == 3) {
+            myAgent.addBehaviour(new BeginGame(player));
+            return true;
+        }
+        return false;
     }
 
     public void sendReply(ACLMessage responseMsg, ACLMessage confirmMsg) {

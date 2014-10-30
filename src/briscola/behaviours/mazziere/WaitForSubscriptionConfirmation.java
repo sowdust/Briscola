@@ -56,7 +56,7 @@ public class WaitForSubscriptionConfirmation extends Behaviour {
             String content = agent.getName() + briscola.common.Messages.CONFIRM_TABLE;
             confirmTable.setContent(content);
             myAgent.send(confirmTable);
-            mazziere.say("Aggiunto giocatore # " + ((MazziereAgent) myAgent).getPlayers().size() + ": " + agent.getName());
+            mazziere.say("Aggiunto giocatore # " + ((MazziereAgent) myAgent).getPlayersAID().size() + ": " + agent.getName());
             done = true;
         } else {
             block();

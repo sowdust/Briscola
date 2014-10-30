@@ -16,33 +16,20 @@
  */
 package briscola;
 
-import jade.core.AID;
-import java.io.Serializable;
+import javax.swing.DefaultListModel;
 
-/**
- *
- * @author mat
- */
-public class Player implements Serializable {
+public class GeneralGUI extends javax.swing.JFrame {
 
-    AID agent;
-    String name;
+    protected javax.swing.JTextArea logTextArea;
+    protected javax.swing.JList playersList;
 
-    public Player(AID agent, String name) {
-        this.agent = agent;
-        this.name = name;
+    protected void say(String s) {
+        logTextArea.append(s + "\n");
     }
 
-    public AID getAID() {
-        return agent;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return name + " [" + agent.getName() + "]";
+    protected void addPlayer(Player player) {
+        DefaultListModel<Player> l
+                = (DefaultListModel<Player>) playersList.getModel();
+        l.addElement(player);
     }
 }

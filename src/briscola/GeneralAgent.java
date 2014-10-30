@@ -16,33 +16,16 @@
  */
 package briscola;
 
-import jade.core.AID;
-import java.io.Serializable;
+import jade.core.Agent;
+import java.util.List;
 
 /**
  *
  * @author mat
  */
-public class Player implements Serializable {
+public class GeneralAgent extends Agent {
 
-    AID agent;
-    String name;
+    protected String name;
+    protected List<Player> players;
 
-    public Player(AID agent, String name) {
-        this.agent = agent;
-        this.name = name;
-    }
-
-    public AID getAID() {
-        return agent;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return name + " [" + agent.getName() + "]";
-    }
 }

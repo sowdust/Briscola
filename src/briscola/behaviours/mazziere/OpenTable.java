@@ -43,13 +43,13 @@ public class OpenTable extends Behaviour {
     @Override
     public void action() {
 
-        if (requests + ((MazziereAgent) myAgent).getPlayers().size() < 5) {
+        if (requests + ((MazziereAgent) myAgent).getPlayersAID().size() < 5) {
             MessageTemplate request = MessageTemplate.MatchContent(briscola.common.Messages.CAN_I_PLAY);
             ACLMessage requestMsg = myAgent.receive(request);
 
             if (requestMsg != null) {
                 AID agentName = requestMsg.getSender();
-                if (((MazziereAgent) myAgent).getPlayers().contains(agentName)) {
+                if (((MazziereAgent) myAgent).getPlayersAID().contains(agentName)) {
                     mazziere.say("Agente " + agentName.getName() + " già iscritto");
                     return;
                 }
@@ -70,10 +70,10 @@ public class OpenTable extends Behaviour {
 
     @Override
     public boolean done() {
-        if (((MazziereAgent) myAgent).getPlayers().size() == 5) {
+        if (((MazziereAgent) myAgent).getPlayersAID().size() == 5) {
             mazziere.getDFA().removeServices(mazziere.getServiceDesc());
             mazziere.say("Tavolo al completo");
-            myAgent.addBehaviour(new ManageBid(mazziere));
+            myAgent.addBehaviour(new BeginGame(mazziere));
             return true;
         }
         return false;

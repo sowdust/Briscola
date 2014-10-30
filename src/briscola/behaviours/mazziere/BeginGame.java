@@ -17,40 +17,38 @@
 package briscola.behaviours.mazziere;
 
 import briscola.MazziereAgent;
-import briscola.objects.Card;
-import briscola.objects.Deck;
+import briscola.behaviours.SendMessage;
 import jade.core.behaviours.Behaviour;
-import java.util.List;
+import jade.lang.acl.ACLMessage;
+import java.io.Serializable;
 
 /**
  *
  * @author mat
  */
-public class ManageBid extends Behaviour {
+public class BeginGame extends Behaviour {
 
-    MazziereAgent mazziere;
-    Deck deck;
-    boolean visto = false;
+    private MazziereAgent mazziere;
+    private boolean sent;
 
-    public ManageBid(MazziereAgent mazziere) {
+    public BeginGame(MazziereAgent mazziere) {
         this.mazziere = mazziere;
+        this.sent = false;
     }
 
     @Override
     public void action() {
-
-        deck = mazziere.getTable().getDeck();
-        deck.shuffle();
-    }
-
-    public void distrDeck() {
-        List<Card>[] p = new List[5];
+        //  send info to all players
+        if (!sent) {
+            myAgent.addBehaviour(new SendMessage(mazziere.getPlayers(), ACLMessage.INFORM, (Serializable) mazziere.getPlayers()));
+            mazziere.say("Inviate info giocatori");
+            sent = true;
+        }
+        // receive confirmation from all players
     }
 
     @Override
     public boolean done() {
-        System.out.println("Done");
-        block();
         return false;
     }
 

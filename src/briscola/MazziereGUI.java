@@ -23,9 +23,15 @@ import javax.swing.DefaultListModel;
  *
  * @author mat
  */
-public class MazziereGUI extends javax.swing.JFrame {
+public class MazziereGUI extends GeneralGUI {
 
     private MazziereAgent agent;
+
+    protected void addPlayer(Player player) {
+        DefaultListModel<Player> l
+                = (DefaultListModel<Player>) playersList.getModel();
+        l.addElement(player);
+    }
 
     /**
      * Creates new form MazziereGUI
@@ -37,10 +43,6 @@ public class MazziereGUI extends javax.swing.JFrame {
 
     public void setAgent(MazziereAgent agent) {
         this.agent = agent;
-    }
-
-    public void addLine(String s) {
-        logTextArea.append(s + "\n");
     }
 
     /**
@@ -91,8 +93,8 @@ public class MazziereGUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
                 .addContainerGap())
@@ -116,53 +118,13 @@ public class MazziereGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MazziereGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MazziereGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MazziereGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MazziereGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                //new MazziereGUI().setVisible(true);
-            }
-        });
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea logTextArea;
+    //protected javax.swing.JTextArea logTextArea;
     private javax.swing.JTextField nameLabel;
-    private javax.swing.JList playersList;
+    //protected javax.swing.JList playersList;
     // End of variables declaration//GEN-END:variables
 
-    void addPlayer(Player player) {
-        DefaultListModel<Player> l
-                = (DefaultListModel<Player>) playersList.getModel();
-        l.addElement(player);
-    }
 }

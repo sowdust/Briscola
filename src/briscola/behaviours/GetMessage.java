@@ -14,35 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package briscola;
+package briscola.behaviours;
 
-import jade.core.AID;
-import java.io.Serializable;
+import jade.core.behaviours.CyclicBehaviour;
 
 /**
  *
  * @author mat
  */
-public class Player implements Serializable {
-
-    AID agent;
-    String name;
-
-    public Player(AID agent, String name) {
-        this.agent = agent;
-        this.name = name;
-    }
-
-    public AID getAID() {
-        return agent;
-    }
-
-    public String getName() {
-        return name;
-    }
+public class GetMessage extends CyclicBehaviour {
 
     @Override
-    public String toString() {
-        return name + " [" + agent.getName() + "]";
+    public void action() {
+
     }
+
 }
