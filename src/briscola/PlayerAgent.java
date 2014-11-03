@@ -26,6 +26,8 @@ import java.util.List;
  */
 public class PlayerAgent extends GeneralAgent {
 
+    private boolean visible;
+
     @Override
     protected void setup() {
 
@@ -33,12 +35,14 @@ public class PlayerAgent extends GeneralAgent {
 
         if (args != null && args.length > 0) {
             name = (String) args[0];
+            visible = true;
         } else {
-            name = "Random Name";
+            visible = false;
+            name = briscola.common.Names.randomName();
         }
 
         gui = new PlayerGUI(this);
-        gui.setVisible(true);
+        gui.setVisible(visible);
 
         say("Giocatore " + getAID().getName() + " iscritto alla piattaforma");
         addBehaviour(new SubscribeBehaviour(this));

@@ -16,7 +16,6 @@
  */
 package briscola.behaviours.mazziere;
 
-import briscola.behaviours.mazziere.WaitForSubscriptionConfirmation;
 import briscola.MazziereAgent;
 import jade.core.AID;
 import jade.core.behaviours.OneShotBehaviour;

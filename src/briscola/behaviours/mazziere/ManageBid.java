@@ -22,10 +22,6 @@ import briscola.objects.Deck;
 import jade.core.behaviours.Behaviour;
 import java.util.List;
 
-/**
- *
- * @author mat
- */
 public class ManageBid extends Behaviour {
 
     MazziereAgent mazziere;

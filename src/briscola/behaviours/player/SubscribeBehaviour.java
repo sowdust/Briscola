@@ -112,17 +112,14 @@ public class SubscribeBehaviour extends Behaviour {
 
     @Override
     public void action() {
-
         switch (state) {
             case 0:
-
                 if (findBeh == null) {
                     findBeh = new FindTable(myAgent, briscola.common.Names.RETRY_EVERY, state);
                     player.addBehaviour(findBeh);
                 }
                 break;
             case 1:
-                player.say("111!!!");
                 findBeh.stop();
                 sendReply(responseMsg, confirmMsg);
                 break;

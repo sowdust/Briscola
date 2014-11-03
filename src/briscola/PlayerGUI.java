@@ -78,34 +78,28 @@ public class PlayerGUI extends GeneralGUI {
         gamePaneLayout.setHorizontalGroup(
             gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(gamePaneLayout.createSequentialGroup()
-                .addComponent(playersPane, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 590, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, gamePaneLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(chatTextAreaPane, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(chatButton)
-                .addGap(187, 187, 187))
-            .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, gamePaneLayout.createSequentialGroup()
-                    .addContainerGap(211, Short.MAX_VALUE)
-                    .addComponent(chatContainerPane, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(164, Short.MAX_VALUE)))
+                .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(chatTextAreaPane)
+                        .addComponent(playersPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
+                        .addComponent(chatContainerPane, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addGroup(gamePaneLayout.createSequentialGroup()
+                        .addGap(93, 93, 93)
+                        .addComponent(chatButton)))
+                .addContainerGap(569, Short.MAX_VALUE))
         );
         gamePaneLayout.setVerticalGroup(
             gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(gamePaneLayout.createSequentialGroup()
-                .addComponent(playersPane, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(chatTextAreaPane, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, gamePaneLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(20, 20, 20)
+                .addComponent(playersPane, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(chatContainerPane, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(chatTextAreaPane, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addComponent(chatButton)
                 .addContainerGap())
-            .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(gamePaneLayout.createSequentialGroup()
-                    .addComponent(chatContainerPane, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 102, Short.MAX_VALUE)))
         );
 
         jTabbedPane1.addTab("Game", gamePane);
@@ -142,21 +136,22 @@ public class PlayerGUI extends GeneralGUI {
 
     private void chatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chatButtonActionPerformed
         String text = chatTextArea.getText();
+        chatTextArea.setText("");
         agent.sendChat(text);
     }//GEN-LAST:event_chatButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     protected javax.swing.JButton chatButton;
     private javax.swing.JScrollPane chatContainerPane;
-  //  protected javax.swing.JTextPane chatPanel;
- //   protected javax.swing.JTextArea chatTextArea;
+    //protected javax.swing.JTextPane chatPanel;
+    //protected javax.swing.JTextArea chatTextArea;
     private javax.swing.JScrollPane chatTextAreaPane;
     private javax.swing.JPanel gamePane;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JScrollPane logPane;
-   // protected javax.swing.JTextArea logTextArea;
+    //protected javax.swing.JTextArea logTextArea;
     private javax.swing.JLabel nameLabel;
-   /// protected javax.swing.JList playersList;
+    //protected javax.swing.JList playersList;
     private javax.swing.JScrollPane playersPane;
     // End of variables declaration//GEN-END:variables
 

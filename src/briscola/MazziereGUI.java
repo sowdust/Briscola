@@ -1,8 +1,5 @@
 package briscola;
 
-import javax.swing.DefaultListModel;
-
-
 /*
  * Copyright (C) 2014 mat
  *
@@ -26,12 +23,6 @@ import javax.swing.DefaultListModel;
 public class MazziereGUI extends GeneralGUI {
 
     private MazziereAgent agent;
-
-    protected void addPlayer(Player player) {
-        DefaultListModel<Player> l
-                = (DefaultListModel<Player>) playersList.getModel();
-        l.addElement(player);
-    }
 
     /**
      * Creates new form MazziereGUI

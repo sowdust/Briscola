@@ -19,10 +19,6 @@ package briscola;
 import jade.core.AID;
 import java.io.Serializable;
 
-/**
- *
- * @author mat
- */
 public class Player implements Serializable {
 
     AID agent;
