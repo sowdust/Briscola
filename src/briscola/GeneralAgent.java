@@ -1,18 +1,4 @@
 /*
- * Copyright (C) 2014 mat
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package briscola;
 
@@ -31,28 +17,35 @@ public class GeneralAgent extends Agent {
     protected AID mazziereAID;
     private String chatID;
 
-    public void setChatID(String uniqueKey) {
+    public void setChatID(String uniqueKey)
+    {
         this.chatID = uniqueKey;
     }
 
-    public String getChatID() {
+    public String getChatID()
+    {
         return chatID;
     }
 
-    public void say(String s) {
+    public void say(String s)
+    {
         gui.say(s);
     }
 
-    public void printChat(AID player, String s) {
+    public void printChat(AID player, String s)
+    {
         int i = 0;
-        for (Player p : players) {
-            if (p.getAID().equals(player)) {
+        for (Player p : players)
+        {
+            if (p.getAID().equals(player))
+            {
                 gui.appendChat(p.getName(), s, i);
                 return;
             }
             ++i;
         }
-        if (player.equals(mazziereAID)) {
+        if (player.equals(mazziereAID))
+        {
             gui.appendChat(briscola.common.Names.MAZZIERE, s, i);
 
             return;
@@ -66,23 +59,29 @@ public class GeneralAgent extends Agent {
      *
      * @param s message to be sent
      */
-    public void sendChat(String s) {
+    public void sendChat(String s)
+    {
         ACLMessage m = new ACLMessage(briscola.common.Names.ACL_CHAT);
         m.setConversationId(getChatID());
         m.setContent(s);
-        if (players == null) {
+        if (players == null)
+        {
             say("Nessun giocatore in lista");
-        } else {
-            for (Player p : players) {
+        } else
+        {
+            for (Player p : players)
+            {
                 m.addReceiver(p.getAID());
             }
             send(m);
         }
     }
 
-    public void sendMessage(List<Player> rcp, int type, String content) {
+    public void sendMessage(List<Player> rcp, int type, String content)
+    {
         ACLMessage m = new ACLMessage(type);
-        for (Player p : rcp) {
+        for (Player p : rcp)
+        {
             m.addReceiver(p.getAID());
         }
         m.setContent(content);
@@ -90,7 +89,8 @@ public class GeneralAgent extends Agent {
         send(m);
     }
 
-    public void sendMessage(Player rcp, int type, String content) {
+    public void sendMessage(Player rcp, int type, String content)
+    {
         ACLMessage m = new ACLMessage(type);
         m.addReceiver(rcp.getAID());
         m.setContent(content);
@@ -98,7 +98,8 @@ public class GeneralAgent extends Agent {
         send(m);
     }
 
-    public void sendMessage(AID rcp, int type, String content) {
+    public void sendMessage(AID rcp, int type, String content)
+    {
         ACLMessage m = new ACLMessage(type);
         m.addReceiver(rcp);
         m.setContent(content);
@@ -106,9 +107,11 @@ public class GeneralAgent extends Agent {
         send(m);
     }
 
-    public void sendMessage(List<Player> rcp, int type, Serializable content) throws IOException {
+    public void sendMessage(List<Player> rcp, int type, Serializable content) throws IOException
+    {
         ACLMessage m = new ACLMessage(type);
-        for (Player p : rcp) {
+        for (Player p : rcp)
+        {
             m.addReceiver(p.getAID());
         }
         m.setContentObject((Serializable) content);
@@ -116,7 +119,8 @@ public class GeneralAgent extends Agent {
         send(m);
     }
 
-    public void sendMessage(Player rcp, int type, Serializable content) throws IOException {
+    public void sendMessage(Player rcp, int type, Serializable content) throws IOException
+    {
         ACLMessage m = new ACLMessage(type);
         m.addReceiver(rcp.getAID());
         m.setContentObject((Serializable) content);

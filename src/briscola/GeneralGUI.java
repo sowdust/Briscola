@@ -1,18 +1,4 @@
 /*
- * Copyright (C) 2014 mat
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package briscola;
 
@@ -24,16 +10,20 @@ import javax.swing.text.StyledDocument;
 
 public class GeneralGUI extends javax.swing.JFrame {
 
+    private static final long serialVersionUID = 1L;
+
     protected javax.swing.JTextArea logTextArea;
     protected javax.swing.JList playersList;
     protected javax.swing.JTextPane chatPanel;
     protected javax.swing.JTextArea chatTextArea;
 
-    protected void say(String s) {
+    protected void say(String s)
+    {
         logTextArea.append(s + "\n");
     }
 
-    public void appendChat(String name, String s, int color) {
+    public void appendChat(String name, String s, int color)
+    {
         StyledDocument doc = chatPanel.getStyledDocument();
         Color[] colors = new Color[7];
         colors[0] = Color.BLUE;
@@ -49,17 +39,20 @@ public class GeneralGUI extends javax.swing.JFrame {
         //StyleConstants.setBackground(keyWord, Color.YELLOW);
         StyleConstants.setBold(keyWord, true);
 //  Add some text
-        try {
+        try
+        {
             ///doc.insertString(0, "Start of text\n", null);
             doc.insertString(doc.getLength(), "\n" + name + "> " + s, keyWord);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             System.out.println(e);
         }
     }
 
-    protected void addPlayer(Player player) {
+    protected void addPlayer(Player player)
+    {
         DefaultListModel<Player> l
-                = (DefaultListModel<Player>) playersList.getModel();
+            = (DefaultListModel<Player>) playersList.getModel();
         l.addElement(player);
     }
 }
