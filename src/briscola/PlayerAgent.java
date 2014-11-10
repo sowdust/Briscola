@@ -7,29 +7,23 @@ import briscola.objects.Hand;
 import jade.core.AID;
 import java.util.List;
 
-/**
- *
- * @author mat
- */
 public class PlayerAgent extends GeneralAgent {
 
     private static final long serialVersionUID = 1L;
 
     private boolean visible;
     private Hand myHand;
+    //private PlayerGUI gui;
 
     @Override
-    protected void setup()
-    {
+    protected void setup() {
 
         Object[] args = getArguments();
 
-        if (args != null && args.length > 0)
-        {
+        if (args != null && args.length > 0) {
             name = (String) args[0];
             visible = true;
-        } else
-        {
+        } else {
             visible = false;
             name = briscola.common.Names.randomName();
         }
@@ -41,32 +35,27 @@ public class PlayerAgent extends GeneralAgent {
         addBehaviour(new Subscribe(this));
     }
 
-    public String getRealName()
-    {
+    public String getRealName() {
         return name;
     }
 
-    public void setPlayers(List<Player> players)
-    {
+    public void setPlayers(List<Player> players) {
         this.players = players;
-        for (Player p : players)
-        {
+        for (Player p : players) {
             gui.addPlayer(p);
         }
     }
 
-    public void setMazziereAID(AID sender)
-    {
+    public void setMazziereAID(AID sender) {
         this.mazziereAID = sender;
     }
 
-    public void setHand(Hand hand)
-    {
+    public void setHand(Hand hand) {
         this.myHand = hand;
+        ((PlayerGUI) gui).setHand(hand);
     }
 
-    public AID getMazziereAID()
-    {
+    public AID getMazziereAID() {
         return mazziereAID;
     }
 }

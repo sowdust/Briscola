@@ -85,7 +85,7 @@ public class BeginGame extends Behaviour {
             }
         }
         mazziere.say("Tutti hanno mandato le proprie info. Possiamo procedere.");
-        mazziere.addBehaviour(new DistributeCards(mazziere));
+        mazziere.addBehaviour(new DistributeHands(mazziere));
         return true;
     }
 

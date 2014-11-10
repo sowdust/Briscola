@@ -22,22 +22,23 @@ public class Names {
     public static final String MAZZIERE = "mazziere";
     private static Random random;
 
-    public static final String[] playerNames =
-    {
-        "Abelardo",
-        "Adelino",
-        "Adriano",
-        "Alfonso",
-        "Alfredo",
-        "Attilio",
-        "Giacomo",
-        "Gino"
-    };
+    public static final String CARD_IMG_EXTENSION = ".jpg";
+    public static final String CARD_IMG_FOLDER = "/home/mat/school/Tesi/src/briscola/images/cards/";
 
-    public static String randomName()
-    {
-        if (random == null)
-        {
+    public static final String[] playerNames
+        = {
+            "Abelardo",
+            "Adelino",
+            "Adriano",
+            "Alfonso",
+            "Alfredo",
+            "Attilio",
+            "Giacomo",
+            "Gino"
+        };
+
+    public static String randomName() {
+        if (random == null) {
             random = new Random();
         }
         return playerNames[random.nextInt(playerNames.length)];

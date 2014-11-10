@@ -16,13 +16,13 @@ import java.util.List;
  *
  * @author mat
  */
-public class DistributeCards extends OneShotBehaviour {
+public class DistributeHands extends OneShotBehaviour {
 
     private MazziereAgent mazziere;
     private Deck deck;
     //private final boolean visto = false;
 
-    public DistributeCards(MazziereAgent mazziere)
+    public DistributeHands(MazziereAgent mazziere)
     {
         this.mazziere = mazziere;
         deck = mazziere.getTable().getDeck();
