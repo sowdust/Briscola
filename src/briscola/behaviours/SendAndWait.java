@@ -26,37 +26,32 @@ public class SendAndWait extends SendMessage {
      }
      */
 
-    public SendAndWait(List<Player> rcp, int type, Serializable content)
-    {
+    public SendAndWait(List<Player> rcp, int type, Serializable content) {
         super(rcp, type, content);
         confirmations = 0;
         convId = UUID.randomUUID().toString();
     }
 
     @Override
-    public void action()
-    {
+    public void action() {
         super.action();
 
         MessageTemplate info1 = MessageTemplate.MatchConversationId(convId);
-        MessageTemplate info2 = MessageTemplate.MatchPerformative(briscola.common.Names.ACL_MESSAGE_RECEIVED);
+        MessageTemplate info2 = MessageTemplate.MatchPerformative(
+            briscola.common.Names.ACL_MESSAGE_RECEIVED);
         MessageTemplate info = MessageTemplate.and(info1, info2);
         ACLMessage confM = myAgent.receive(info);
-        if (confM != null)
-        {
+        if (confM != null) {
             confirmations++;
-            System.out.println("Conferma " + confirmations + " ricevuta");
             confM = null;
-        } else
-        {
+        } else {
             block();
         }
 
     }
 
     @Override
-    public boolean done()
-    {
+    public boolean done() {
         return confirmations == rcp.size();
     }
 

@@ -38,24 +38,8 @@ public class PlayerGUI extends GeneralGUI {
     public void setHand(Hand h) {
         for (int i = 0; i < h.size(); ++i) {
             String imgURL = h.get(i).getImage();
-            //imgURL = "/home/mat/school/Tesi/src/briscola/images/cards/3-10.jpg";
             ImageIcon cardIcon = new ImageIcon(imgURL);
-            File imgF = new File(imgURL);
-            try {
-                System.out.println(
-                    "About to load " + imgF.getCanonicalPath()
-                    + " exists=" + imgF.exists());
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-                System.exit(0);
-            }
             cardLabels[i].setIcon(cardIcon);
-            /*
-             String current = System.getProperty("user.dir");
-             System.out.println(
-             "Current working directory in Java : " + current);
-             System.out.println("Immagine " + imgURL);
-             */
         }
 
     }
