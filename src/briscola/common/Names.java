@@ -16,11 +16,14 @@ public class Names {
     public static final int ACL_CHAT = 99;
     public static final int ACL_SEND_PLAYERS = 100;
     public static final int ACL_SEND_CHAT_ID = 101;
+    public static final int ACL_MESSAGE_RECEIVED = 200;
+    public static final int ACL_YOUR_HAND = 110;
     public static final String UNKNOWN = "intruso";
     public static final String MAZZIERE = "mazziere";
     private static Random random;
 
-    public static final String[] playerNames = {
+    public static final String[] playerNames =
+    {
         "Abelardo",
         "Adelino",
         "Adriano",
@@ -31,11 +34,13 @@ public class Names {
         "Gino"
     };
 
-    public static String randomName() {
-        if (random == null) {
+    public static String randomName()
+    {
+        if (random == null)
+        {
             random = new Random();
         }
-        return playerNames[random.nextInt((playerNames.length - 0) + 1)];
+        return playerNames[random.nextInt(playerNames.length)];
     }
 
 }

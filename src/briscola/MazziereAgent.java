@@ -31,15 +31,18 @@ public class MazziereAgent extends GeneralAgent {
     private ServiceDescription sd;
 
     @Override
-    protected void setup() {
+    protected void setup()
+    {
         this.mazziereAID = this.getAID();
         Object[] args = getArguments();
         players = new ArrayList<>();
         table = new Table();
 
-        if (args != null && args.length > 0) {
+        if (args != null && args.length > 0)
+        {
             name = (String) args[0];
-        } else {
+        } else
+        {
             name = "Gianni";
         }
 
@@ -55,54 +58,65 @@ public class MazziereAgent extends GeneralAgent {
         sd.setType(briscola.common.Names.MAZZIERE);
         sd.setName(name);
         dfd.addServices(sd);
-        try {
+        try
+        {
             DFService.register(this, dfd);
-        } catch (FIPAException fe) {
+        } catch (FIPAException fe)
+        {
             say("Errore durante la registrazione alle pagine gialle");
             fe.printStackTrace();
         }
         addBehaviour(new OpenTable(this));
     }
 
-    public String getRealName() {
+    public String getRealName()
+    {
         return name;
     }
 
-    public void addPlayer(AID agente, String name) {
+    public void addPlayer(AID agente, String name)
+    {
         Player player = new Player(agente, name);
         players.add(player);
         gui.addPlayer(player);
     }
 
     @Override
-    protected void takeDown() {
+    protected void takeDown()
+    {
         say("Felice di aver giocato con voi. Addio!");
         gui.dispose();
         dfd.removeServices(sd);
         super.takeDown();
     }
 
-    public List<Player> getPlayers() {
+    public List<Player> getPlayers()
+    {
         return players;
     }
 
-    public List<AID> getPlayersAID() {
+    public List<AID> getPlayersAID()
+    {
         List<AID> r = new ArrayList();
-        for (Player p : players) {
+        for (Player p : players)
+        {
             r.add(p.getAID());
         }
         return r;
     }
 
-    public DFAgentDescription getDFA() {
+    public DFAgentDescription getDFA()
+    {
         return dfd;
     }
 
-    public ServiceDescription getServiceDesc() {
+    public ServiceDescription getServiceDesc()
+    {
         return sd;
     }
 
-    public Table getTable() {
+    public Table getTable()
+    {
         return table;
     }
 

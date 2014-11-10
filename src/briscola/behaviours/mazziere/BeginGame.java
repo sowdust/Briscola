@@ -24,16 +24,20 @@ public class BeginGame extends Behaviour {
     private final MazziereAgent mazziere;
     private boolean sent;
     private ACLMessage[] confMsg;
+    private int received;
 
-    public BeginGame(MazziereAgent mazziere) {
+    public BeginGame(MazziereAgent mazziere)
+    {
         this.mazziere = mazziere;
         this.sent = false;
     }
 
     @Override
-    public void action() {
+    public void action()
+    {
         //  send info to all players
-        if (!sent) {
+        if (!sent)
+        {
 
             //  compute a unique ID as Chat ID
             UUID uniqueKey = UUID.randomUUID();
@@ -41,36 +45,47 @@ public class BeginGame extends Behaviour {
             mazziere.say("Chat id: " + uniqueKey);
             myAgent.addBehaviour(new GetChatMessage(mazziere));
 
-            try {
+            try
+            {
                 //  send players list
                 mazziere.sendMessage(mazziere.getPlayers(), briscola.common.Names.ACL_SEND_PLAYERS, (Serializable) mazziere.getPlayers());
                 //  send chat_id list
                 mazziere.sendMessage(mazziere.getPlayers(), briscola.common.Names.ACL_SEND_CHAT_ID, uniqueKey.toString());
-            } catch (IOException ex) {
+            } catch (IOException ex)
+            {
                 ex.printStackTrace();
             }
 
             mazziere.say("Inviate info giocatori");
             sent = true;
+            confMsg = new ACLMessage[5];
+            received = 0;
+
         }
 
         // get info from all players
-        confMsg = new ACLMessage[5];
-        int i = 0;
-        for (AID p : mazziere.getPlayersAID()) {
-            confMsg[i++] = myAgent.receive(MessageTemplate.and(MessageTemplate.MatchContent(briscola.common.Messages.INFO_RECEIVED), MessageTemplate.MatchSender(p)));
-
+        for (AID p : mazziere.getPlayersAID())
+        {
+            ACLMessage ms = myAgent.receive(MessageTemplate.and(MessageTemplate.MatchContent(briscola.common.Messages.INFO_RECEIVED), MessageTemplate.MatchSender(p)));
+            if (ms != null)
+            {
+                confMsg[received++] = ms;
+            }
         }
     }
 
     @Override
-    public boolean done() {
-        for (ACLMessage a : confMsg) {
-            if (null == a) {
+    public boolean done()
+    {
+        for (ACLMessage a : confMsg)
+        {
+            if (null == a)
+            {
                 return false;
             }
         }
         mazziere.say("Tutti hanno mandato le proprie info. Possiamo procedere.");
+        mazziere.addBehaviour(new DistributeCards(mazziere));
         return true;
     }
 

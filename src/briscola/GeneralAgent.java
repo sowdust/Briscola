@@ -114,7 +114,7 @@ public class GeneralAgent extends Agent {
         {
             m.addReceiver(p.getAID());
         }
-        m.setContentObject((Serializable) content);
+        m.setContentObject(content);
         m.setPerformative(type);
         send(m);
     }
@@ -123,7 +123,7 @@ public class GeneralAgent extends Agent {
     {
         ACLMessage m = new ACLMessage(type);
         m.addReceiver(rcp.getAID());
-        m.setContentObject((Serializable) content);
+        m.setContentObject(content);
         m.setPerformative(type);
         send(m);
     }

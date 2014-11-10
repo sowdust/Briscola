@@ -14,7 +14,7 @@ import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class SubscribeBehaviour extends Behaviour {
+public class Subscribe extends Behaviour {
 
     /**
      * STATI. 0 nessun tavolo libero. 1 trovato tavolo libero. 2 richiesta
@@ -24,7 +24,7 @@ public class SubscribeBehaviour extends Behaviour {
     private Short state;
     private final PlayerAgent player;
 
-    public SubscribeBehaviour(PlayerAgent player) {
+    public Subscribe(PlayerAgent player) {
         state = 0;
         this.player = player;
     }

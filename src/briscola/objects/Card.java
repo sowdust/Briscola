@@ -2,17 +2,24 @@
  */
 package briscola.objects;
 
-public class Card {
+import java.io.Serializable;
 
-    private Rank rank;
-    private Suit suit;
+public class Card implements Serializable {
 
-    public Card(Rank r, Suit s) {
+    private static final long serialVersionUID = 1L;
+
+    private final Rank rank;
+    private final Suit suit;
+
+    public Card(Rank r, Suit s)
+    {
         rank = r;
         suit = s;
     }
 
-    public String toString() {
+    @Override
+    public String toString()
+    {
         return rank + " of " + suit;
     }
 }
