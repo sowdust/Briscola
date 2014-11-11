@@ -25,6 +25,26 @@ public class Names {
     public static final String CARD_IMG_EXTENSION = ".jpg";
     public static final String CARD_IMG_FOLDER = "/home/mat/school/Tesi/src/briscola/images/cards/";
 
+    //  WORD BETWEEN RANK AND SUI
+    public static final String CARD_OF = "";
+
+    //  RANKS NAMES
+    public static final String CARD_ACE = "A";
+    public static final String CARD_DEUCE = "2";
+    public static final String CARD_THREE = "3";
+    public static final String CARD_FOUR = "4";
+    public static final String CARD_FIVE = "5";
+    public static final String CARD_SIX = "6";
+    public static final String CARD_SEVEN = "7";
+    public static final String CARD_JACK = "J";
+    public static final String CARD_QUEEN = "Q";
+    public static final String CARD_KING = "K";
+    //  SUITS NAMES
+    public static final String CARD_CLUBS = "♠";
+    public static final String CARD_DIAMONDS = "♦";
+    public static final String CARD_SPADES = "♣";
+    public static final String CARD_HEARTS = "♥";
+
     public static final String[] playerNames
         = {
             "Abelardo",

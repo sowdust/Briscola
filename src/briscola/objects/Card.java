@@ -24,6 +24,6 @@ public class Card implements Serializable {
 
     @Override
     public String toString() {
-        return rank + " of " + suit;
+        return rank + " " + briscola.common.Names.CARD_OF + " " + suit;
     }
 }

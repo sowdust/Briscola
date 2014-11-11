@@ -40,6 +40,10 @@
   </Layout>
   <SubComponents>
     <Container class="javax.swing.JPanel" name="jPanel1">
+      <Properties>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+        <Property name="name" type="java.lang.String" value="Mazziere" noResource="true"/>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
