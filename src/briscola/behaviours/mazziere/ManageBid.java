@@ -4,9 +4,7 @@ package briscola.behaviours.mazziere;
 
 import briscola.MazziereAgent;
 import briscola.objects.Deck;
-import briscola.objects.Hand;
 import jade.core.behaviours.Behaviour;
-import jade.core.behaviours.SequentialBehaviour;
 
 /**
  * In this part of the game the Mazziere distributes the cards to all players
@@ -20,21 +18,19 @@ public class ManageBid extends Behaviour {
     private Deck deck;
     //private final boolean visto = false;
 
-    public ManageBid(MazziereAgent mazziere)
-    {
+    public ManageBid(MazziereAgent mazziere) {
         this.mazziere = mazziere;
     }
 
     @Override
-    public void action()
-    {
+    public void action() {
 
     }
 
     @Override
-    public boolean done()
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean done() {
+        mazziere.say("Chiudendo Manage Bid");
+        return true;
     }
 
 }

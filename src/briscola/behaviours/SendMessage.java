@@ -17,29 +17,25 @@ public class SendMessage extends Behaviour {
     protected Object ob = null;
     protected String convId = null;
 
-    public SendMessage(List<Player> rcp, String content)
-    {
+    public SendMessage(List<Player> rcp, String content) {
         this.rcp = rcp;
         this.type = ACLMessage.UNKNOWN;
         this.content = content;
     }
 
-    public SendMessage(List<Player> rcp, int type, String content)
-    {
+    public SendMessage(List<Player> rcp, int type, String content) {
         this.rcp = rcp;
         this.type = type;
         this.content = content;
     }
 
-    public SendMessage(List<Player> rcp, int type, Serializable content)
-    {
+    public SendMessage(List<Player> rcp, int type, Serializable content) {
         this.rcp = rcp;
         this.type = type;
         this.ob = content;
     }
 
-    public SendMessage(Player rcp, String content)
-    {
+    public SendMessage(Player rcp, String content) {
         List<Player> l = new ArrayList<>();
         l.add(rcp);
         this.rcp = l;
@@ -47,8 +43,7 @@ public class SendMessage extends Behaviour {
         this.content = content;
     }
 
-    public SendMessage(Player rcp, int type, String content)
-    {
+    public SendMessage(Player rcp, int type, String content) {
         List<Player> l = new ArrayList<>();
         l.add(rcp);
         this.rcp = l;
@@ -56,44 +51,35 @@ public class SendMessage extends Behaviour {
         this.content = content;
     }
 
-    public void setConvId(String convId)
-    {
+    public void setConvId(String convId) {
         this.convId = convId;
     }
 
     @Override
-    public void action()
-    {
+    public void action() {
         ACLMessage m = new ACLMessage(type);
-        for (Player p : rcp)
-        {
+        for (Player p : rcp) {
             m.addReceiver(p.getAID());
         }
 
-        if (ob == null)
-        {
+        if (ob == null) {
             m.setContent(content);
-        } else
-        {
-            try
-            {
+        } else {
+            try {
                 m.setContentObject((Serializable) ob);
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 System.out.println(e);
             }
         }
         m.setPerformative(type);
-        if (convId != null)
-        {
+        if (convId != null) {
             m.setConversationId(convId);
         }
         myAgent.send(m);
     }
 
     @Override
-    public boolean done()
-    {
+    public boolean done() {
         return true;
     }
 }

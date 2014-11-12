@@ -22,15 +22,13 @@ public class DistributeHands extends OneShotBehaviour {
     private Deck deck;
     //private final boolean visto = false;
 
-    public DistributeHands(MazziereAgent mazziere)
-    {
+    public DistributeHands(MazziereAgent mazziere) {
         this.mazziere = mazziere;
         deck = mazziere.getTable().getDeck();
     }
 
     @Override
-    public void action()
-    {
+    public void action() {
         mazziere.say("distribuendo le carte");
         deck.shuffle();
         Hand[] h = new Hand[5];
@@ -40,14 +38,12 @@ public class DistributeHands extends OneShotBehaviour {
         h[3] = new Hand();
         h[4] = new Hand();
         //  distribuiamo le carte come si deve
-        for (int i = 0; i < deck.size(); ++i)
-        {
+        for (int i = 0; i < deck.size(); ++i) {
             h[i % 5].addCard(deck.get(i));
         }
         List<Player> players = mazziere.getPlayers();
         ParallelBehaviour sendMessages = new ParallelBehaviour();
-        for (int i = 0; i < 5; ++i)
-        {
+        for (int i = 0; i < 5; ++i) {
             List<Player> rcp = new LinkedList<>();
             rcp.add(players.get(i));
             SendAndWait b = new SendAndWait(rcp, ACL_YOUR_HAND, h[i]);
@@ -58,10 +54,9 @@ public class DistributeHands extends OneShotBehaviour {
         OneShotBehaviour whatNext = new OneShotBehaviour() {
 
             @Override
-            public void action()
-            {
+            public void action() {
                 // HERE GOES WHAT TO DO NEXT!!!!
-                myAgent.addBehaviour(null);
+                myAgent.addBehaviour(new ManageBid(mazziere));
             }
         };
         doAll.addSubBehaviour(sendMessages);
