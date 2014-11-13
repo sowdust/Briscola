@@ -1,6 +1,7 @@
 package briscola.behaviours;
 
 import briscola.Player;
+import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import java.io.Serializable;
@@ -30,6 +31,12 @@ public class SendAndWait extends SendMessage {
         convId = UUID.randomUUID().toString();
     }
 
+    public SendAndWait(AID rcp, int type, Serializable content) {
+        super(rcp, type, content);
+        confirmations = 0;
+        convId = UUID.randomUUID().toString();
+    }
+
     @Override
     public void action() {
         super.action();
@@ -49,7 +56,11 @@ public class SendAndWait extends SendMessage {
 
     @Override
     public boolean done() {
-        return confirmations == rcp.size();
+        if (rcp != null) {
+            return confirmations == rcp.size();
+        } else {
+            return confirmations == 1;
+        }
     }
 
 }

@@ -6,8 +6,9 @@ import static briscola.common.Names.CARD_CLUBS;
 import static briscola.common.Names.CARD_DIAMONDS;
 import static briscola.common.Names.CARD_HEARTS;
 import static briscola.common.Names.CARD_SPADES;
+import java.io.Serializable;
 
-public enum Suit {
+public enum Suit implements Serializable {
 
     CLUBS(1, CARD_CLUBS),
     DIAMONDS(2, CARD_DIAMONDS),

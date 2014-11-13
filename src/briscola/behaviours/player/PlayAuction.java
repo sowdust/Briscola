@@ -7,6 +7,7 @@ import briscola.memory.player.AuctionMemory;
 import briscola.messages.AuctionStatusMessage;
 import briscola.objects.Bid;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.SequentialBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
@@ -20,16 +21,18 @@ public class PlayAuction extends Behaviour {
     private final MessageTemplate mt;
     private MessageTemplate finalMt;
     private boolean done;
+    private boolean winner;
 
     PlayAuction(PlayerAgent agent) {
         this.agent = agent;
-        this.status = new AuctionMemory(agent);
-        myTurn = false;
-        done = false;
-        mt = MessageTemplate.and(MessageTemplate.MatchPerformative(
+        this.status = agent.getAuctionMemory();
+        this.myTurn = false;
+        this.done = false;
+        this.winner = false;
+        this.mt = MessageTemplate.and(MessageTemplate.MatchPerformative(
             briscola.common.ACLCodes.ACL_BID_STATUS),
-                                 MessageTemplate.MatchSender(
-                                     agent.getMazziereAID()));
+                                      MessageTemplate.MatchSender(
+                                          agent.getMazziereAID()));
     }
 
     @Override
@@ -86,6 +89,9 @@ public class PlayAuction extends Behaviour {
                     }
 
                     done = last.done;
+                    if (done && last.bestBidder.getAID().equals(myAgent.getAID())) {
+                        winner = true;
+                    }
 
                 } catch (UnreadableException ex) {
                     ex.printStackTrace();
@@ -98,6 +104,12 @@ public class PlayAuction extends Behaviour {
     public boolean done() {
         if (done) {
             agent.say("asta conclusa");
+            if (winner) {
+                myAgent.addBehaviour(new DeclareBriscola(agent));
+                myAgent.addBehaviour(new WaitForBriscola(agent));
+            } else {
+                myAgent.addBehaviour(new WaitForBriscola(agent));
+            }
         }
         return done;
     }

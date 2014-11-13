@@ -3,6 +3,7 @@
 package briscola.behaviours;
 
 import briscola.Player;
+import jade.core.AID;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import java.io.Serializable;
@@ -18,6 +19,7 @@ public class SendMessage extends Behaviour {
     protected String convId = null;
     private String key;
     private String value;
+    private AID aidRcp;
 
     public SendMessage(List<Player> rcp, String content) {
         this.rcp = rcp;
@@ -33,6 +35,13 @@ public class SendMessage extends Behaviour {
 
     public SendMessage(List<Player> rcp, int type, Serializable content) {
         this.rcp = rcp;
+        this.type = type;
+        this.ob = content;
+    }
+
+    public SendMessage(AID rcp, int type, Serializable content) {
+        this.rcp = null;
+        this.aidRcp = rcp;
         this.type = type;
         this.ob = content;
     }
@@ -73,8 +82,14 @@ public class SendMessage extends Behaviour {
     @Override
     public void action() {
         ACLMessage m = new ACLMessage(type);
-        for (Player p : rcp) {
-            m.addReceiver(p.getAID());
+
+        if (aidRcp == null) {
+
+            for (Player p : rcp) {
+                m.addReceiver(p.getAID());
+            }
+        } else {
+            m.addReceiver(aidRcp);
         }
 
         if (key != null) {

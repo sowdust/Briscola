@@ -10,6 +10,9 @@ public class ACLCodes {
     public static final int ACL_BID_STATUS = 300;
     public static final int ACL_BID_PLEASE = 301;
     public static final int ACL_BID_OFFER = 302;
+    public static final int ACL_ASK_BRISCOLA = 303;
+    public static final int ACL_TELL_BRISCOLA = 304;
+    public static final int ACL_COMMUNICATE_BRISCOLA = 305;
     public static final int ACL_ILLEGAL_MOVE = -999;
 
 }

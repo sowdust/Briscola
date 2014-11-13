@@ -10,9 +10,14 @@ package briscola.objects;
 public class Table {
 
     private final Deck deck;
+    private Suit briscola;
 
     public Table() {
         deck = new Deck();
+    }
+
+    public void setBriscola(Suit r) {
+        briscola = r;
     }
 
     public Deck getDeck() {

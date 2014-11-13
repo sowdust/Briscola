@@ -3,6 +3,8 @@
 package briscola;
 
 import briscola.behaviours.mazziere.OpenTable;
+import briscola.objects.Rank;
+import briscola.objects.Suit;
 import briscola.objects.Table;
 import jade.core.AID;
 import jade.domain.DFService;
@@ -69,6 +71,10 @@ public class MazziereAgent extends GeneralAgent {
         return name;
     }
 
+    public void setBriscola(Suit r) {
+        table.setBriscola(r);
+    }
+
     public void addPlayer(AID agente, String name) {
         Player player = new Player(agente, name);
         players.add(player);
@@ -88,7 +94,7 @@ public class MazziereAgent extends GeneralAgent {
     }
 
     public List<AID> getPlayersAID() {
-        List<AID> r = new ArrayList();
+        List<AID> r = new ArrayList<>();
         for (Player p : players) {
             r.add(p.getAID());
         }

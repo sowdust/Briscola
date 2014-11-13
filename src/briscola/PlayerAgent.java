@@ -3,6 +3,7 @@
 package briscola;
 
 import briscola.behaviours.player.Subscribe;
+import briscola.memory.player.AuctionMemory;
 import briscola.objects.Bid;
 import briscola.objects.Hand;
 import jade.core.AID;
@@ -12,6 +13,7 @@ public class PlayerAgent extends GeneralAgent {
 
     private static final long serialVersionUID = 1L;
 
+    private AuctionMemory auctionMemory;
     private boolean visible;
     private Hand myHand;
     //private PlayerGUI gui;
@@ -38,6 +40,13 @@ public class PlayerAgent extends GeneralAgent {
 
     public String getRealName() {
         return name;
+    }
+
+    public AuctionMemory getAuctionMemory() {
+        if (auctionMemory == null) {
+            auctionMemory = new AuctionMemory(this);
+        }
+        return auctionMemory;
     }
 
     public void setPlayers(List<Player> players) {

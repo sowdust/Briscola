@@ -5,6 +5,8 @@ import briscola.PlayerAgent;
 import briscola.objects.Bid;
 import briscola.objects.Card;
 import briscola.objects.Hand;
+import briscola.objects.Suit;
+import static briscola.objects.Suit.SPADES;
 
 public class AuctionMemory {
 
@@ -40,6 +42,10 @@ public class AuctionMemory {
             return new Bid(agent.getPlayer(), true);
         }
         return new Bid(agent.getPlayer(), c.getRank());
+    }
+
+    public Suit computeBriscola() {
+        return SPADES;
     }
 
     public int counter() {

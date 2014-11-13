@@ -26,6 +26,10 @@ public class Card implements Serializable {
         return rank;
     }
 
+    public Suit getSuit() {
+        return suit;
+    }
+
     public int getValue() {
         return rank.getValue();
     }

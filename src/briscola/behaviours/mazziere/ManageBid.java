@@ -125,6 +125,11 @@ public class ManageBid extends Behaviour {
                                             ACL_BID_STATUS, m);
             b.setConvId(AUCTION_CONV_ID + status.getCounter());
             myAgent.addBehaviour(b);
+
+            myAgent.addBehaviour(new AskBriscola(mazziere,
+                                                 status.getBestBidder(),
+                                                 status.getBestBid().rank()));
+
             mazziere.say("Asta conclusa");
             return true;
         } else {
