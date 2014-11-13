@@ -3,6 +3,7 @@
 package briscola;
 
 import briscola.behaviours.player.Subscribe;
+import briscola.objects.Bid;
 import briscola.objects.Hand;
 import jade.core.AID;
 import java.util.List;
@@ -55,7 +56,23 @@ public class PlayerAgent extends GeneralAgent {
         ((PlayerGUI) gui).setHand(hand);
     }
 
+    public Hand getHand() {
+        return this.myHand;
+    }
+
     public AID getMazziereAID() {
         return mazziereAID;
+    }
+
+    public Player getPlayer() {
+        return new Player(getAID(), name);
+    }
+
+    public void addBid(Bid justBid) {
+        //  eventually add Bid to bids history
+        //  (the object auctionMemory can be allargato and its reference stored in PlayerAgent
+        //  and not in its behaviour
+        ((PlayerGUI) gui).addBid(justBid);
+
     }
 }

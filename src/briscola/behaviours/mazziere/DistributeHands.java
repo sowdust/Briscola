@@ -3,7 +3,7 @@ package briscola.behaviours.mazziere;
 import briscola.MazziereAgent;
 import briscola.Player;
 import briscola.behaviours.SendAndWait;
-import static briscola.common.Names.ACL_YOUR_HAND;
+import static briscola.common.ACLCodes.ACL_YOUR_HAND;
 import briscola.objects.Deck;
 import briscola.objects.Hand;
 import jade.core.behaviours.OneShotBehaviour;

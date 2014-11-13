@@ -55,7 +55,7 @@ public class GeneralAgent extends Agent {
      * @param s message to be sent
      */
     public void sendChat(String s) {
-        ACLMessage m = new ACLMessage(briscola.common.Names.ACL_CHAT);
+        ACLMessage m = new ACLMessage(briscola.common.ACLCodes.ACL_CHAT);
         m.setConversationId(getChatID());
         m.setContent(s);
         if (players == null) {
@@ -112,5 +112,10 @@ public class GeneralAgent extends Agent {
         m.setContentObject(content);
         m.setPerformative(type);
         send(m);
+    }
+
+    @Override
+    public String toString() {
+        return name + "[" + getAID() + "]";
     }
 }

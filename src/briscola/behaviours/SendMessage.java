@@ -16,6 +16,8 @@ public class SendMessage extends Behaviour {
     protected String content = null;
     protected Object ob = null;
     protected String convId = null;
+    private String key;
+    private String value;
 
     public SendMessage(List<Player> rcp, String content) {
         this.rcp = rcp;
@@ -31,6 +33,14 @@ public class SendMessage extends Behaviour {
 
     public SendMessage(List<Player> rcp, int type, Serializable content) {
         this.rcp = rcp;
+        this.type = type;
+        this.ob = content;
+    }
+
+    public SendMessage(Player rcp, int type, Serializable content) {
+        List<Player> l = new ArrayList<>();
+        l.add(rcp);
+        this.rcp = l;
         this.type = type;
         this.ob = content;
     }
@@ -51,6 +61,11 @@ public class SendMessage extends Behaviour {
         this.content = content;
     }
 
+    public void addUserDefined(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
     public void setConvId(String convId) {
         this.convId = convId;
     }
@@ -60,6 +75,10 @@ public class SendMessage extends Behaviour {
         ACLMessage m = new ACLMessage(type);
         for (Player p : rcp) {
             m.addReceiver(p.getAID());
+        }
+
+        if (key != null) {
+            m.addUserDefinedParameter(key, value);
         }
 
         if (ob == null) {

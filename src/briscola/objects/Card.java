@@ -22,6 +22,14 @@ public class Card implements Serializable {
         return CARD_IMG_FOLDER + rank.getN() + "-" + suit.getN() + CARD_IMG_EXTENSION;
     }
 
+    public Rank getRank() {
+        return rank;
+    }
+
+    public int getValue() {
+        return rank.getValue();
+    }
+
     @Override
     public String toString() {
         return rank + " " + briscola.common.Names.CARD_OF + " " + suit;

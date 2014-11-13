@@ -1,5 +1,3 @@
-/*
- */
 package briscola;
 
 import jade.core.AID;
@@ -12,25 +10,21 @@ public class Player implements Serializable {
     AID agent;
     String name;
 
-    public Player(AID agent, String name)
-    {
+    public Player(AID agent, String name) {
         this.agent = agent;
         this.name = name;
     }
 
-    public AID getAID()
-    {
+    public AID getAID() {
         return agent;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name + " [" + agent.getName() + "]";
     }
 }

@@ -1,7 +1,6 @@
 package briscola.behaviours.player;
 
 import briscola.PlayerAgent;
-import briscola.behaviours.SendMessage;
 import briscola.objects.Hand;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
@@ -24,7 +23,7 @@ public class ReceiveHand extends Behaviour {
         MessageTemplate info1 = MessageTemplate.MatchSender(
             agent.getMazziereAID());
         MessageTemplate info2 = MessageTemplate.MatchPerformative(
-            briscola.common.Names.ACL_YOUR_HAND);
+            briscola.common.ACLCodes.ACL_YOUR_HAND);
         MessageTemplate info = MessageTemplate.and(info1, info2);
 
         ACLMessage myHandMsg = myAgent.receive(info);
@@ -38,10 +37,12 @@ public class ReceiveHand extends Behaviour {
             }
             //  send confirmation message to mazziere
             ACLMessage confirm = new ACLMessage(
-                briscola.common.Names.ACL_MESSAGE_RECEIVED);
+                briscola.common.ACLCodes.ACL_MESSAGE_RECEIVED);
             confirm.addReceiver(agent.getMazziereAID());
             confirm.setConversationId(myHandMsg.getConversationId());
             myAgent.send(confirm);
+            myAgent.addBehaviour(new PlayAuction(agent));
+            done = true;
 
         } else {
             block();

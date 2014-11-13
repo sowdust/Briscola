@@ -26,18 +26,15 @@ public class BeginGame extends Behaviour {
     private ACLMessage[] confMsg;
     private int received;
 
-    public BeginGame(MazziereAgent mazziere)
-    {
+    public BeginGame(MazziereAgent mazziere) {
         this.mazziere = mazziere;
         this.sent = false;
     }
 
     @Override
-    public void action()
-    {
+    public void action() {
         //  send info to all players
-        if (!sent)
-        {
+        if (!sent) {
 
             //  compute a unique ID as Chat ID
             UUID uniqueKey = UUID.randomUUID();
@@ -45,14 +42,16 @@ public class BeginGame extends Behaviour {
             mazziere.say("Chat id: " + uniqueKey);
             myAgent.addBehaviour(new GetChatMessage(mazziere));
 
-            try
-            {
+            try {
                 //  send players list
-                mazziere.sendMessage(mazziere.getPlayers(), briscola.common.Names.ACL_SEND_PLAYERS, (Serializable) mazziere.getPlayers());
+                mazziere.sendMessage(mazziere.getPlayers(),
+                                     briscola.common.ACLCodes.ACL_SEND_PLAYERS,
+                                     (Serializable) mazziere.getPlayers());
                 //  send chat_id list
-                mazziere.sendMessage(mazziere.getPlayers(), briscola.common.Names.ACL_SEND_CHAT_ID, uniqueKey.toString());
-            } catch (IOException ex)
-            {
+                mazziere.sendMessage(mazziere.getPlayers(),
+                                     briscola.common.ACLCodes.ACL_SEND_CHAT_ID,
+                                     uniqueKey.toString());
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
 
@@ -64,23 +63,21 @@ public class BeginGame extends Behaviour {
         }
 
         // get info from all players
-        for (AID p : mazziere.getPlayersAID())
-        {
-            ACLMessage ms = myAgent.receive(MessageTemplate.and(MessageTemplate.MatchContent(briscola.common.Messages.INFO_RECEIVED), MessageTemplate.MatchSender(p)));
-            if (ms != null)
-            {
+        for (AID p : mazziere.getPlayersAID()) {
+            ACLMessage ms = myAgent.receive(MessageTemplate.and(
+                MessageTemplate.MatchContent(
+                    briscola.common.Messages.INFO_RECEIVED),
+                MessageTemplate.MatchSender(p)));
+            if (ms != null) {
                 confMsg[received++] = ms;
             }
         }
     }
 
     @Override
-    public boolean done()
-    {
-        for (ACLMessage a : confMsg)
-        {
-            if (null == a)
-            {
+    public boolean done() {
+        for (ACLMessage a : confMsg) {
+            if (null == a) {
                 return false;
             }
         }

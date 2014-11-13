@@ -17,16 +17,14 @@ import java.util.UUID;
 public class SendAndWait extends SendMessage {
 
     private int confirmations;
-    /*
-     public SendAndWait(List<Player> rcp, String content)
-     {
-     super(rcp, content);
-     confirmations = 0;
-     convId = UUID.randomUUID().toString();
-     }
-     */
 
     public SendAndWait(List<Player> rcp, int type, Serializable content) {
+        super(rcp, type, content);
+        confirmations = 0;
+        convId = UUID.randomUUID().toString();
+    }
+
+    public SendAndWait(Player rcp, int type, Serializable content) {
         super(rcp, type, content);
         confirmations = 0;
         convId = UUID.randomUUID().toString();
@@ -38,7 +36,7 @@ public class SendAndWait extends SendMessage {
 
         MessageTemplate info1 = MessageTemplate.MatchConversationId(convId);
         MessageTemplate info2 = MessageTemplate.MatchPerformative(
-            briscola.common.Names.ACL_MESSAGE_RECEIVED);
+            briscola.common.ACLCodes.ACL_MESSAGE_RECEIVED);
         MessageTemplate info = MessageTemplate.and(info1, info2);
         ACLMessage confM = myAgent.receive(info);
         if (confM != null) {
@@ -47,7 +45,6 @@ public class SendAndWait extends SendMessage {
         } else {
             block();
         }
-
     }
 
     @Override
