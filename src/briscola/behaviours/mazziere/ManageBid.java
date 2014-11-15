@@ -54,6 +54,8 @@ public class ManageBid extends Behaviour {
 
         matchPerf = MessageTemplate.MatchPerformative(
             briscola.common.ACLCodes.ACL_BID_OFFER);
+        mazziere.sendChat("Benvenuti a tutti e buon divertimento.");
+
     }
 
     @Override
@@ -115,6 +117,7 @@ public class ManageBid extends Behaviour {
     @Override
     public boolean done() {
         if (status.done()) {
+            next = null;
             AuctionStatusMessage m = new AuctionStatusMessage(
                 status.getBestBid(),
                 status.getBestBidder(),

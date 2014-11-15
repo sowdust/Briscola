@@ -3,7 +3,6 @@
 package briscola;
 
 import briscola.behaviours.mazziere.OpenTable;
-import briscola.objects.Rank;
 import briscola.objects.Suit;
 import briscola.objects.Table;
 import jade.core.AID;

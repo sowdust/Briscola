@@ -26,6 +26,10 @@ public class AuctionMemory {
         bestBid = justBid;
     }
 
+    public Bid getBest() {
+        return bestBid;
+    }
+
     public void increaseCounter() {
         ++counter;
     }

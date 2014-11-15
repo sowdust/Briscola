@@ -53,7 +53,7 @@ public class BeginGame extends Behaviour {
 
         if (infoChatMsg != null) {
             player.setChatID(infoChatMsg.getContent());
-            player.say("Ricevute info chat: " + infoChatMsg.getContent());
+            player.say("Ricevute info chat");
             myAgent.addBehaviour(new GetChatMessage(player));
             ++received;
         } else {
@@ -67,7 +67,6 @@ public class BeginGame extends Behaviour {
             //  send confirm : we have received all info
             player.sendMessage(player.getMazziereAID(), ACLMessage.CONFIRM,
                                briscola.common.Messages.INFO_RECEIVED);
-            player.say("aggiungo receivehand");
             myAgent.addBehaviour(new ReceiveHand(player));
             return true;
         }

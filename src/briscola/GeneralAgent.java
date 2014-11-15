@@ -1,5 +1,3 @@
-/*
- */
 package briscola;
 
 import jade.core.AID;
@@ -68,24 +66,22 @@ public class GeneralAgent extends Agent {
         }
     }
 
-    public void sendMessage(List<Player> rcp, int type, String content) {
-        ACLMessage m = new ACLMessage(type);
-        for (Player p : rcp) {
-            m.addReceiver(p.getAID());
-        }
-        m.setContent(content);
-        m.setPerformative(type);
-        send(m);
-    }
-
-    public void sendMessage(Player rcp, int type, String content) {
-        ACLMessage m = new ACLMessage(type);
-        m.addReceiver(rcp.getAID());
-        m.setContent(content);
-        m.setPerformative(type);
-        send(m);
-    }
-
+//    public void sendMessage(List<Player> rcp, int type, String content) {
+//        ACLMessage m = new ACLMessage(type);
+//        for (Player p : rcp) {
+//            m.addReceiver(p.getAID());
+//        }
+//        m.setContent(content);
+//        m.setPerformative(type);
+//        send(m);
+//    }
+//    public void sendMessage(Player rcp, int type, String content) {
+//        ACLMessage m = new ACLMessage(type);
+//        m.addReceiver(rcp.getAID());
+//        m.setContent(content);
+//        m.setPerformative(type);
+//        send(m);
+//    }
     public void sendMessage(AID rcp, int type, String content) {
         ACLMessage m = new ACLMessage(type);
         m.addReceiver(rcp);
@@ -105,15 +101,14 @@ public class GeneralAgent extends Agent {
         send(m);
     }
 
-    public void sendMessage(Player rcp, int type, Serializable content) throws
-        IOException {
-        ACLMessage m = new ACLMessage(type);
-        m.addReceiver(rcp.getAID());
-        m.setContentObject(content);
-        m.setPerformative(type);
-        send(m);
-    }
-
+//    public void sendMessage(Player rcp, int type, Serializable content) throws
+//        IOException {
+//        ACLMessage m = new ACLMessage(type);
+//        m.addReceiver(rcp.getAID());
+//        m.setContentObject(content);
+//        m.setPerformative(type);
+//        send(m);
+//    }
     @Override
     public String toString() {
         return name + "[" + getAID() + "]";

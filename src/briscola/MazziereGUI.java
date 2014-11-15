@@ -55,6 +55,7 @@ public class MazziereGUI extends GeneralGUI {
         playersList = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Mazziere");
 
         jPanel1.setToolTipText("");
         jPanel1.setName("Mazziere"); // NOI18N

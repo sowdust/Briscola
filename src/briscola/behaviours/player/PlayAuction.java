@@ -58,8 +58,7 @@ public class PlayAuction extends Behaviour {
             //  WHEN RECEIVING BIDS
             finalMt = MessageTemplate.and(MessageTemplate.MatchConversationId(
                 AUCTION_CONV_ID + (status.counter())), mt);
-            agent.say("waiting for offer # "
-                + AUCTION_CONV_ID + (status.counter()));
+
             ACLMessage statusMsg = myAgent.receive(finalMt);
             if (statusMsg == null) {
                 block();
@@ -67,13 +66,21 @@ public class PlayAuction extends Behaviour {
                 try {
 
                     AuctionStatusMessage last = (AuctionStatusMessage) statusMsg.getContentObject();
-                    agent.say(
-                        "ricevuta: " + last.justBid + ". Next: " + last.next);
+                    String s;
+                    if (last.justBid == null) {
+                        s = "Comincia l'asta. Tocca a " + last.next.getName();
 
-                    if (last.justBid != null) {
+                    } else {
+
+                        s = "Offerta " + last.justBid + ".";
+
+                        if (last.next != null) {
+                            s += " Tocca a: " + last.next.getName();
+                        }
+
                         agent.addBid(last.justBid);
                     }
-
+                    agent.say(s);
                     status.increaseCounter();
 
                     /**
@@ -83,7 +90,8 @@ public class PlayAuction extends Behaviour {
                         status.setBest(last.justBid);
                     }
 
-                    if (last.next.getAID().equals(myAgent.getAID())) {
+                    if (last.next != null && last.next.getAID().equals(
+                        myAgent.getAID())) {
 
                         myTurn = true;
                     }
@@ -103,7 +111,7 @@ public class PlayAuction extends Behaviour {
     @Override
     public boolean done() {
         if (done) {
-            agent.say("asta conclusa");
+            agent.say("Asta conclusa");
             if (winner) {
                 myAgent.addBehaviour(new DeclareBriscola(agent));
                 myAgent.addBehaviour(new WaitForBriscola(agent));

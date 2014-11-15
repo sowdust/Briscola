@@ -54,7 +54,6 @@ public class BeginGame extends Behaviour {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-
             mazziere.say("Inviate info giocatori");
             sent = true;
             confMsg = new ACLMessage[5];

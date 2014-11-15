@@ -33,6 +33,10 @@ public class Bid implements Serializable {
         return rank.getValue();
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     @Override
     public String toString() {
         if (passo) {

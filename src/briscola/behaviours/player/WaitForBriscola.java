@@ -27,12 +27,12 @@ public class WaitForBriscola extends Behaviour {
         MessageTemplate m = MessageTemplate.and(mt, mu);
         ACLMessage msg = myAgent.receive(m);
         if (msg == null) {
-            player.say("aspettando la briscola..");
             block();
         } else {
             try {
                 Suit r = (Suit) msg.getContentObject();
-                player.say("La briscola è " + r);
+                player.say(
+                    "Il giaguaro è " + player.getAuctionMemory().getBest().getPlayer().getName() + "; ha chiamato " + player.getAuctionMemory().getBest().rank() + " " + r);
                 done = true;
             } catch (UnreadableException ex) {
                 ex.printStackTrace();

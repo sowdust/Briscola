@@ -17,13 +17,11 @@ public class GeneralGUI extends javax.swing.JFrame {
     protected javax.swing.JTextPane chatPanel;
     protected javax.swing.JTextArea chatTextArea;
 
-    protected void say(String s)
-    {
+    protected void say(String s) {
         logTextArea.append(s + "\n");
     }
 
-    public void appendChat(String name, String s, int color)
-    {
+    public void appendChat(String name, String s, int color) {
         StyledDocument doc = chatPanel.getStyledDocument();
         Color[] colors = new Color[7];
         colors[0] = Color.BLUE;
@@ -39,18 +37,18 @@ public class GeneralGUI extends javax.swing.JFrame {
         //StyleConstants.setBackground(keyWord, Color.YELLOW);
         StyleConstants.setBold(keyWord, true);
 //  Add some text
-        try
-        {
-            ///doc.insertString(0, "Start of text\n", null);
-            doc.insertString(doc.getLength(), "\n" + name + "> " + s, keyWord);
-        } catch (Exception e)
-        {
+        try {
+            doc.insertString(doc.getLength(), "" + name + ">\t" + s, keyWord);
+            // Scroll the text
+            final int length = chatPanel.getText().length();
+            chatPanel.setCaretPosition(length);
+
+        } catch (Exception e) {
             System.out.println(e);
         }
     }
 
-    protected void addPlayer(Player player)
-    {
+    protected void addPlayer(Player player) {
         DefaultListModel<Player> l
             = (DefaultListModel<Player>) playersList.getModel();
         l.addElement(player);

@@ -72,7 +72,6 @@ public class Subscribe extends Behaviour {
             confirmMsg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
             myAgent.send(confirmMsg);
             state = 2;
-            player.say("Reply spedita. State " + state);
         } catch (Exception e) {
             e.printStackTrace();
             state = 0;
@@ -80,13 +79,13 @@ public class Subscribe extends Behaviour {
     }
 
     public void getReply(ACLMessage responseMsg, ACLMessage confirmMsg) {
-        player.say("Cercando risposte...");
         String content = myAgent.getName() + briscola.common.Messages.CONFIRM_TABLE;
 
         MessageTemplate confirmation = MessageTemplate.MatchContent(content);
         confirmMsg = myAgent.receive(confirmation);
         if (confirmMsg != null) {
-            player.say(player.getAID().getName() + " è definitivamente iscritto");
+            player.say(
+                "Iscritto alla partita col mazziere " + confirmMsg.getSender().getName());
             player.setMazziereAID(confirmMsg.getSender());
             state = 3;
         } else {
@@ -101,7 +100,9 @@ public class Subscribe extends Behaviour {
         switch (state) {
             case 0:
                 if (findBeh == null) {
-                    findBeh = new FindTable(myAgent, briscola.common.Names.RETRY_EVERY, state);
+                    findBeh = new FindTable(myAgent,
+                                            briscola.common.Names.RETRY_EVERY,
+                                            state);
                     player.addBehaviour(findBeh);
                 }
                 break;
@@ -127,7 +128,8 @@ public class Subscribe extends Behaviour {
         public FindTable(Agent a, long period, Short state) {
             super(a, period);
             this.state = state;
-            response = MessageTemplate.MatchContent(briscola.common.Messages.YOU_CAN_PLAY);
+            response = MessageTemplate.MatchContent(
+                briscola.common.Messages.YOU_CAN_PLAY);
         }
 
         @Override
@@ -140,12 +142,12 @@ public class Subscribe extends Behaviour {
 
             responseMsg = myAgent.receive(response);
             if (responseMsg != null) {
-                player.say(player.getAID().getName() + " ha trovato un tavolo libero");
+                player.say("Trovato un tavolo libero");
                 state = 1;
                 sendReply(responseMsg, confirmMsg);
                 this.stop();
             } else {
-                player.say(player.getAID().getName() + " nessun tavolo libero. Riprovo.");
+                player.say(" Nessun tavolo libero. Riprovo...");
                 block();
             }
 
