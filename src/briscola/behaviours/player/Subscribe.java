@@ -147,7 +147,7 @@ public class Subscribe extends Behaviour {
                 sendReply(responseMsg, confirmMsg);
                 this.stop();
             } else {
-                player.say(" Nessun tavolo libero. Riprovo...");
+                player.say("Nessun tavolo libero. Riprovo...");
                 block();
             }
 

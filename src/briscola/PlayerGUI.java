@@ -94,11 +94,16 @@ public class PlayerGUI extends GeneralGUI {
         playersList.setModel(new javax.swing.DefaultListModel<Player>());
         playersPane.setViewportView(playersList);
 
+        chatPanel.setEditable(false);
+        chatPanel.setBackground(new java.awt.Color(51, 51, 51));
         chatPanel.setBorder(null);
+        chatPanel.setForeground(new java.awt.Color(204, 204, 204));
         chatPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         chatContainerPane.setViewportView(chatPanel);
 
+        chatTextArea.setBackground(new java.awt.Color(51, 51, 51));
         chatTextArea.setColumns(20);
+        chatTextArea.setForeground(new java.awt.Color(204, 204, 204));
         chatTextArea.setRows(5);
         chatTextArea.setBorder(null);
         chatTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
