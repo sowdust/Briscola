@@ -5,6 +5,7 @@ import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 public class GeneralAgent extends Agent {
@@ -99,6 +100,10 @@ public class GeneralAgent extends Agent {
         m.setContentObject(content);
         m.setPerformative(type);
         send(m);
+    }
+
+    public List<Player> getPlayers() {
+        return Collections.unmodifiableList(players);
     }
 
 //    public void sendMessage(Player rcp, int type, Serializable content) throws

@@ -88,10 +88,6 @@ public class MazziereAgent extends GeneralAgent {
         super.takeDown();
     }
 
-    public List<Player> getPlayers() {
-        return players;
-    }
-
     public List<AID> getPlayersAID() {
         List<AID> r = new ArrayList<>();
         for (Player p : players) {
@@ -110,6 +106,11 @@ public class MazziereAgent extends GeneralAgent {
 
     public Table getTable() {
         return table;
+    }
+
+    public void setGiaguaro(Player bestBidder) {
+        table.setGiaguaro(bestBidder);
+
     }
 
 }

@@ -7,16 +7,16 @@ public class Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    AID agent;
+    AID agentID;
     String name;
 
     public Player(AID agent, String name) {
-        this.agent = agent;
+        this.agentID = agent;
         this.name = name;
     }
 
     public AID getAID() {
-        return agent;
+        return agentID;
     }
 
     public String getName() {
@@ -25,6 +25,10 @@ public class Player implements Serializable {
 
     @Override
     public String toString() {
-        return name + " [" + agent.getName() + "]";
+        return name + " [" + agentID.getName() + "]";
+    }
+
+    public boolean equals(Player p) {
+        return p.name.equals(name) && p.getAID().equals(agentID);
     }
 }

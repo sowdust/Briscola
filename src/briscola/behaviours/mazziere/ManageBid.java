@@ -134,6 +134,7 @@ public class ManageBid extends Behaviour {
                                                  status.getBestBid().rank()));
 
             mazziere.say("Asta conclusa");
+            mazziere.setGiaguaro(status.getBestBidder());
             return true;
         } else {
             return false;

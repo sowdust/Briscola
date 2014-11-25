@@ -64,6 +64,7 @@ public class AskBriscola extends Behaviour {
                 try {
                     briscolaSuit = (Suit) briscolaM.getContentObject();
                     mazziere.setBriscola(briscolaSuit);
+                    mazziere.say("Ricevuta briscola: " + briscolaSuit);
                     received = true;
 
                 } catch (UnreadableException ex) {
@@ -87,7 +88,11 @@ public class AskBriscola extends Behaviour {
 
     @Override
     public boolean done() {
-        return done;
+        if (done) {
+            myAgent.addBehaviour(new PlayGame(mazziere));
+            return true;
+        }
+        return false;
     }
 
 }
