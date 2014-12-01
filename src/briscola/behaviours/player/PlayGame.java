@@ -50,7 +50,8 @@ public class PlayGame extends Behaviour {
                 try {
                     TurnStatusMessage msg = (TurnStatusMessage) confM.getContentObject();
                     status = new TurnStatus(players, msg.next);
-                    agent.say("Primo a giocare: " + msg.next);
+                    agent.say("Inizia: " + msg.next.getName());
+                    agent.gui().initMano(status.getMano(), msg.next);
                     if (status.getNext().getAID().equals(agent.getAID())) {
                         myAgent.addBehaviour(new SendGiocata());
                     }
@@ -62,24 +63,24 @@ public class PlayGame extends Behaviour {
             }
         } else {
 
+            if (status != null)
+                mano = status.getMano();
+
             //  se non siamo in attesa delle giocate del turno
             if (receiveGiocate == null) {
                 receiveGiocate = new ReceiveGiocate();
                 myAgent.addBehaviour(receiveGiocate);
+                block();
             }
 
+            //  se la mano è finita
             if (status.getCounter() == 5) {
                 agent.say("Mano terminata");
 
                 myAgent.addBehaviour(new ReceiveNext());
                 receiveGiocate = null;
                 block();
-
             }
-
-            if (status != null)
-                mano = status.getMano();
-
         }
     }
 
@@ -115,6 +116,7 @@ public class PlayGame extends Behaviour {
                     TurnStatusMessage msg = (TurnStatusMessage) confM.getContentObject();
                     agent.say(msg.toString());
                     status.addGiocata(msg.justPlayer, msg.justCard, msg.mano);
+                    agent.addGiocata(msg.counter, msg.justPlayer, msg.justCard);
                     status.setNext(msg.next);
                     //agent.say("[ Next ]\t " + status.getNext());
                     ++counter;
@@ -178,9 +180,10 @@ public class PlayGame extends Behaviour {
                 try {
                     TurnStatusMessage msg = (TurnStatusMessage) confM.getContentObject();
                     agent.say(
-                        "Primo a giocare turno #" + (status.getMano() + 1) + ": " + msg.next);
+                        "Mano #" + (status.getMano() + 1) + " - gioca " + msg.next.getName());
 
                     status.initMano(msg.next);
+                    agent.gui().initMano(status.getMano(), status.getNext());
                     if (status.getNext().getAID().equals(agent.getAID())) {
                         myAgent.addBehaviour(new SendGiocata());
                     }

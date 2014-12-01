@@ -5,6 +5,7 @@ package briscola;
 import briscola.behaviours.player.Subscribe;
 import briscola.memory.player.AuctionMemory;
 import briscola.objects.Bid;
+import briscola.objects.Card;
 import briscola.objects.Hand;
 import jade.core.AID;
 import java.util.List;
@@ -49,6 +50,10 @@ public class PlayerAgent extends GeneralAgent {
         return auctionMemory;
     }
 
+    public PlayerGUI gui() {
+        return (PlayerGUI) gui;
+    }
+
     public void setPlayers(List<Player> players) {
         this.players = players;
         for (Player p : players) {
@@ -83,5 +88,9 @@ public class PlayerAgent extends GeneralAgent {
         //  and not in its behaviour
         ((PlayerGUI) gui).addBid(justBid);
 
+    }
+
+    public void addGiocata(int counter, Player justPlayer, Card justCard) {
+        ((PlayerGUI) gui).addGiocata(counter, justPlayer, justCard);
     }
 }

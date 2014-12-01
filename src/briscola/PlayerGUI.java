@@ -3,6 +3,7 @@
 package briscola;
 
 import briscola.objects.Bid;
+import briscola.objects.Card;
 import briscola.objects.Hand;
 import java.awt.event.KeyEvent;
 import javax.swing.DefaultListModel;
@@ -79,6 +80,8 @@ public class PlayerGUI extends GeneralGUI {
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         bidsList = new javax.swing.JList();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        listGiocate = new javax.swing.JList();
         logPane = new javax.swing.JScrollPane();
         logTextArea = new javax.swing.JTextArea();
         nameLabel = new javax.swing.JLabel();
@@ -138,6 +141,9 @@ public class PlayerGUI extends GeneralGUI {
         );
         jScrollPane1.setViewportView(bidsList);
 
+        listGiocate.setModel(new javax.swing.DefaultListModel<String>());
+        jScrollPane2.setViewportView(listGiocate);
+
         javax.swing.GroupLayout gamePaneLayout = new javax.swing.GroupLayout(gamePane);
         gamePane.setLayout(gamePaneLayout);
         gamePaneLayout.setHorizontalGroup(
@@ -167,21 +173,26 @@ public class PlayerGUI extends GeneralGUI {
                             .addComponent(chatTextAreaPane, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
                             .addComponent(chatContainerPane))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2))))
                 .addContainerGap(97, Short.MAX_VALUE))
         );
         gamePaneLayout.setVerticalGroup(
             gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, gamePaneLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(gamePaneLayout.createSequentialGroup()
                         .addComponent(playersPane, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(chatContainerPane, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chatTextAreaPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(chatContainerPane, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chatTextAreaPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(gamePaneLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2)))
                 .addGap(38, 38, 38)
                 .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
@@ -259,7 +270,9 @@ public class PlayerGUI extends GeneralGUI {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JList listGiocate;
     private javax.swing.JScrollPane logPane;
     //protected javax.swing.JTextArea logTextArea;
     private javax.swing.JLabel nameLabel;
@@ -268,4 +281,17 @@ public class PlayerGUI extends GeneralGUI {
     // End of variables declaration//GEN-END:variables
 
     protected JLabel[] cardLabels;
+
+    void addGiocata(int counter, Player justPlayer, Card justCard) {
+        DefaultListModel<String> l
+            = (DefaultListModel<String>) listGiocate.getModel();
+        l.addElement(
+            "[" + counter + " ] " + justPlayer.getName() + ": " + justCard);
+    }
+
+    public void initMano(int counter, Player next) {
+        DefaultListModel<String> l
+            = (DefaultListModel<String>) listGiocate.getModel();
+        l.addElement("Mano #" + (counter + 1));
+    }
 }
