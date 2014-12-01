@@ -20,7 +20,7 @@ public class GiocataMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "[" + mano + " # " + counter + 1
+        return "[" + mano + " # " + (counter + 1)
             + "]\t" + player.getName() + "\t " + card;
     }
 

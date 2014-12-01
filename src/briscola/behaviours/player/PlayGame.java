@@ -154,7 +154,7 @@ public class PlayGame extends Behaviour {
                 gMsg.setContentObject(g);
                 gMsg.addReceiver(agent.getMazziereAID());
                 myAgent.send(gMsg);
-                agent.say("*" + g);
+                agent.say("* Gioco" + g);
                 ++lastPlayed;
 
             } catch (IOException ex) {
