@@ -50,7 +50,26 @@ public class Names {
             "Alfredo",
             "Attilio",
             "Giacomo",
-            "Gino"
+            "Gino",
+            "Agata",
+            "Agnese",
+            "Adriana",
+            "Antonella",
+            "Diocleziano",
+            "Dante",
+            "Dionisio",
+            "Dianora",
+            "Druina",
+            "Domitilla",
+            "Omero",
+            "Nazzareno",
+            "Nicoletta",
+            "Ombretta",
+            "Noemi",
+            "Osvaldo",
+            "Odilia",
+            "Ofelia",
+            "Ottilia"
         };
 
     public static String randomName() {

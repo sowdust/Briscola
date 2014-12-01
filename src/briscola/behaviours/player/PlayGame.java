@@ -23,12 +23,12 @@ public class PlayGame extends Behaviour {
     private int lastPlayed;
     private ReceiveGiocate receiveGiocate;
 
-    private int state;
+    private int mano;
 
     public PlayGame(PlayerAgent agent) {
         this.agent = agent;
         this.players = agent.getPlayers();
-        this.state = 0;
+        this.mano = -1;
         this.lastPlayed = -1;
         this.receiveGiocate = null;
 
@@ -53,11 +53,6 @@ public class PlayGame extends Behaviour {
                     agent.say("Primo a giocare: " + msg.next);
                     if (status.getNext().getAID().equals(agent.getAID())) {
                         myAgent.addBehaviour(new SendGiocata());
-                        System.out.println(
-                            agent + " sono il prossimo e aggiungo il behav");
-                    } else {
-                        System.out.println(
-                            agent + " non sono il prossimo che è invece " + status.getNext());
                     }
                 } catch (UnreadableException ex) {
                     ex.printStackTrace();
@@ -65,20 +60,33 @@ public class PlayGame extends Behaviour {
             } else {
                 block();
             }
-        }
+        } else {
 
-        //  se non siamo in attesa delle giocate del turno
-        if (receiveGiocate == null) {
-            receiveGiocate = new ReceiveGiocate();
-            myAgent.addBehaviour(receiveGiocate);
+            //  se non siamo in attesa delle giocate del turno
+            if (receiveGiocate == null) {
+                receiveGiocate = new ReceiveGiocate();
+                myAgent.addBehaviour(receiveGiocate);
+            }
+
+            if (status.getCounter() == 5) {
+                agent.say("Mano terminata");
+
+                myAgent.addBehaviour(new ReceiveNext());
+                receiveGiocate = null;
+                block();
+
+            }
+
+            if (status != null)
+                mano = status.getMano();
+
         }
     }
 
     @Override
     public boolean done() {
 
-        block();
-        return false;
+        return mano == 8;
 
     }
 
@@ -105,12 +113,13 @@ public class PlayGame extends Behaviour {
             if (confM != null) {
                 try {
                     TurnStatusMessage msg = (TurnStatusMessage) confM.getContentObject();
-                    agent.say("Ricevuta giocata: " + msg);
+                    agent.say(msg.toString());
                     status.addGiocata(msg.justPlayer, msg.justCard, msg.mano);
                     status.setNext(msg.next);
-                    agent.say("Next now: " + status.getNext());
+                    //agent.say("[ Next ]\t " + status.getNext());
                     ++counter;
-                    if (status.getNext().getAID().equals(agent.getAID()) && status.getMano() > lastPlayed) {
+                    if (/*status.getCounter() < 5 &&*/status.getNext() != null && status.getNext().getAID().equals(
+                            agent.getAID()) && status.getMano() > lastPlayed) {
                         myAgent.addBehaviour(new SendGiocata());
                     }
                 } catch (UnreadableException ex) {
@@ -143,14 +152,51 @@ public class PlayGame extends Behaviour {
                 gMsg.setContentObject(g);
                 gMsg.addReceiver(agent.getMazziereAID());
                 myAgent.send(gMsg);
-                agent.say("Gioco " + g);
+                agent.say("*" + g);
                 ++lastPlayed;
-                System.out.println(g);
 
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
             block();
         }
+    }
+
+    class ReceiveNext extends Behaviour {
+
+        ACLMessage confM = null;
+
+        @Override
+        public void action() {
+            MessageTemplate info1 = MessageTemplate.MatchSender(
+                agent.getMazziereAID());
+            MessageTemplate info2 = MessageTemplate.MatchPerformative(
+                briscola.common.ACLCodes.ACL_TELL_FIRST_TURN);
+            MessageTemplate info = MessageTemplate.and(info1, info2);
+            confM = myAgent.receive(info);
+            if (confM != null) {
+                try {
+                    TurnStatusMessage msg = (TurnStatusMessage) confM.getContentObject();
+                    agent.say(
+                        "Primo a giocare turno #" + (status.getMano() + 1) + ": " + msg.next);
+
+                    status.initMano(msg.next);
+                    if (status.getNext().getAID().equals(agent.getAID())) {
+                        myAgent.addBehaviour(new SendGiocata());
+                    }
+                    receiveGiocate = null;
+                } catch (UnreadableException ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                block();
+            }
+        }
+
+        @Override
+        public boolean done() {
+            return confM != null;
+        }
+
     }
 }

@@ -24,9 +24,9 @@ public class TurnStatusMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "[ " + mano + "-" + counter + " ]"
-            + justPlayer + " has just played " + justCard + " "
-            + "Next: " + next;
+        return "[" + mano + " # " + counter + "] \t"
+            + justPlayer.getName() + " \t" + justCard + "\t"
+            + "Next: " + next.getName();
     }
 
 }

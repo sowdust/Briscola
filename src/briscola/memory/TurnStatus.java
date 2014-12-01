@@ -21,9 +21,17 @@ public class TurnStatus {
 
     public TurnStatus(List<Player> players, Player first) {
         this.players = players;
-        this.giocate = new ArrayList<>(5);
-        this.counter = new int[5];
+        this.giocate = new ArrayList<>();
+        this.counter = new int[8];
         this.mano = -1;
+        this.giocate.add(new Mano(0));
+        this.giocate.add(new Mano(1));
+        this.giocate.add(new Mano(2));
+        this.giocate.add(new Mano(3));
+        this.giocate.add(new Mano(4));
+        this.giocate.add(new Mano(5));
+        this.giocate.add(new Mano(6));
+        this.giocate.add(new Mano(7));
 
         for (int i = 0; i < players.size(); ++i) {
             if (players.get(i).getAID().equals(first.getAID())) {
@@ -31,16 +39,32 @@ public class TurnStatus {
                 break;
             }
         }
-        initMano();
+        initMano(next);
     }
 
-    public void initMano() {
+    public boolean initMano(Player p) {
+        for (int i = 0; i < players.size(); ++i) {
+            if (p.getAID().equals(players.get(i).getAID())) {
+                return initMano(i);
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
+    public boolean initMano(int next) {
+        if (mano == 7) {
+            return false;
+        }
+        this.next = next;
         ++mano;
-        this.giocate.add(new Mano(mano));
         this.counter[mano] = 0;
+        return true;
     }
 
     public synchronized Player getNext() {
+        if (next < 0) {
+            return null;
+        }
         if (next >= players.size()) {
             throw new RuntimeException();
         }
@@ -68,7 +92,8 @@ public class TurnStatus {
         }
         giocate.get(mano).add(player, card);
         ++counter[mano];
-        if (player.getAID().equals(players.get(next).getAID())) {
+        if (counter[mano] < 5 && player.getAID().equals(
+            players.get(next).getAID())) {
             computeNext();
         }
     }
@@ -80,15 +105,18 @@ public class TurnStatus {
                 next = (next + i++) % 5;
             } while (giocate.get(mano).get(players.get(next)) != null && i < 5);
         } else {
-            System.out.println("Hanno già giocato tutti");
             next = -1;
         }
     }
 
     public synchronized void setNext(Player next) {
-        for (int i = 0; i < players.size(); ++i) {
-            if (players.get(i).getAID().equals(next.getAID())) {
-                this.next = i;
+        if (next == null) {
+            this.next = -1;
+        } else {
+            for (int i = 0; i < players.size(); ++i) {
+                if (players.get(i).getAID().equals(next.getAID())) {
+                    this.next = i;
+                }
             }
         }
     }

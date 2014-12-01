@@ -2,7 +2,6 @@ package briscola.behaviours.mazziere;
 
 import briscola.MazziereAgent;
 import briscola.Player;
-import briscola.behaviours.SendAndWait;
 import briscola.behaviours.SendMessage;
 import static briscola.common.ACLCodes.ACL_BOUNCE_GIOCATA;
 import static briscola.common.ACLCodes.ACL_TELL_FIRST_TURN;
@@ -79,8 +78,26 @@ public class PlayGame extends Behaviour {
 
 //  in case the turn has finished, communicate who scores
         if (status.getCounter() == 5) {
+            mazziere.say("Finito turno " + status.getMano());
+            mazziere.say("A questo punto dovrei calcolare chi prende ma... ");
+            Player prossimo = players.get(0);
 
-            // if the game is finished, finish it!
+            //  se la partita è ancora in corso
+            if (status.initMano(prossimo)) {
+                TurnStatusMessage msg = new TurnStatusMessage(0,
+                                                              status.getMano(),
+                                                              null, null,
+                                                              prossimo);
+                myAgent.addBehaviour(new SendMessage(players,
+                                                     ACL_TELL_FIRST_TURN,
+                                                     msg));
+                manageTurn = new ManageTurn();
+                myAgent.addBehaviour(manageTurn);
+
+            } else {
+                mazziere.say("Partita conclusa");
+                done = true;
+            }
         }
 
         //  otherwise stay waiting for messages to update turn status
@@ -88,7 +105,6 @@ public class PlayGame extends Behaviour {
 
     @Override
     public boolean done() {
-        block();
         return done;
     }
 
@@ -139,13 +155,14 @@ public class PlayGame extends Behaviour {
                     ex.printStackTrace();
                 }
             } else {
-                block();
                 mazziere.say("attendendo la giocata di " + status.getNext());
+                block();
             }
         }
 
         @Override
         public boolean done() {
+            //System.out.println("waiting for " + player);
             return received;
         }
 
