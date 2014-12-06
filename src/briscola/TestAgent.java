@@ -7,6 +7,7 @@ import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jess.*;
 
 /* SULLA RICEZIONE MESSAGGI BLOCCANTI
  blockingReceive() methods actually blocks the agent thread:
@@ -17,6 +18,7 @@ import jade.lang.acl.MessageTemplate;
 public class TestAgent extends Agent {
 
     private String argomento;
+    private String fileName = "/home/mat/school/Tesi/src/briscola/reasoner/test.clp";
 
     //  inizializzazione
     @Override
@@ -36,6 +38,17 @@ public class TestAgent extends Agent {
             System.out.println("Me ne dovrei andare.");
             doDelete();
         }
+
+        System.out.println("Eseguendo JESS file...");
+        Rete r = new Rete();
+        try {
+            r.batch(fileName);
+            r.reset();
+            r.run();
+        } catch (JessException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     //  in uscita
@@ -65,7 +78,8 @@ public class TestAgent extends Agent {
 
         @Override
         public void action() {
-            MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
+            MessageTemplate mt = MessageTemplate.MatchPerformative(
+                ACLMessage.CFP);
             // riceve solo il primo messaggio (se esiste) che rispetta il template mt.
             // Ignora gli eventuali altri
             ACLMessage msg = myAgent.receive(mt);

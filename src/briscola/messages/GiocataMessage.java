@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 public class GiocataMessage implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     public Player player;
     public Card card;
     public int counter;

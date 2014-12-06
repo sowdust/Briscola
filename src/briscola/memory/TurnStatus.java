@@ -24,14 +24,10 @@ public class TurnStatus {
         this.giocate = new ArrayList<>();
         this.counter = new int[8];
         this.mano = -1;
-        this.giocate.add(new Mano(0));
-        this.giocate.add(new Mano(1));
-        this.giocate.add(new Mano(2));
-        this.giocate.add(new Mano(3));
-        this.giocate.add(new Mano(4));
-        this.giocate.add(new Mano(5));
-        this.giocate.add(new Mano(6));
-        this.giocate.add(new Mano(7));
+
+        for (int i = 0; i < 8; ++i) {
+            this.giocate.add(new Mano(i));
+        }
 
         for (int i = 0; i < players.size(); ++i) {
             if (players.get(i).getAID().equals(first.getAID())) {
