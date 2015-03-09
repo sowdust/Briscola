@@ -82,6 +82,10 @@ public class TurnStatus {
         return mano;
     }
 
+    public Mano getCurrentMano() {
+        return giocate.get(mano);
+    }
+
     public void addGiocata(Player player, Card card, int mano) {
         if (counter[mano] >= 5) {
             throw new IllegalArgumentException("Già 5 giocate");
@@ -117,13 +121,17 @@ public class TurnStatus {
         }
     }
 
-    class Mano {
+    public class Mano {
 
-        private HashMap<AID, Card> giocate;
-        private int id;
+        private final int id;
+        private final HashMap<AID, Card> giocate;
+        //private final HashMap<Card, Player> giocatori;
+        //private List<Card> carteGiocate;
 
         Mano(int id) {
             this.giocate = new HashMap<>();
+            //this.giocatori = new HashMap<>();
+            //this.carteGiocate = new LinkedList<>();
             this.id = id;
         }
 
@@ -132,12 +140,18 @@ public class TurnStatus {
                 throw new IllegalArgumentException(p + " ha già giocato");
             }
             giocate.put(p.getAID(), c);
+            //giocatori.put(c, p);
+            //carteGiocate.add(c);
         }
 
         public Card get(Player p) {
             return giocate.get(p);
         }
 
+        /*
+         public List<Card> getCarteGiocate() {
+         return null;
+         }*/
     }
 
 }

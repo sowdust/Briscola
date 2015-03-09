@@ -9,6 +9,8 @@ import briscola.objects.Card;
 import briscola.objects.Hand;
 import jade.core.AID;
 import java.util.List;
+import jess.JessException;
+import jess.Rete;
 
 public class PlayerAgent extends GeneralAgent {
 
@@ -17,8 +19,9 @@ public class PlayerAgent extends GeneralAgent {
     private AuctionMemory auctionMemory;
     private boolean visible;
     private Hand myHand;
-    //private PlayerGUI gui;
+    private static final String rulesFile = "/home/mat/school/Tesi/src/briscola/reasoner/common.clp";
 
+    //private PlayerGUI gui;
     @Override
     protected void setup() {
 
@@ -30,6 +33,15 @@ public class PlayerAgent extends GeneralAgent {
         } else {
             visible = false;
             name = briscola.common.Names.randomName();
+        }
+
+        //  SETTING UP THE RETE INSTANCE FOR JESS RULE PROCESSING
+        rete = new Rete();
+        try {
+            rete.batch(rulesFile);
+            rete.reset();
+        } catch (JessException ex) {
+            ex.printStackTrace();
         }
 
         gui = new PlayerGUI(this);

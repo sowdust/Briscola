@@ -79,7 +79,9 @@ public class PlayGame extends Behaviour {
 //  in case the turn has finished, communicate who scores
         if (status.getCounter() == 5) {
             mazziere.say("Finito turno " + status.getMano());
+
             mazziere.say("A questo punto dovrei calcolare chi prende ma... ");
+
             Player prossimo = players.get(0);
 
             //  se la partita è ancora in corso

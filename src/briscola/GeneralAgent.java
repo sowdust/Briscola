@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import jess.Rete;
 
 public class GeneralAgent extends Agent {
 
@@ -16,6 +17,7 @@ public class GeneralAgent extends Agent {
     protected List<Player> players;
     protected GeneralGUI gui;
     protected AID mazziereAID;
+    protected Rete rete;
     private String chatID;
 
     public void setChatID(String uniqueKey) {

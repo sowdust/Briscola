@@ -34,6 +34,10 @@ public class Card implements Serializable {
         return rank.getValue();
     }
 
+    public int getPosition() {
+        return rank.getPosition();
+    }
+
     @Override
     public String toString() {
         return rank + " " + briscola.common.Names.CARD_OF + " " + suit;
