@@ -16,13 +16,16 @@ import static jade.lang.acl.MessageTemplate.MatchPerformative;
  */
 public class WaitForSubscriptionConfirmation extends Behaviour {
 
+    private static final long serialVersionUID = 1L;
+
     private final long start;
     private boolean done;
     private Integer requests;
     private final AID agent;
     private final MazziereAgent mazziere;
 
-    public WaitForSubscriptionConfirmation(MazziereAgent mazziere, Integer requests, AID agent) {
+    public WaitForSubscriptionConfirmation(MazziereAgent mazziere,
+                                           Integer requests, AID agent) {
         this.start = System.currentTimeMillis();
         this.requests = requests;
         this.mazziere = mazziere;
@@ -31,18 +34,22 @@ public class WaitForSubscriptionConfirmation extends Behaviour {
 
     @Override
     public void action() {
-        mazziere.say("In attesa di conferma da " + agent.getName());
-        MessageTemplate confirmation = MessageTemplate.and(MessageTemplate.MatchSender(agent), MatchPerformative(ACLMessage.ACCEPT_PROPOSAL));
+        //mazziere.say("In attesa di conferma da " + agent.getName());
+        MessageTemplate confirmation = MessageTemplate.and(
+            MessageTemplate.MatchSender(agent), MatchPerformative(
+                ACLMessage.ACCEPT_PROPOSAL));
 
         ACLMessage confirmationMsg = myAgent.receive(confirmation);
         if (confirmationMsg != null) {
             --requests;
-            ((MazziereAgent) myAgent).addPlayer(agent, confirmationMsg.getContent());
+            ((MazziereAgent) myAgent).addPlayer(agent,
+                                                confirmationMsg.getContent());
             ACLMessage confirmTable = confirmationMsg.createReply();
             String content = agent.getName() + briscola.common.Messages.CONFIRM_TABLE;
             confirmTable.setContent(content);
             myAgent.send(confirmTable);
-            mazziere.say("Aggiunto giocatore # " + ((MazziereAgent) myAgent).getPlayersAID().size() + ": " + agent.getName());
+            mazziere.say(
+                "Aggiunto giocatore # " + ((MazziereAgent) myAgent).getPlayersAID().size() + ": " + agent.getName());
             done = true;
         } else {
             block();

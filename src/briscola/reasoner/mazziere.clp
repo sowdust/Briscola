@@ -1,41 +1,16 @@
 (import briscola.objects.*)
 
-(defclass Deck briscola.objects.Deck)
 (defclass Suit briscola.objects.Suit)
 (defclass Card briscola.objects.Card)
 (defclass Rank briscola.objects.Rank)
-(defclass Hand briscola.objects.Hand)
 (defclass Player briscola.Player)
 
-( deftemplate giocata "Tutte le carte giocate"
-    (slot player)
-    (slot card)
-    (slot mano)
-)
-
-( deftemplate in-mano
-    (slot card)
-    (slot rank)
-    (slot suit)
-)
-
-( deftemplate in-mazzo
-    (slot card)
-    (slot rank)
-    (slot suit)
-)
 
 ;;  if set to true debug statements are printed
 (defglobal ?*debug* = FALSE)
 
 ;; stores the briscola suit (initially null)
 (defglobal ?*briscola* = nil)
-
-
-
-
-
-
 
 ;;; PRINTS DEBUG MESSAGES IF GLOBAL VAR ?*debug* SET TO TRUE
 (deffunction debug (?list)

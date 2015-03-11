@@ -13,6 +13,9 @@ import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import jess.JessException;
 
 /**
  *
@@ -67,9 +70,10 @@ public class AskBriscola extends Behaviour {
                     mazziere.say("Ricevuta briscola: " + briscolaSuit);
                     received = true;
 
-                } catch (UnreadableException ex) {
+                } catch (UnreadableException | JessException ex) {
                     ex.printStackTrace();
                 }
+
             } else {
                 mazziere.say(
                     "Aspettando che " + vincitore + " comunichi la sua briscola");

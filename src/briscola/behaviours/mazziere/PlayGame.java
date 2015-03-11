@@ -16,6 +16,11 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.util.List;
+import jess.Funcall;
+import jess.JessException;
+import jess.RU;
+import jess.Value;
+import jess.ValueVector;
 
 /**
  * this behaviour should incapsulate all things a mazziere needs to do while
@@ -28,6 +33,8 @@ import java.util.List;
  * @author mat
  */
 public class PlayGame extends Behaviour {
+
+    private static final long serialVersionUID = 1L;
 
     private final MazziereAgent mazziere;
     private final List<Player> players;
@@ -43,7 +50,6 @@ public class PlayGame extends Behaviour {
         this.counter = 0;
         this.done = false;
         this.manageTurn = null;
-
     }
 
     @Override
@@ -78,13 +84,37 @@ public class PlayGame extends Behaviour {
 
 //  in case the turn has finished, communicate who scores
         if (status.getCounter() == 5) {
+
+            //  recuperiamo le carte giocate
+            Player prossimo = null;
+
             mazziere.say("Finito turno " + status.getMano());
+            try {
+                List<Card> carte = status.getCurrentMano().getCarteGiocate();
 
-            mazziere.say("A questo punto dovrei calcolare chi prende ma... ");
+                ValueVector vv = new ValueVector();
+                for (Card tc : carte) {
+                    vv.add(tc);
+                }
 
-            Player prossimo = players.get(0);
+                Value v = new Funcall("calcola_presa", mazziere.getRete()).arg(
+                    new Value(
+                        vv, RU.LIST)).execute(
+                        mazziere.getRete().getGlobalContext());
 
-            //  se la partita è ancora in corso
+                Card winningCard = (Card) v.javaObjectValue(
+                    mazziere.getRete().getGlobalContext());
+
+                prossimo = status.getCurrentMano().getPlayerOfCard(winningCard);
+
+            } catch (JessException ex) {
+                ex.printStackTrace();
+            }
+            int partialScore = status.getCurrentMano().getPoints();
+            int totalScore = status.updateScore(prossimo, partialScore);
+            mazziere.say(
+                "Prende " + prossimo.getName() + " che fa " + partialScore + " punti per un totale di " + totalScore);
+
             if (status.initMano(prossimo)) {
                 TurnStatusMessage msg = new TurnStatusMessage(0,
                                                               status.getMano(),
@@ -97,7 +127,10 @@ public class PlayGame extends Behaviour {
                 myAgent.addBehaviour(manageTurn);
 
             } else {
-                mazziere.say("Partita conclusa");
+                mazziere.say("Partita conclusa. Punteggi dei singoli:");
+                for (Player p : players) {
+                    mazziere.say(p.getName() + "\t " + status.getScore(p));
+                }
                 done = true;
             }
         }
@@ -157,7 +190,7 @@ public class PlayGame extends Behaviour {
                     ex.printStackTrace();
                 }
             } else {
-                mazziere.say("attendendo la giocata di " + status.getNext());
+                //mazziere.say("attendendo la giocata di " + status.getNext());
                 block();
             }
         }

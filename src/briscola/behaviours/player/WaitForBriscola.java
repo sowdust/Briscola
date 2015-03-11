@@ -2,13 +2,20 @@ package briscola.behaviours.player;
 
 import briscola.PlayerAgent;
 import static briscola.common.ACLCodes.ACL_COMMUNICATE_BRISCOLA;
+import briscola.objects.Card;
+import briscola.objects.Rank;
 import briscola.objects.Suit;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
+import jess.Fact;
+import jess.JessException;
+import jess.Value;
 
 public class WaitForBriscola extends Behaviour {
+
+    private static final long serialVersionUID = 1L;
 
     private PlayerAgent player;
     private boolean done;
@@ -30,11 +37,37 @@ public class WaitForBriscola extends Behaviour {
             block();
         } else {
             try {
-                Suit r = (Suit) msg.getContentObject();
+                Suit briscolaSuit = (Suit) msg.getContentObject();
+                Rank briscolaRank = player.getAuctionMemory().getBest().rank();
+                Card briscolaCard = new Card(briscolaRank, briscolaSuit);
+                //  comunichiamo a log cos'è successo
                 player.say(
-                    "Il giaguaro è " + player.getAuctionMemory().getBest().getPlayer().getName() + "; ha chiamato " + player.getAuctionMemory().getBest().rank() + " " + r);
+                    "Il giaguaro è " + player.getAuctionMemory().getBest().getPlayer().getName() + "; ha chiamato " + briscolaRank + " " + briscolaSuit);
+
+                /*  AGGIORNIAMO MEMORIA REASONER
+                 -  fact ruolo giaguaro
+                 -  fact briscola
+                 -  [fact socio] se siamo noi
+                 */
+                Fact f = new Fact("giaguaro", player.getRete());
+                f.setSlotValue("player", new Value(
+                               player.getAuctionMemory().getBest().getPlayer()));
+                Fact g = new Fact("briscola", player.getRete());
+                g.setSlotValue("suit", new Value(briscolaSuit));
+                g.setSlotValue("rank", new Value(briscolaRank));
+                g.setSlotValue("card", new Value(briscolaCard));
+                player.assertFact(f);
+                player.assertFact(g);
+
+                if (player.hasCard(briscolaCard)) {
+                    Fact s = new Fact("socio", player.getRete());
+                    s.setSlotValue("player", new Value(player.getPlayer()));
+                    player.assertFact(s);
+                }
+
                 done = true;
-            } catch (UnreadableException ex) {
+
+            } catch (UnreadableException | JessException ex) {
                 ex.printStackTrace();
             }
         }

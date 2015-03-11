@@ -7,13 +7,14 @@ import briscola.memory.player.AuctionMemory;
 import briscola.messages.AuctionStatusMessage;
 import briscola.objects.Bid;
 import jade.core.behaviours.Behaviour;
-import jade.core.behaviours.SequentialBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 
 public class PlayAuction extends Behaviour {
+
+    private static final long serialVersionUID = 1L;
 
     private final PlayerAgent agent;
     private final AuctionMemory status;

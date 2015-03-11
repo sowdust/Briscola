@@ -22,7 +22,7 @@ public class PlayerAgent extends GeneralAgent {
     private AuctionMemory auctionMemory;
     private boolean visible;
     private Hand myHand;
-    private static final String rulesFile = "/home/mat/school/Tesi/src/briscola/reasoner/common.clp";
+    private static final String rulesFile = "/home/mat/school/Tesi/src/briscola/reasoner/player.clp";
 
     //private PlayerGUI gui;
     @Override
@@ -69,7 +69,7 @@ public class PlayerAgent extends GeneralAgent {
         return (PlayerGUI) gui;
     }
 
-    public void setPlayers(List<Player> players) {
+    synchronized public void setPlayers(List<Player> players) {
         this.players = players;
         for (Player p : players) {
             gui.addPlayer(p);
@@ -93,7 +93,7 @@ public class PlayerAgent extends GeneralAgent {
         Deck tempDeck = new Deck();
         Fact f;
         for (Card c : tempDeck.getCards()) {
-            if (hand.getCards().contains(c)) {
+            if (hasCard(c)) {
                 f = new Fact("in-mano", rete);
             } else {
                 f = new Fact("in-mazzo", rete);
@@ -104,7 +104,10 @@ public class PlayerAgent extends GeneralAgent {
             rete.assertFact(f);
         }
         ((PlayerGUI) gui).setHand(hand);
-        rete.eval("(facts)");
+    }
+
+    public boolean hasCard(Card c) {
+        return myHand.getCards().contains(c);
     }
 
     public Hand getHand() {
@@ -130,4 +133,5 @@ public class PlayerAgent extends GeneralAgent {
     public void addGiocata(int counter, Player justPlayer, Card justCard) {
         ((PlayerGUI) gui).addGiocata(counter, justPlayer, justCard);
     }
+
 }

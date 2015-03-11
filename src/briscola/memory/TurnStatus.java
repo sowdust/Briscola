@@ -6,12 +6,16 @@ import jade.core.AID;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TurnStatus {
 
     private List<Player> players;
     private List<Mano> giocate;
+
+    //  temp score per player
+    private final HashMap<AID, Integer> punteggi;
     //  # of people who have played in this turn
     private int[] counter;
     //  # of turn in the game [1..8]
@@ -24,18 +28,42 @@ public class TurnStatus {
         this.giocate = new ArrayList<>();
         this.counter = new int[8];
         this.mano = -1;
+        this.punteggi = new HashMap<>();
 
+        //  init giocate
         for (int i = 0; i < 8; ++i) {
             this.giocate.add(new Mano(i));
         }
 
+        //  init all points to 0
+        for (Player p : players) {
+            punteggi.put(p.getAID(), 0);
+        }
+
+//  find first to play
         for (int i = 0; i < players.size(); ++i) {
             if (players.get(i).getAID().equals(first.getAID())) {
                 next = i;
                 break;
             }
         }
+
         initMano(next);
+    }
+
+    public int getScore(Player p) {
+        return punteggi.get(p.getAID());
+    }
+
+    public int updateScore(Player p, int score) {
+        Integer newScore = punteggi.get(p.getAID());
+        if (newScore == null) {
+            newScore = score;
+        } else {
+            newScore = newScore + score;
+        }
+        punteggi.put(p.getAID(), newScore);
+        return newScore;
     }
 
     public boolean initMano(Player p) {
@@ -125,33 +153,44 @@ public class TurnStatus {
 
         private final int id;
         private final HashMap<AID, Card> giocate;
-        //private final HashMap<Card, Player> giocatori;
-        //private List<Card> carteGiocate;
+        private final HashMap<Card, Player> giocatori;
+        private final List<Card> carteGiocate;
 
         Mano(int id) {
             this.giocate = new HashMap<>();
-            //this.giocatori = new HashMap<>();
-            //this.carteGiocate = new LinkedList<>();
+            this.giocatori = new HashMap<>();
+            this.carteGiocate = new LinkedList<>();
             this.id = id;
         }
 
         public void add(Player p, Card c) {
-            if (giocate.get(p) != null) {
+            if (giocate.get(p.getAID()) != null) {
                 throw new IllegalArgumentException(p + " ha già giocato");
             }
             giocate.put(p.getAID(), c);
-            //giocatori.put(c, p);
-            //carteGiocate.add(c);
+            giocatori.put(c, p);
+            carteGiocate.add(c);
         }
 
         public Card get(Player p) {
             return giocate.get(p);
         }
 
-        /*
-         public List<Card> getCarteGiocate() {
-         return null;
-         }*/
+        public List<Card> getCarteGiocate() {
+            return Collections.unmodifiableList(carteGiocate);
+        }
+
+        public Player getPlayerOfCard(Card c) {
+            return giocatori.get(c);
+        }
+
+        public int getPoints() {
+            int score = 0;
+            for (Card c : carteGiocate) {
+                score += c.getRank().getValue();
+            }
+            return score;
+        }
     }
 
 }

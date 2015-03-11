@@ -6,6 +6,9 @@ import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import jess.JessException;
 
 public class ReceiveHand extends Behaviour {
 
@@ -31,8 +34,9 @@ public class ReceiveHand extends Behaviour {
             try {
                 Hand h = (Hand) myHandMsg.getContentObject();
                 agent.say("Mano ricevuta " + h);
+                //  agisce anche su reasoner
                 agent.setHand(h);
-            } catch (UnreadableException ex) {
+            } catch (UnreadableException | JessException ex) {
                 ex.printStackTrace();
             }
             //  send confirmation message to mazziere

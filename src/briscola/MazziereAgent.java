@@ -13,6 +13,7 @@ import jade.domain.FIPAException;
 import java.util.ArrayList;
 import java.util.List;
 import jess.Defglobal;
+;
 import jess.JessException;
 import jess.Rete;
 import jess.Value;
@@ -29,6 +30,8 @@ import jess.Value;
  *
  * @author mat
  */
+
+
 public class MazziereAgent extends GeneralAgent {
 
     private static final long serialVersionUID = 1L;
@@ -37,7 +40,7 @@ public class MazziereAgent extends GeneralAgent {
     //private MazziereGUI gui;
     private DFAgentDescription dfd;
     private ServiceDescription sd;
-    private static final String rulesFile = "/home/mat/school/Tesi/src/briscola/reasoner/common.clp";
+    private static final String rulesFile = "/home/mat/school/Tesi/src/briscola/reasoner/mazziere.clp";
 
     @Override
     protected void setup() {
@@ -86,9 +89,10 @@ public class MazziereAgent extends GeneralAgent {
         return name;
     }
 
-    public void setBriscola(Suit r) {
+    public void setBriscola(Suit r) throws JessException {
         table.setBriscola(r);
-        rete.store("?*briscola*", r);
+        Defglobal g = new Defglobal("*briscola*", new Value(r));
+        rete.addDefglobal(g);
     }
 
     public void addPlayer(AID agente, String name) {

@@ -41,6 +41,10 @@ public class BeginGame extends Behaviour {
         if (infoPlayersMsg != null) {
             try {
                 List<Player> players = (List<Player>) infoPlayersMsg.getContentObject();
+                if (players.size() < 5) {
+                    throw new RuntimeException(
+                        "Non ho ricevuto tutti i giocatori!");
+                }
                 player.setPlayers(players);
                 player.say("Ricevute info giocatori");
                 ++received;

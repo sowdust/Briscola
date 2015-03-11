@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import jess.Fact;
+import jess.JessException;
 import jess.Rete;
 
 public class GeneralAgent extends Agent {
@@ -108,6 +110,10 @@ public class GeneralAgent extends Agent {
         return Collections.unmodifiableList(players);
     }
 
+    public void assertFact(Fact f) throws JessException {
+        rete.assertFact(f);
+    }
+
 //    public void sendMessage(Player rcp, int type, Serializable content) throws
 //        IOException {
 //        ACLMessage m = new ACLMessage(type);
@@ -119,5 +125,9 @@ public class GeneralAgent extends Agent {
     @Override
     public String toString() {
         return name + "[" + getAID() + "]";
+    }
+
+    public Rete getRete() {
+        return rete;
     }
 }

@@ -14,8 +14,6 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class PlayGame extends Behaviour {
 
