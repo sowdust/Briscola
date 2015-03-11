@@ -5,6 +5,7 @@ package briscola.objects;
 import java.io.Serializable;
 import static briscola.common.Names.CARD_IMG_EXTENSION;
 import static briscola.common.Names.CARD_IMG_FOLDER;
+import java.util.Objects;
 
 public class Card implements Serializable {
 
@@ -41,5 +42,19 @@ public class Card implements Serializable {
     @Override
     public String toString() {
         return rank + " " + briscola.common.Names.CARD_OF + " " + suit;
+    }
+
+    @Override
+    public boolean equals(Object c) {
+        return ((Card) c).getRank().equals(this.rank) && ((Card) c).getSuit().equals(
+            this.suit);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.rank);
+        hash = 59 * hash + Objects.hashCode(this.suit);
+        return hash;
     }
 }

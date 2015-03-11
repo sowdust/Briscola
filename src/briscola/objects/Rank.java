@@ -13,7 +13,7 @@ public enum Rank {
     FIVE(5, CARD_FIVE, 0, 3),
     SIX(6, CARD_SIX, 0, 4),
     SEVEN(7, CARD_SEVEN, 0, 5),
-    JACK(8, CARD_JACK, 2, 8),
+    JACK(8, CARD_JACK, 2, 6),
     QUEEN(9, CARD_QUEEN, 3, 7),
     KING(10, CARD_KING, 4, 8);
 
@@ -44,5 +44,9 @@ public enum Rank {
 
     public int getPosition() {
         return position;
+    }
+
+    public boolean equals(Rank r) {
+        return r.getPosition() == position;
     }
 }

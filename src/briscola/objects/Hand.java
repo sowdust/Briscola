@@ -2,6 +2,7 @@
 package briscola.objects;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -44,5 +45,9 @@ public class Hand implements Serializable {
     public Card drawRandom() {
         Random r = new Random();
         return cards.remove(r.nextInt(cards.size()));
+    }
+
+    public List<Card> getCards() {
+        return Collections.unmodifiableList(cards);
     }
 }

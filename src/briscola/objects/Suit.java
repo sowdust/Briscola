@@ -31,4 +31,8 @@ public enum Suit implements Serializable {
     public String toString() {
         return name;
     }
+
+    public boolean equals(Suit s) {
+        return s.getN() == this.order;
+    }
 }

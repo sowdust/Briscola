@@ -6,11 +6,14 @@ import briscola.behaviours.player.Subscribe;
 import briscola.memory.player.AuctionMemory;
 import briscola.objects.Bid;
 import briscola.objects.Card;
+import briscola.objects.Deck;
 import briscola.objects.Hand;
 import jade.core.AID;
 import java.util.List;
+import jess.Fact;
 import jess.JessException;
 import jess.Rete;
+import jess.Value;
 
 public class PlayerAgent extends GeneralAgent {
 
@@ -77,9 +80,31 @@ public class PlayerAgent extends GeneralAgent {
         this.mazziereAID = sender;
     }
 
-    public void setHand(Hand hand) {
+    /**
+     * Stores the cards received from mazziere in memory
+     * Partitions a deck of card in cards in hand, cards covered
+     * and asserts relevants facts in JESS reasoner
+     *
+     * @param hand
+     * @throws jess.JessException
+     */
+    public void setHand(Hand hand) throws JessException {
         this.myHand = hand;
+        Deck tempDeck = new Deck();
+        Fact f;
+        for (Card c : tempDeck.getCards()) {
+            if (hand.getCards().contains(c)) {
+                f = new Fact("in-mano", rete);
+            } else {
+                f = new Fact("in-mazzo", rete);
+            }
+            f.setSlotValue("card", new Value(c));
+            f.setSlotValue("rank", new Value(c.getRank()));
+            f.setSlotValue("suit", new Value(c.getSuit()));
+            rete.assertFact(f);
+        }
         ((PlayerGUI) gui).setHand(hand);
+        rete.eval("(facts)");
     }
 
     public Hand getHand() {

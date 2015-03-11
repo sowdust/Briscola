@@ -7,6 +7,24 @@
 (defclass Hand briscola.objects.Hand)
 (defclass Player briscola.Player)
 
+( deftemplate giocata "Tutte le carte giocate"
+    (slot player)
+    (slot card)
+    (slot mano)
+)
+
+( deftemplate in-mano
+    (slot card)
+    (slot rank)
+    (slot suit)
+)
+
+( deftemplate in-mazzo
+    (slot card)
+    (slot rank)
+    (slot suit)
+)
+
 ;;  if set to true debug statements are printed
 (defglobal ?*debug* = FALSE)
 

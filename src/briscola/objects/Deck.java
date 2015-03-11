@@ -43,4 +43,8 @@ public class Deck {
         return cards.get(position);
     }
 
+    public List<Card> getCards() {
+        return Collections.unmodifiableList(cards);
+    }
+
 }
