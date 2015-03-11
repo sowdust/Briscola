@@ -8,6 +8,8 @@ import briscola.objects.Bid;
 import briscola.objects.Card;
 import briscola.objects.Deck;
 import briscola.objects.Hand;
+import briscola.objects.Role;
+import briscola.objects.Suit;
 import jade.core.AID;
 import java.util.List;
 import jess.Fact;
@@ -22,7 +24,10 @@ public class PlayerAgent extends GeneralAgent {
     private AuctionMemory auctionMemory;
     private boolean visible;
     private Hand myHand;
+    private Role role;
     private static final String rulesFile = "/home/mat/school/Tesi/src/briscola/reasoner/player.clp";
+    private Card briscolaCard;
+    private Suit briscolaSuit;
 
     //private PlayerGUI gui;
     @Override
@@ -132,6 +137,30 @@ public class PlayerAgent extends GeneralAgent {
 
     public void addGiocata(int counter, Player justPlayer, Card justCard) {
         ((PlayerGUI) gui).addGiocata(counter, justPlayer, justCard);
+    }
+
+    public void setRole(Role role) throws JessException {
+        this.role = role;
+        Fact f = new Fact("mio-ruolo", rete);
+        f.setSlotValue("ruolo", new Value(role));
+        assertFact(f);
+        say("Il mio ruolo è " + role);
+        //  TODO: colorare ruoli agli altri
+
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setBriscola(Card c) throws JessException {
+        this.briscolaCard = c;
+        this.briscolaSuit = c.getSuit();
+        Fact g = new Fact("briscola", rete);
+        g.setSlotValue("suit", new Value(briscolaSuit));
+        g.setSlotValue("rank", new Value(c.getRank()));
+        g.setSlotValue("card", new Value(briscolaCard));
+        assertFact(g);
     }
 
 }

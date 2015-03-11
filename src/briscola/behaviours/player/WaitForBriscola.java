@@ -1,9 +1,13 @@
 package briscola.behaviours.player;
 
+import briscola.Player;
 import briscola.PlayerAgent;
 import static briscola.common.ACLCodes.ACL_COMMUNICATE_BRISCOLA;
 import briscola.objects.Card;
 import briscola.objects.Rank;
+import static briscola.objects.Role.GIAGUARO;
+import static briscola.objects.Role.SOCIO;
+import static briscola.objects.Role.VILLANO;
 import briscola.objects.Suit;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
@@ -40,29 +44,30 @@ public class WaitForBriscola extends Behaviour {
                 Suit briscolaSuit = (Suit) msg.getContentObject();
                 Rank briscolaRank = player.getAuctionMemory().getBest().rank();
                 Card briscolaCard = new Card(briscolaRank, briscolaSuit);
+                Player giaguaro = player.getAuctionMemory().getBest().getPlayer();
                 //  comunichiamo a log cos'è successo
                 player.say(
-                    "Il giaguaro è " + player.getAuctionMemory().getBest().getPlayer().getName() + "; ha chiamato " + briscolaRank + " " + briscolaSuit);
+                    "Il giaguaro è " + giaguaro.getName() + "; ha chiamato " + briscolaRank + " " + briscolaSuit);
 
                 /*  AGGIORNIAMO MEMORIA REASONER
                  -  fact ruolo giaguaro
                  -  fact briscola
                  -  [fact socio] se siamo noi
                  */
+                //  AGGIORNIAMO LE NOSTR INFO SUI RUOLI
                 Fact f = new Fact("giaguaro", player.getRete());
-                f.setSlotValue("player", new Value(
-                               player.getAuctionMemory().getBest().getPlayer()));
-                Fact g = new Fact("briscola", player.getRete());
-                g.setSlotValue("suit", new Value(briscolaSuit));
-                g.setSlotValue("rank", new Value(briscolaRank));
-                g.setSlotValue("card", new Value(briscolaCard));
+                f.setSlotValue("player", new Value(giaguaro));
                 player.assertFact(f);
-                player.assertFact(g);
 
                 if (player.hasCard(briscolaCard)) {
+                    player.setRole(SOCIO);
                     Fact s = new Fact("socio", player.getRete());
                     s.setSlotValue("player", new Value(player.getPlayer()));
                     player.assertFact(s);
+                } else if (giaguaro.getAID().equals(player.getAID())) {
+                    player.setRole(GIAGUARO);
+                } else {
+                    player.setRole(VILLANO);
                 }
 
                 done = true;
@@ -71,7 +76,6 @@ public class WaitForBriscola extends Behaviour {
                 ex.printStackTrace();
             }
         }
-
     }
 
     @Override

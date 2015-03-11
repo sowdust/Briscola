@@ -35,6 +35,10 @@
     (slot posizione)
 )
 
+( deftemplate mio-ruolo "io che sono?"
+    (slot ruolo)
+)
+
 ( deftemplate giaguaro  (slot player) )
 ( deftemplate socio (slot player) )
 ( deftemplate villano   (slot player) )

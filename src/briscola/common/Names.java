@@ -41,6 +41,11 @@ public class Names {
     public static final String CARD_SPADES = "♣";
     public static final String CARD_HEARTS = "♥";
 
+    //  ROLES NAMES
+    public static final String ROLE_GIAGUARO = "giaguaro";
+    public static final String ROLE_VILLANO = "villano";
+    public static final String ROLE_SOCIO = "socio";
+
     public static final String[] playerNames
         = {
             "Abelardo",
