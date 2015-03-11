@@ -15,6 +15,7 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import jess.Fact;
 import jess.JessException;
+import jess.RU;
 import jess.Value;
 
 public class WaitForBriscola extends Behaviour {
@@ -46,6 +47,7 @@ public class WaitForBriscola extends Behaviour {
                 Card briscolaCard = new Card(briscolaRank, briscolaSuit);
                 Player giaguaro = player.getAuctionMemory().getBest().getPlayer();
                 //  comunichiamo a log cos'è successo
+                player.setBriscola(briscolaCard);
                 player.say(
                     "Il giaguaro è " + giaguaro.getName() + "; ha chiamato " + briscolaRank + " " + briscolaSuit);
 
@@ -61,8 +63,10 @@ public class WaitForBriscola extends Behaviour {
 
                 if (player.hasCard(briscolaCard)) {
                     player.setRole(SOCIO);
+
                     Fact s = new Fact("socio", player.getRete());
-                    s.setSlotValue("player", new Value(player.getPlayer()));
+                    s.setSlotValue("player", new Value(
+                                   player.getPlayer()));
                     player.assertFact(s);
                 } else if (giaguaro.getAID().equals(player.getAID())) {
                     player.setRole(GIAGUARO);

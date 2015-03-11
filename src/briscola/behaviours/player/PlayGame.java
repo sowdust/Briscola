@@ -2,6 +2,7 @@ package briscola.behaviours.player;
 
 import briscola.Player;
 import briscola.PlayerAgent;
+import briscola.behaviours.PrintFacts;
 import static briscola.common.ACLCodes.ACL_TELL_GIOCATA;
 import briscola.memory.TurnStatus;
 import briscola.messages.GiocataMessage;
@@ -14,12 +15,17 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import jess.JessException;
 
 public class PlayGame extends Behaviour {
 
-    private PlayerAgent agent;
+    private static final long serialVersionUID = 1L;
+
+    private final PlayerAgent agent;
     private TurnStatus status;
-    private List<Player> players;
+    private final List<Player> players;
     private int lastPlayed;
     private ReceiveGiocate receiveGiocate;
 
@@ -79,6 +85,7 @@ public class PlayGame extends Behaviour {
 
                 myAgent.addBehaviour(new ReceiveNext());
                 receiveGiocate = null;
+
                 block();
             }
         }
@@ -86,12 +93,12 @@ public class PlayGame extends Behaviour {
 
     @Override
     public boolean done() {
-
         return mano == 8;
-
     }
 
     class ReceiveGiocate extends Behaviour {
+
+        private static final long serialVersionUID = 1L;
 
         MessageTemplate info1;
         MessageTemplate info2;
@@ -123,8 +130,11 @@ public class PlayGame extends Behaviour {
                     if (/*status.getCounter() < 5 &&*/status.getNext() != null && status.getNext().getAID().equals(
                             agent.getAID()) && status.getMano() > lastPlayed) {
                         myAgent.addBehaviour(new SendGiocata());
+                        if (status.getMano() > 6) {
+                            myAgent.addBehaviour(new PrintFacts(agent));
+                        }
                     }
-                } catch (UnreadableException ex) {
+                } catch (UnreadableException | JessException ex) {
                     ex.printStackTrace();
                 }
             } else {

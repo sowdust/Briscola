@@ -14,6 +14,7 @@ import jade.core.AID;
 import java.util.List;
 import jess.Fact;
 import jess.JessException;
+import jess.RU;
 import jess.Rete;
 import jess.Value;
 
@@ -85,32 +86,6 @@ public class PlayerAgent extends GeneralAgent {
         this.mazziereAID = sender;
     }
 
-    /**
-     * Stores the cards received from mazziere in memory
-     * Partitions a deck of card in cards in hand, cards covered
-     * and asserts relevants facts in JESS reasoner
-     *
-     * @param hand
-     * @throws jess.JessException
-     */
-    public void setHand(Hand hand) throws JessException {
-        this.myHand = hand;
-        Deck tempDeck = new Deck();
-        Fact f;
-        for (Card c : tempDeck.getCards()) {
-            if (hasCard(c)) {
-                f = new Fact("in-mano", rete);
-            } else {
-                f = new Fact("in-mazzo", rete);
-            }
-            f.setSlotValue("card", new Value(c));
-            f.setSlotValue("rank", new Value(c.getRank()));
-            f.setSlotValue("suit", new Value(c.getSuit()));
-            rete.assertFact(f);
-        }
-        ((PlayerGUI) gui).setHand(hand);
-    }
-
     public boolean hasCard(Card c) {
         return myHand.getCards().contains(c);
     }
@@ -135,8 +110,45 @@ public class PlayerAgent extends GeneralAgent {
 
     }
 
-    public void addGiocata(int counter, Player justPlayer, Card justCard) {
+    /**
+     * Stores the cards received from mazziere in memory
+     * Partitions a deck of card in cards in hand, cards covered
+     * and asserts relevants facts in JESS reasoner
+     *
+     * @param hand
+     * @throws jess.JessException
+     */
+    public void setHand(Hand hand) throws JessException {
+        this.myHand = hand;
+        Deck tempDeck = new Deck();
+        Fact f;
+        for (Card c : tempDeck.getCards()) {
+            if (hasCard(c)) {
+                f = new Fact("in-mano", rete);
+            } else {
+                f = new Fact("in-mazzo", rete);
+            }
+            f.setSlotValue("card", new Value(c));
+            f.setSlotValue("rank", new Value(c.getRank()));
+            f.setSlotValue("suit", new Value(c.getSuit()));
+            rete.assertFact(f);
+        }
+        ((PlayerGUI) gui).setHand(hand);
+
+    }
+
+    public void addGiocata(int counter, Player justPlayer, Card justCard) throws
+        JessException {
+
+        if (justCard.equals(briscolaCard) && justPlayer.getAID() != getAID()) {
+            say("Ta-dah! Il socio è venuto fuori! Il vecchio " + justPlayer.getName() + " sociello");
+            Fact s = new Fact("socio", rete);
+            s.setSlotValue("player", new Value(justPlayer));
+            rete.assertFact(s);
+        }
+
         ((PlayerGUI) gui).addGiocata(counter, justPlayer, justCard);
+
     }
 
     public void setRole(Role role) throws JessException {
