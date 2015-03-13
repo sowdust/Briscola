@@ -59,7 +59,7 @@ public class PlayGame extends Behaviour {
                     if (status.getNext().getAID().equals(agent.getAID())) {
                         myAgent.addBehaviour(new SendGiocata());
                     }
-                } catch (UnreadableException ex) {
+                } catch (UnreadableException | JessException ex) {
                     ex.printStackTrace();
                 }
             } else {
@@ -198,7 +198,7 @@ public class PlayGame extends Behaviour {
                         myAgent.addBehaviour(new SendGiocata());
                     }
                     receiveGiocate = null;
-                } catch (UnreadableException ex) {
+                } catch (UnreadableException | JessException ex) {
                     ex.printStackTrace();
                 }
             } else {

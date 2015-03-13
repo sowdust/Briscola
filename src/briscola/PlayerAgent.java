@@ -15,6 +15,7 @@ import jade.core.AID;
 import java.util.List;
 import jess.Fact;
 import jess.JessException;
+import jess.RU;
 import jess.Rete;
 import jess.Value;
 
@@ -112,7 +113,29 @@ public class PlayerAgent extends GeneralAgent {
     }
 
     public void initMano(int mano, Player next) throws JessException {
+
+        //  info dalla mano precedente
         rete.eval("(remove in-tavolo)");
+        rete.eval("(remove turno)");
+
+        //  diamo i turni ai giocatori
+        int firstIndex = -1;
+
+        for (int i = 0; i < players.size(); ++i) {
+            if (players.get(i).equals(next)) {
+                firstIndex = i;
+                continue;
+            }
+        }
+
+        for (int i = 0; i < players.size(); ++i) {
+            Fact f = new Fact("turno", rete);
+            f.setSlotValue("player",
+                           new Value(players.get((i + firstIndex) % 5)));
+            f.setSlotValue("posizione", new Value(i, RU.INTEGER));
+            rete.assertFact(f);
+        }
+        //  aggiorniamo la gui
         gui().initMano(mano, next);
     }
 
