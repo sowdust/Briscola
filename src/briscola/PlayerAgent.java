@@ -16,6 +16,7 @@ import static briscola.objects.Strategy.RANDOM;
 import briscola.objects.Suit;
 import jade.core.AID;
 import java.util.List;
+import jess.Defglobal;
 import jess.Fact;
 import jess.Funcall;
 import jess.JessException;
@@ -239,7 +240,7 @@ public class PlayerAgent extends GeneralAgent {
         q.setSlotValue("suit", new Value(justCard.getSuit()));
         rete.assertFact(q);
 
-        //rete.run();
+        rete.run();
         ((PlayerGUI) gui).addGiocata(counter, justPlayer, justCard);
 
     }
@@ -258,6 +259,13 @@ public class PlayerAgent extends GeneralAgent {
         return role;
     }
 
+    /**
+     * declares both a fact containing the briscola card
+     * and a global variable with its suit (redundant, we know..)
+     *
+     * @param c
+     * @throws JessException
+     */
     public void setBriscola(Card c) throws JessException {
         this.briscolaCard = c;
         this.briscolaSuit = c.getSuit();
@@ -266,6 +274,8 @@ public class PlayerAgent extends GeneralAgent {
         g.setSlotValue("rank", new Value(c.getRank()));
         g.setSlotValue("card", new Value(briscolaCard));
         assertFact(g);
+        Defglobal k = new Defglobal("*briscola*", new Value(c.getSuit()));
+        rete.addDefglobal(k);
     }
 
     /**

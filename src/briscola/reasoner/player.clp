@@ -35,6 +35,11 @@
     (slot posizione)
 )
 
+( deftemplate prende "chi, per ora, prende"
+    (slot player)
+    (slot card)
+)
+
 ( deftemplate mio-ruolo "io che sono?"
     (slot ruolo)
 )
@@ -50,6 +55,15 @@
 ( deftemplate socio (slot player) )
 ( deftemplate villano   (slot player) )
 ( deftemplate briscola (slot card) (slot rank) (slot suit) )
+( deftemplate seme-mano-fact (slot suit) )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;     GLOBAL VARs
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; stores the briscola suit (initially null)
+(defglobal ?*briscola* = nil)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     UTILITIES
@@ -65,6 +79,42 @@
         (printout t ?list crlf)
     )
 )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;      FUNCTIONS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+( deffunction batte (?c ?max ?seme-mano)
+    "dice se c batte max"
+
+
+       ; (debug (create$  "confronto fra max, " (?max toString) " e c: " (?c toString)))
+        ;;  se c è briscola e max no
+        (if (and (= (?c getSuit) ?*briscola*) (<> (?max getSuit) ?*briscola*)) then
+            ;(bind ?max ?c)
+            ;(debug (create$ (?c toString) " è briscola, " (?max toString) " no"))
+            return TRUE
+        else
+        ;;  se max è briscola e c no
+        (if (and (= (?max getSuit) ?*briscola*) (<> (?c getSuit) ?*briscola*)) then
+            ;(bind ?max ?max)
+            ;(debug (create$ (?max toString) " è briscola, " (?c toString) " no"))
+            return FALSE
+        else
+        ;; se c non è seme di mano nè briscola ha perso sicuro
+        (if (and (<> (?c getSuit) ?seme-mano) (<> (?c getSuit) ?*briscola*)) then
+            ;(bind ?max ?max)
+            ;(debug (create$ (?c toString) " non è seme mano nè briscola"))
+            return FALSE
+        else
+        ;;  o sono tutti e due briscole o seme di mano
+        (if (> (?c getPosition) (?max getPosition)) then
+            ;(bind ?max ?c)
+            ;(debug (create$ "tutti e due" (?c toString) "prende il posto di " (?max toString)))
+            return TRUE
+        ))))
+)
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;      RULES
@@ -81,23 +131,56 @@
     (remove in-tavolo)
     (remove turno)
     (remove mano-numero)
+    (remove prende)
+    (remove giocata-numero)
+    (remove seme-mano-fact)
+    (assert (seme-mano-fact (suit nil)))
     (assert (mano-numero ?number))
+    (assert (prende (player nil) (card nil)))
+    (assert (giocata-numero -1))
     (debug (create$ "inizializzando mano" ?number))
 )
 
 
 ( defrule nuova-giocata "Ricevo una giocata: aggiorno la situa"
     ?w <- (nuova-giocata (player ?p) (card ?c) (rank ?r) (suit ?s))
+    (prende (player ?prende-player) (card ?prende-card))
+    ?y <- (giocata-numero ?counter-giocata)
+    (seme-mano-fact (suit ?seme-mano))
 =>
-    (debug (create& "ricevuta giocata " (?p toString) " " (?c toString) ))
+
+    ;(debug (create$ "ricevuta giocata " ?counter-giocata (?p toString) " " (?c toString) ))
+    ;(debug (create$ "ricevuta giocata " ?counter-giocata (?p toString) " " (?c toString) ))
+
+    ;;  Aggiorniamo chi prende
+    (if (= ?counter-giocata -1) then
+        (remove prende)
+        (assert (prende (player ?p) (card ?c)))
+        (remove seme-mano-fact)
+        (assert (seme-mano-fact (suit ?s)))
+        (bind ?seme-mano ?s)
+    else
+
+    (if (batte ?c ?prende-card ?seme-mano )  then
+        (debug (create$ "non prende più " (?prende-player toString) " con " (?prende-card toString) " bensì " (?p toString) " con " (?c toString) " seme mano: " (?seme-mano toString)))
+        (remove prende)
+        (assert (prende (player ?p) (card ?c)))
+   
+    ))
+
+    (bind ?new-counter-giocata (+ ?counter-giocata 1))
+
     (retract ?w)
+    (retract ?y)
+
+    (assert (giocata-numero ?new-counter-giocata))
 )
 
 ( defrule gioca "quando è il mio turno, meglio che giochi!"
     ?mio-turno <- (mio-turno)
     (in-mano (card ?c))
 =>
-    (printout t "potrei giocare " (?c toString) crlf)
+    ;(printout t "potrei giocare " (?c toString) crlf)
     (store DA-GIOCARE ?c)
     (retract ?mio-turno)
 )
