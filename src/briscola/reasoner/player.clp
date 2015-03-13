@@ -50,7 +50,8 @@
 ( defglobal ?*debug* = FALSE)
 
 ;; stores the briscola suit (initially null)
-( defglobal ?*briscola* = nil)
+;( defglobal ?*briscola* = nil)
+( defglobal ?*da-giocare* = nil)
 
 
 ;; PRINTS DEBUG MESSAGES IF GLOBAL VAR ?*debug* SET TO TRUE
@@ -64,8 +65,12 @@
 ;;      RULES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-( defrule svuota-tavolo "Elimina tutte le carte dal tavolo"
-    ?x <- (in-tavolo)
+
+( defrule gioca "quando è il mio turno, meglio che giochi!"
+    ?mio-turno <- (mio-turno)
+    (in-mano (card ?c))
 =>
-    (rectract ?x)
+    (printout t "potrei giocare " (?c toString) crlf)
+    (store DA-GIOCARE ?c)
+    (retract ?mio-turno)
 )

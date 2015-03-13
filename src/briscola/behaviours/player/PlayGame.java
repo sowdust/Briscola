@@ -15,6 +15,9 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import jess.Fact;
 import jess.JessException;
 
 public class PlayGame extends Behaviour {
@@ -130,9 +133,9 @@ public class PlayGame extends Behaviour {
                         agent.getAID()) && status.getMano() > lastPlayed) {
                         myAgent.addBehaviour(new SendGiocata());
 
-                        if (status.getMano() == 0 || status.getMano() == 7) {
-                            myAgent.addBehaviour(new PrintFacts(agent));
-                        }
+                        /*if (status.getMano() == 0 || status.getMano() == 7) {
+                         myAgent.addBehaviour(new PrintFacts(agent));
+                         }*/
                     }
                 } catch (UnreadableException | JessException ex) {
                     ex.printStackTrace();
@@ -157,7 +160,14 @@ public class PlayGame extends Behaviour {
             ACLMessage gMsg = new ACLMessage(ACL_TELL_GIOCATA);
             try {
 
-                Card c = agent.getHand().drawRandom();
+                Fact f = new Fact("mio-turno", agent.getRete());
+                agent.getRete().assertFact(f);
+                agent.getRete().run();
+
+                Card c = (Card) agent.getRete().fetch("DA-GIOCARE").javaObjectValue(
+                    agent.getRete().getGlobalContext());
+
+                //Card c = agent.getHand().drawRandom();
                 GiocataMessage g = new GiocataMessage(agent.getPlayer(), c,
                                                       status.getMano(),
                                                       status.getCounter());
@@ -167,7 +177,7 @@ public class PlayGame extends Behaviour {
                 agent.say("* Gioco" + g);
                 ++lastPlayed;
 
-            } catch (IOException ex) {
+            } catch (IOException | JessException ex) {
                 ex.printStackTrace();
             }
             block();
