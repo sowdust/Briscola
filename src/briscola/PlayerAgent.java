@@ -124,7 +124,7 @@ public class PlayerAgent extends GeneralAgent {
         for (int i = 0; i < players.size(); ++i) {
             if (players.get(i).equals(next)) {
                 firstIndex = i;
-                continue;
+                break;
             }
         }
 
