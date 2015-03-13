@@ -167,7 +167,6 @@ public class PlayGame extends Behaviour {
                 Card c = (Card) agent.getRete().fetch("DA-GIOCARE").javaObjectValue(
                     agent.getRete().getGlobalContext());
 
-                //Card c = agent.getHand().drawRandom();
                 GiocataMessage g = new GiocataMessage(agent.getPlayer(), c,
                                                       status.getMano(),
                                                       status.getCounter());
