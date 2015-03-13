@@ -17,6 +17,7 @@ import briscola.objects.Suit;
 import jade.core.AID;
 import java.util.List;
 import jess.Fact;
+import jess.Funcall;
 import jess.JessException;
 import jess.RU;
 import jess.Rete;
@@ -30,7 +31,7 @@ public class PlayerAgent extends GeneralAgent {
     private boolean visible;
     private Hand myHand;
     private Role role;
-    private static String rulesFile;// = "/home/mat/school/Tesi/src/briscola/reasoner/player.clp";
+    private String rulesFile;
     private Card briscolaCard;
     private Suit briscolaSuit;
     private TurnStatus status;
@@ -79,7 +80,7 @@ public class PlayerAgent extends GeneralAgent {
         gui.setVisible(visible);
 
         say("Giocatore " + getAID().getName() + " iscritto alla piattaforma");
-        say("Utilizzerò la strategia " + strategy.getName());
+        say("Utilizzerò la strategia " + strategy);
         addBehaviour(new Subscribe(this));
     }
 
@@ -135,9 +136,9 @@ public class PlayerAgent extends GeneralAgent {
 
     public void initMano(int mano, Player next) throws JessException {
 
-        //  info dalla mano precedente
-        rete.eval("(remove in-tavolo)");
-        rete.eval("(remove turno)");
+        //  diciamo al reasoner che inizializziamo una nuova mano
+        Value v = new Funcall("init-mano", rete).arg(
+            new Value(mano, RU.INTEGER)).execute(rete.getGlobalContext());
 
         //  diamo i turni ai giocatori
         int firstIndex = -1;
@@ -203,6 +204,13 @@ public class PlayerAgent extends GeneralAgent {
     public void addGiocata(int counter, Player justPlayer, Card justCard) throws
         JessException {
 
+        Fact z = new Fact("nuova-giocata", rete);
+        z.setSlotValue("player", new Value(justPlayer));
+        z.setSlotValue("card", new Value(justCard));
+        z.setSlotValue("rank", new Value(justCard.getRank()));
+        z.setSlotValue("suit", new Value(justCard.getSuit()));
+        rete.assertFact(z);
+
         if (justCard.equals(briscolaCard) && justPlayer.getAID() != getAID()) {
             say("Ta-dah! Il socio è venuto fuori! Il vecchio " + justPlayer.getName() + " sociello");
             Fact s = new Fact("socio", rete);
@@ -231,6 +239,7 @@ public class PlayerAgent extends GeneralAgent {
         q.setSlotValue("suit", new Value(justCard.getSuit()));
         rete.assertFact(q);
 
+        //rete.run();
         ((PlayerGUI) gui).addGiocata(counter, justPlayer, justCard);
 
     }

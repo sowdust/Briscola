@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jess.Fact;
 import jess.JessException;
+import jess.Value;
 
 public class PlayGame extends Behaviour {
 
@@ -168,8 +169,10 @@ public class PlayGame extends Behaviour {
                 if (agent.getStrategy().random()) {
                     c = agent.getHand().drawRandom();
                 } else {
-                    c = (Card) agent.getRete().fetch("DA-GIOCARE").javaObjectValue(
-                        agent.getRete().getGlobalContext());
+                    Value v = agent.getRete().fetch("DA-GIOCARE");
+                    //  c = (Card) v.javaObjectValue(
+                    //    agent.getRete().getGlobalContext());
+                    c = agent.getHand().drawRandom();
                 }
 
                 GiocataMessage g = new GiocataMessage(agent.getPlayer(), c,
