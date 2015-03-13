@@ -70,7 +70,7 @@
     ?mio-turno <- (mio-turno)
     (in-mano (card ?c))
 =>
-    (printout t "potrei giocare " (?c toString) crlf)
+    ;(printout t "potrei giocare " (?c toString) crlf)
     (store DA-GIOCARE ?c)
     (retract ?mio-turno)
 )

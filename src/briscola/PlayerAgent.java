@@ -10,6 +10,9 @@ import briscola.objects.Card;
 import briscola.objects.Deck;
 import briscola.objects.Hand;
 import briscola.objects.Role;
+import briscola.objects.Strategy;
+import static briscola.objects.Strategy.NORMAL;
+import static briscola.objects.Strategy.RANDOM;
 import briscola.objects.Suit;
 import jade.core.AID;
 import java.util.List;
@@ -27,10 +30,11 @@ public class PlayerAgent extends GeneralAgent {
     private boolean visible;
     private Hand myHand;
     private Role role;
-    private static final String rulesFile = "/home/mat/school/Tesi/src/briscola/reasoner/player.clp";
+    private static String rulesFile;// = "/home/mat/school/Tesi/src/briscola/reasoner/player.clp";
     private Card briscolaCard;
     private Suit briscolaSuit;
     private TurnStatus status;
+    private Strategy strategy;
 
     //private PlayerGUI gui;
     @Override
@@ -38,13 +42,29 @@ public class PlayerAgent extends GeneralAgent {
 
         Object[] args = getArguments();
 
-        if (args != null && args.length > 0) {
+        if (args != null && args.length == 2) {
             name = (String) args[0];
+            String strategyName = (String) args[1];
+            switch (strategyName) {
+                case "random":
+                    this.strategy = RANDOM;
+                    break;
+                case "normal":
+                    this.strategy = NORMAL;
+                    break;
+                default:
+                    this.strategy = RANDOM;
+                    break;
+            }
+
             visible = true;
         } else {
             visible = false;
             name = briscola.common.Names.randomName();
+            this.strategy = RANDOM;
         }
+
+        rulesFile = strategy.getFile();
 
         //  SETTING UP THE RETE INSTANCE FOR JESS RULE PROCESSING
         rete = new Rete();
@@ -59,6 +79,7 @@ public class PlayerAgent extends GeneralAgent {
         gui.setVisible(visible);
 
         say("Giocatore " + getAID().getName() + " iscritto alla piattaforma");
+        say("Utilizzerò la strategia " + strategy.getName());
         addBehaviour(new Subscribe(this));
     }
 
@@ -251,6 +272,10 @@ public class PlayerAgent extends GeneralAgent {
 
     public TurnStatus getTurnStatus() {
         return status;
+    }
+
+    public Strategy getStrategy() {
+        return strategy;
     }
 
 }

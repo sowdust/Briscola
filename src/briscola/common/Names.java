@@ -46,6 +46,13 @@ public class Names {
     public static final String ROLE_VILLANO = "villano";
     public static final String ROLE_SOCIO = "socio";
 
+    //  STRATEGIES
+    public static final String STRATEGY_RANDOM_NAME = "random";
+    public static final String STRATEGY_RANDOM_FILE = "/home/mat/school/Tesi/src/briscola/reasoner/player.clp";
+
+    public static final String STRATEGY_NORMAL_NAME = "normal";
+    public static final String STRATEGY_NORMAL_FILE = "/home/mat/school/Tesi/src/briscola/reasoner/player.clp";
+
     public static final String[] playerNames
         = {
             "Abelardo",
