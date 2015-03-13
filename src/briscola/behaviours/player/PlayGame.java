@@ -15,8 +15,6 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jess.JessException;
 
 public class PlayGame extends Behaviour {
@@ -28,7 +26,6 @@ public class PlayGame extends Behaviour {
     private final List<Player> players;
     private int lastPlayed;
     private ReceiveGiocate receiveGiocate;
-
     private int mano;
 
     public PlayGame(PlayerAgent agent) {
@@ -56,8 +53,9 @@ public class PlayGame extends Behaviour {
                 try {
                     TurnStatusMessage msg = (TurnStatusMessage) confM.getContentObject();
                     status = new TurnStatus(players, msg.next);
+                    agent.setTurnStatus(status);
                     agent.say("Inizia: " + msg.next.getName());
-                    agent.gui().initMano(status.getMano(), msg.next);
+                    agent.initMano(status.getMano(), msg.next);
                     if (status.getNext().getAID().equals(agent.getAID())) {
                         myAgent.addBehaviour(new SendGiocata());
                     }
@@ -69,8 +67,9 @@ public class PlayGame extends Behaviour {
             }
         } else {
 
-            if (status != null)
+            if (status != null) {
                 mano = status.getMano();
+            }
 
             //  se non siamo in attesa delle giocate del turno
             if (receiveGiocate == null) {
@@ -93,7 +92,7 @@ public class PlayGame extends Behaviour {
 
     @Override
     public boolean done() {
-        return mano == 8;
+        return mano == 7;
     }
 
     class ReceiveGiocate extends Behaviour {
@@ -127,10 +126,11 @@ public class PlayGame extends Behaviour {
                     status.setNext(msg.next);
                     //agent.say("[ Next ]\t " + status.getNext());
                     ++counter;
-                    if (/*status.getCounter() < 5 &&*/status.getNext() != null && status.getNext().getAID().equals(
-                            agent.getAID()) && status.getMano() > lastPlayed) {
+                    if (status.getCounter() < 5 && status.getNext() != null && status.getNext().getAID().equals(
+                        agent.getAID()) && status.getMano() > lastPlayed) {
                         myAgent.addBehaviour(new SendGiocata());
-                        if (status.getMano() > 6) {
+
+                        if (status.getMano() == 0 || status.getMano() == 7) {
                             myAgent.addBehaviour(new PrintFacts(agent));
                         }
                     }
@@ -193,7 +193,7 @@ public class PlayGame extends Behaviour {
                         "Mano #" + (status.getMano() + 1) + " - gioca " + msg.next.getName());
 
                     status.initMano(msg.next);
-                    agent.gui().initMano(status.getMano(), status.getNext());
+                    agent.initMano(status.getMano(), status.getNext());
                     if (status.getNext().getAID().equals(agent.getAID())) {
                         myAgent.addBehaviour(new SendGiocata());
                     }

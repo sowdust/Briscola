@@ -47,20 +47,25 @@
 
 
 ;;  if set to true debug statements are printed
-(defglobal ?*debug* = FALSE)
+( defglobal ?*debug* = FALSE)
 
 ;; stores the briscola suit (initially null)
-(defglobal ?*briscola* = nil)
+( defglobal ?*briscola* = nil)
 
 
-
-
-
-
-
-;;; PRINTS DEBUG MESSAGES IF GLOBAL VAR ?*debug* SET TO TRUE
-(deffunction debug (?list)
+;; PRINTS DEBUG MESSAGES IF GLOBAL VAR ?*debug* SET TO TRUE
+( deffunction debug (?list)
     (if ?*debug* then
         (printout t ?list crlf)
     )
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;      RULES
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+( defrule svuota-tavolo "Elimina tutte le carte dal tavolo"
+    ?x <- (in-tavolo)
+=>
+    (rectract ?x)
 )

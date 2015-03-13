@@ -3,6 +3,7 @@
 package briscola;
 
 import briscola.behaviours.player.Subscribe;
+import briscola.memory.TurnStatus;
 import briscola.memory.player.AuctionMemory;
 import briscola.objects.Bid;
 import briscola.objects.Card;
@@ -14,7 +15,6 @@ import jade.core.AID;
 import java.util.List;
 import jess.Fact;
 import jess.JessException;
-import jess.RU;
 import jess.Rete;
 import jess.Value;
 
@@ -29,6 +29,7 @@ public class PlayerAgent extends GeneralAgent {
     private static final String rulesFile = "/home/mat/school/Tesi/src/briscola/reasoner/player.clp";
     private Card briscolaCard;
     private Suit briscolaSuit;
+    private TurnStatus status;
 
     //private PlayerGUI gui;
     @Override
@@ -110,6 +111,11 @@ public class PlayerAgent extends GeneralAgent {
 
     }
 
+    public void initMano(int mano, Player next) throws JessException {
+        rete.eval("(remove in-tavolo)");
+        gui().initMano(mano, next);
+    }
+
     /**
      * Stores the cards received from mazziere in memory
      * Partitions a deck of card in cards in hand, cards covered
@@ -137,6 +143,19 @@ public class PlayerAgent extends GeneralAgent {
 
     }
 
+    /**
+     * Every time a card is played, we need to update our internal
+     * representation.
+     * - add the card onto the table
+     * - if it was us playing, remove the card from our hand
+     * - if it was others playing, remove the card from the hidden deck
+     * - if the cards was the briscola, we now know the teams
+     *
+     * @param counter
+     * @param justPlayer
+     * @param justCard
+     * @throws JessException
+     */
     public void addGiocata(int counter, Player justPlayer, Card justCard) throws
         JessException {
 
@@ -146,6 +165,27 @@ public class PlayerAgent extends GeneralAgent {
             s.setSlotValue("player", new Value(justPlayer));
             rete.assertFact(s);
         }
+
+        if (justPlayer.equals(this.getPlayer())) {
+            Fact f = new Fact("in-mano", rete);
+            f.setSlotValue("card", new Value(justCard));
+            f.setSlotValue("rank", new Value(justCard.getRank()));
+            f.setSlotValue("suit", new Value(justCard.getSuit()));
+            rete.retract(f);
+        } else {
+            Fact f = new Fact("in-mazzo", rete);
+            f.setSlotValue("card", new Value(justCard));
+            f.setSlotValue("rank", new Value(justCard.getRank()));
+            f.setSlotValue("suit", new Value(justCard.getSuit()));
+            rete.retract(f);
+        }
+
+        Fact q = new Fact("in-tavolo", rete);
+        q.setSlotValue("card", new Value(justCard));
+        q.setSlotValue("player", new Value(justPlayer));
+        q.setSlotValue("rank", new Value(justCard.getRank()));
+        q.setSlotValue("suit", new Value(justCard.getSuit()));
+        rete.assertFact(q);
 
         ((PlayerGUI) gui).addGiocata(counter, justPlayer, justCard);
 
@@ -173,6 +213,21 @@ public class PlayerAgent extends GeneralAgent {
         g.setSlotValue("rank", new Value(c.getRank()));
         g.setSlotValue("card", new Value(briscolaCard));
         assertFact(g);
+    }
+
+    /**
+     * Sets the turn status object in memory
+     * Called by PlayGame behaviour when initializing its
+     * internal status:TurnStatus variable
+     *
+     * @param status
+     */
+    public void setTurnStatus(TurnStatus status) {
+        this.status = status;
+    }
+
+    public TurnStatus getTurnStatus() {
+        return status;
     }
 
 }
