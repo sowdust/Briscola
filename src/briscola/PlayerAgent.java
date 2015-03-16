@@ -223,6 +223,8 @@ public class PlayerAgent extends GeneralAgent {
         }
 
         if (justPlayer.equals(this.getPlayer())) {
+            //  non viene fatto dal reasoner perchè a volte se il reasoner non riesce
+            //  a computare una carta, ne gioca una a caso
             Fact f = new Fact("in-mano", rete);
             f.setSlotValue("card", new Value(justCard));
             f.setSlotValue("rank", new Value(justCard.getRank()));

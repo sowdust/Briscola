@@ -42,6 +42,8 @@
 ( deftemplate prende "chi, per ora, prende"
     (slot player)
     (slot card)
+    (slot rank)
+    (slot suit)
 )
 
 ( deftemplate nuova-giocata "info sulla carta appena giocata"
@@ -97,6 +99,15 @@
     )
 )
 
+( deffunction get-punti-in-tavola () "Calcola quanti punti sono stati giocati fin'ora"
+    (bind ?it (run-query* carte-in-tavola))
+    (bind ?counter 0)
+    (while (?it next)
+        (bind ?counter (+ ((?it getObject r) getValue) ?counter) )
+    )
+    return ?counter
+)
+
 
 ( deffunction batte (?c ?max ?seme-mano)
     "dice se c batte max"
@@ -129,6 +140,14 @@
         ))))
 )
 
+( deffunction gioca (?c)    "se c non nulla, la metto in memoria per essere giocata"
+    (if (instanceof ?c briscola.objects.Card) then
+        (store DA-GIOCARE ?c)
+    else
+        (debug "provando a giocare una carta nulla. Si lascia al caso")
+    )
+)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     QUERIES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -143,6 +162,11 @@
     (in-mano (card ?c) (suit ?s&:(<> ?seme ?s)) (rank ?r))
 
 )
+
+( defquery carte-in-tavola "Ritorna tutte le carte in tavola"
+    (in-tavolo (card ?c) (rank ?r) (suit ?s))
+)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;      RULES
@@ -162,10 +186,12 @@
     (remove prende)
     (remove giocata-numero)
     (remove seme-mano-fact)
+    (remove punti-in-tavola)
     (assert (seme-mano-fact (suit nil)))
     (assert (mano-numero ?number))
-    (assert (prende (player nil) (card nil)))
+    (assert (prende (player nil) (card nil) (rank nil) (suit nil)))
     (assert (giocata-numero -1))
+    (store DA-GIOCARE nil)
     ;(debug (create$ "inizializzando mano" ?number))
 )
 
@@ -182,7 +208,7 @@
     ;;  Aggiorniamo chi prende
     (if (= ?counter-giocata -1) then
         (remove prende)
-        (assert (prende (player ?p) (card ?c)))
+        (assert (prende (player ?p) (card ?c) (suit (?c getSuit)) (rank (?c getRank))))
         (remove seme-mano-fact)
         (assert (seme-mano-fact (suit ?s)))
         (bind ?seme-mano ?s)
@@ -191,7 +217,7 @@
     (if (batte ?c ?prende-card ?seme-mano )  then
         ;(debug (create$ "non prende più " (?prende-player toString) " con " (?prende-card toString) " bensì " (?p toString) " con " (?c toString) " seme mano: " (?seme-mano toString)))
         (remove prende)
-        (assert (prende (player ?p) (card ?c)))
+        (assert (prende (player ?p) (card ?c) (suit (?c getSuit)) (rank (?c getRank))))
 
     ))
 
@@ -208,7 +234,7 @@
     (in-mano (card ?c))
 =>
     ;(printout t "potrei giocare " (?c toString) crlf)
-    (store DA-GIOCARE ?c)
+    ;(store DA-GIOCARE ?c)
     (assert (calcola-giocata))
     (retract ?mio-turno)
 )
@@ -218,16 +244,15 @@
 ;   PRIMA MANO  #0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-( defrule gioca-mano-0-giaguaro "quando è il mio turno, meglio che giochi!"
+( defrule gioca-mano-0-giaguaro "Gioca la carta minore che ha"
     ?w <- (calcola-giocata)
-    (mio-ruolo giaguaro)
     (mano-numero 0)
+    (mio-ruolo giaguaro)
 =>
-    (debug "sono il giaguaro e gioco la più bassa che ho. ")
     (bind ?it (run-query* non-briscole-in-mano ?*briscola*))
     (bind ?da-giocare  (get-minor-valore ?it))
     (debug  (create$ "Sono il giaguaro. Gioco la più bassa: " (?da-giocare toString)))
-    (store DA-GIOCARE ?da-giocare)
+    (gioca ?da-giocare)
 
     (retract ?w)
 )

@@ -167,9 +167,16 @@ public class PlayGame extends Behaviour {
                     c = agent.getHand().drawRandom();
                 } else {
                     Value v = agent.getRete().fetch("DA-GIOCARE");
-                    //  c = (Card) v.javaObjectValue(
-                    //    agent.getRete().getGlobalContext());
-                    c = agent.getHand().drawRandom();
+                    if (null == v) {
+
+                        /*agent.say(
+                         "ATTENZIONE! Ho pensato a una carta nulla da giocare. Gioco a caso",
+                         true);*/
+                        c = agent.getHand().drawRandom();
+                    } else {
+                        c = (Card) v.javaObjectValue(
+                            agent.getRete().getGlobalContext());
+                    }
                 }
 
                 GiocataMessage g = new GiocataMessage(agent.getPlayer(), c,

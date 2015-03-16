@@ -34,6 +34,13 @@ public class GeneralAgent extends Agent {
         gui.say(s);
     }
 
+    public void say(String s, boolean t) {
+        gui.say(s);
+        if (t) {
+            System.out.println("[ " + name + " ]" + s);
+        }
+    }
+
     public void printChat(AID player, String s) {
         int i = 0;
         for (Player p : players) {
