@@ -62,7 +62,7 @@ public class PlayGame extends Behaviour {
             for (int i = 0; i < players.size(); ++i) {
                 if (players.get(i).getAID().equals(
                     mazziere.getTable().getGiaguaro().getAID())) {
-                    next = (i + 1) % 5;
+                    next = i; //(i + 1) % 5;
                     break;
                 }
             }

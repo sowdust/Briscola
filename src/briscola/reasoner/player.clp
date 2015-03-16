@@ -143,7 +143,7 @@
     (assert (mano-numero ?number))
     (assert (prende (player nil) (card nil)))
     (assert (giocata-numero -1))
-    (debug (create$ "inizializzando mano" ?number))
+    ;(debug (create$ "inizializzando mano" ?number))
 )
 
 
@@ -190,9 +190,9 @@
 )
 
 ( defrule gioca2 "quando è il mio turno, meglio che giochi!"
-    ;?mio-turno <- (mio-turno)
+    (mio-turno)
     (mio-ruolo "giaguaro")
-    (mano-numero 0)
+    ;(mano-numero 0)
     ;(prende (player IO))
 
 =>
