@@ -44,9 +44,10 @@
     (slot card)
 )
 
-( deftemplate mio-ruolo "io che sono?"
-    (slot ruolo)
-)
+;;  SOSTITUITO CON UNA STRINGA (Role.toString())
+;( deftemplate mio-ruolo "io che sono?"
+;    (slot ruolo)
+;)
 
 ( deftemplate nuova-giocata "info sulla carta appena giocata"
     (slot player)
@@ -154,7 +155,6 @@
 =>
 
     ;(debug (create$ "ricevuta giocata " ?counter-giocata (?p toString) " " (?c toString) ))
-    ;(debug (create$ "ricevuta giocata " ?counter-giocata (?p toString) " " (?c toString) ))
 
     ;;  Aggiorniamo chi prende
     (if (= ?counter-giocata -1) then
@@ -166,7 +166,7 @@
     else
 
     (if (batte ?c ?prende-card ?seme-mano )  then
-        (debug (create$ "non prende più " (?prende-player toString) " con " (?prende-card toString) " bensì " (?p toString) " con " (?c toString) " seme mano: " (?seme-mano toString)))
+        ;(debug (create$ "non prende più " (?prende-player toString) " con " (?prende-card toString) " bensì " (?p toString) " con " (?c toString) " seme mano: " (?seme-mano toString)))
         (remove prende)
         (assert (prende (player ?p) (card ?c)))
 
@@ -187,4 +187,15 @@
     ;(printout t "potrei giocare " (?c toString) crlf)
     (store DA-GIOCARE ?c)
     (retract ?mio-turno)
+)
+
+( defrule gioca2 "quando è il mio turno, meglio che giochi!"
+    ;?mio-turno <- (mio-turno)
+    (mio-ruolo "giaguaro")
+    (mano-numero 0)
+    ;(prende (player IO))
+
+=>
+
+    (debug "sono il giaguaro e prendo io!!")
 )

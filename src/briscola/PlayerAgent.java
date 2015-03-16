@@ -213,6 +213,7 @@ public class PlayerAgent extends GeneralAgent {
         z.setSlotValue("suit", new Value(justCard.getSuit()));
         rete.assertFact(z);
 
+        //  TODO: il seguente codice può essere spostato nel reasoner
         if (justCard.equals(briscolaCard) && justPlayer.getAID() != getAID()) {
             say("Ta-dah! Il socio è venuto fuori! Il vecchio " + justPlayer.getName() + " sociello");
             Fact s = new Fact("socio", rete);
@@ -249,7 +250,7 @@ public class PlayerAgent extends GeneralAgent {
     public void setRole(Role role) throws JessException {
         this.role = role;
         Fact f = new Fact("mio-ruolo", rete);
-        f.setSlotValue("ruolo", new Value(role));
+        f.setSlotValue("__data", new Value(role.toString(), RU.STRING));
         assertFact(f);
         say("Il mio ruolo è " + role);
         //  TODO: colorare ruoli agli altri
