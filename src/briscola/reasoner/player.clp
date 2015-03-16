@@ -83,6 +83,21 @@
 ;;      FUNCTIONS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+( deffunction get-minor-valore (?it)
+    (if (?it next) then
+        (bind ?min (?it getObject c))
+        (while (?it next)
+            (if ( < (((?it getObject c)  getRank) getPosition)  ((?min getRank) getPosition) ) then
+                (bind ?min (?it getObject c) )
+            )
+        )
+        return ?min
+    else
+        return nil
+    )
+)
+
+
 ( deffunction batte (?c ?max ?seme-mano)
     "dice se c batte max"
 
@@ -121,6 +136,12 @@
 ( defquery briscole-in-mano    "Ritorna tutte le briscole che ho in mano"
     (declare (variables ?seme))
     (in-mano (card ?c) (suit ?seme) (rank ?r))
+)
+
+( defquery non-briscole-in-mano "Ritorna tutte le carte non briscole"
+    (declare (variables ?seme))
+    (in-mano (card ?c) (suit ?s&:(<> ?seme ?s)) (rank ?r))
+
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -192,16 +213,22 @@
     (retract ?mio-turno)
 )
 
-( defrule gioca "quando è il mio turno, meglio che giochi!"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;   PRIMA MANO  #0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+( defrule gioca-mano-0-giaguaro "quando è il mio turno, meglio che giochi!"
     ?w <- (calcola-giocata)
     (mio-ruolo giaguaro)
     (mano-numero 0)
 =>
     (debug "sono il giaguaro e gioco la più bassa che ho. ")
-    (bind ?it (run-query* briscole-in-mano ?*briscola*))
-    (while (?it next)
-        (printout t ((?it getObject c) toString)  crlf)
-    )
+    (bind ?it (run-query* non-briscole-in-mano ?*briscola*))
+    (bind ?da-giocare  (get-minor-valore ?it))
+    (debug  (create$ "Sono il giaguaro. Gioco la più bassa: " (?da-giocare toString)))
+    (store DA-GIOCARE ?da-giocare)
+
     (retract ?w)
 )
 
