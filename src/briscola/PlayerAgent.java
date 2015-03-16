@@ -252,8 +252,8 @@ public class PlayerAgent extends GeneralAgent {
         this.role = role;
         rete.assertString("(mio-ruolo " + role + ")");
         say("Il mio ruolo è " + role);
-        //  TODO: colorare ruoli agli altri
 
+        //  TODO: colorare ruoli agli altri
     }
 
     public Role getRole() {
@@ -275,7 +275,8 @@ public class PlayerAgent extends GeneralAgent {
         g.setSlotValue("rank", new Value(c.getRank()));
         g.setSlotValue("card", new Value(briscolaCard));
         assertFact(g);
-        Defglobal k = new Defglobal("*briscola*", new Value(c.getSuit()));
+        Value v = new Value(c.getSuit());
+        Defglobal k = new Defglobal("*briscola*", v);
         rete.addDefglobal(k);
     }
 

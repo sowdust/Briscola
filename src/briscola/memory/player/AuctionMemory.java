@@ -6,6 +6,9 @@ import briscola.objects.Bid;
 import briscola.objects.Card;
 import briscola.objects.Hand;
 import briscola.objects.Suit;
+import static briscola.objects.Suit.CLUBS;
+import static briscola.objects.Suit.DIAMONDS;
+import static briscola.objects.Suit.HEARTS;
 import static briscola.objects.Suit.SPADES;
 
 public class AuctionMemory {
@@ -49,7 +52,16 @@ public class AuctionMemory {
     }
 
     public Suit computeBriscola() {
-        return SPADES;
+        if (!agent.hasCard(new Card(bestBid.rank(), SPADES))) {
+            return SPADES;
+        }
+        if (!agent.hasCard(new Card(bestBid.rank(), HEARTS))) {
+            return HEARTS;
+        }
+        if (!agent.hasCard(new Card(bestBid.rank(), DIAMONDS))) {
+            return DIAMONDS;
+        }
+        return CLUBS;
     }
 
     public int counter() {

@@ -119,7 +119,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ( defquery briscole-in-mano    "Ritorna tutte le briscole che ho in mano"
-    (in-mano (suit *briscola*))
+    (declare (variables ?seme))
+    (in-mano (card ?c) (suit ?seme) (rank ?r))
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -196,11 +197,29 @@
     (mio-ruolo giaguaro)
     (mano-numero 0)
 =>
+    (debug "sono il giaguaro e gioco la più bassa che ho. ")
+    (bind ?it (run-query* briscole-in-mano ?*briscola*))
+    (while (?it next)
+        (printout t ((?it getObject c) toString)  crlf)
+    )
+    (retract ?w)
+)
 
-    (debug "sono il giaguaro e gioco la più bassa che ho")
-    ;(bind ?it (run-query briscole-in-mano))
-    ;(while (?it hasNext)
-    ;    (debug "briscola: " (?it toString))
-    ;)
+
+( defrule gioca1 "quando è il mio turno, meglio che giochi!"
+    ?w <- (calcola-giocata)
+    (mio-ruolo socio)
+    (mano-numero 0)
+=>
+    (debug "sono il socio e gioco la più bassa che ho. ")
+    (retract ?w)
+)
+
+( defrule gioca2 "quando è il mio turno, meglio che giochi!"
+    ?w <- (calcola-giocata)
+    (mio-ruolo villano)
+    (mano-numero 0)
+=>
+    (debug "sono il villano e gioco la più bassa che ho. ")
     (retract ?w)
 )

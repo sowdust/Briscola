@@ -48,6 +48,7 @@ public class DistributeHands extends OneShotBehaviour {
             rcp.add(players.get(i));
             SendAndWait b = new SendAndWait(rcp, ACL_YOUR_HAND, h[i]);
             sendMessages.addSubBehaviour(b);
+            mazziere.say(rcp.get(0) + "\t" + h[i]);
 
         }
         SequentialBehaviour doAll = new SequentialBehaviour();
