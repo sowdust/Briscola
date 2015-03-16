@@ -44,11 +44,6 @@
     (slot card)
 )
 
-;;  SOSTITUITO CON UNA STRINGA (Role.toString())
-;( deftemplate mio-ruolo "io che sono?"
-;    (slot ruolo)
-;)
-
 ( deftemplate nuova-giocata "info sulla carta appena giocata"
     (slot player)
     (slot card)
@@ -119,7 +114,13 @@
         ))))
 )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;     QUERIES
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+( defquery briscole-in-mano    "Ritorna tutte le briscole che ho in mano"
+    (in-mano (suit *briscola*))
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;      RULES
@@ -180,22 +181,26 @@
     (assert (giocata-numero ?new-counter-giocata))
 )
 
-( defrule gioca "quando è il mio turno, meglio che giochi!"
+( defrule tocca-a-me "quando è il mio turno, meglio che giochi!"
     ?mio-turno <- (mio-turno)
     (in-mano (card ?c))
 =>
     ;(printout t "potrei giocare " (?c toString) crlf)
     (store DA-GIOCARE ?c)
+    (assert (calcola-giocata))
     (retract ?mio-turno)
 )
 
-( defrule gioca2 "quando è il mio turno, meglio che giochi!"
-    (mio-turno)
-    (mio-ruolo "giaguaro")
-    ;(mano-numero 0)
-    ;(prende (player IO))
-
+( defrule gioca "quando è il mio turno, meglio che giochi!"
+    ?w <- (calcola-giocata)
+    (mio-ruolo giaguaro)
+    (mano-numero 0)
 =>
 
-    (debug "sono il giaguaro e prendo io!!")
+    (debug "sono il giaguaro e gioco la più bassa che ho")
+    ;(bind ?it (run-query briscole-in-mano))
+    ;(while (?it hasNext)
+    ;    (debug "briscola: " (?it toString))
+    ;)
+    (retract ?w)
 )

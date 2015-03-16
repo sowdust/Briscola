@@ -160,6 +160,7 @@ public class PlayerAgent extends GeneralAgent {
             rete.assertFact(f);
         }
         //  aggiorniamo la gui
+        rete.run();
         gui().initMano(mano, next);
     }
 
@@ -249,9 +250,7 @@ public class PlayerAgent extends GeneralAgent {
 
     public void setRole(Role role) throws JessException {
         this.role = role;
-        Fact f = new Fact("mio-ruolo", rete);
-        f.setSlotValue("__data", new Value(role.toString(), RU.STRING));
-        assertFact(f);
+        rete.assertString("(mio-ruolo " + role + ")");
         say("Il mio ruolo è " + role);
         //  TODO: colorare ruoli agli altri
 

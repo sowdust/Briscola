@@ -15,7 +15,6 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import jess.Fact;
 import jess.JessException;
-import jess.RU;
 import jess.Value;
 
 public class WaitForBriscola extends Behaviour {
@@ -56,7 +55,7 @@ public class WaitForBriscola extends Behaviour {
                  -  fact briscola
                  -  [fact socio] se siamo noi
                  */
-                //  AGGIORNIAMO LE NOSTR INFO SUI RUOLI
+                //  AGGIORNIAMO LE NOSTRE INFO SUI RUOLI
                 Fact f = new Fact("giaguaro", player.getRete());
                 f.setSlotValue("player", new Value(giaguaro));
                 player.assertFact(f);

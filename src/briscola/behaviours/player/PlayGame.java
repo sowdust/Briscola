@@ -2,7 +2,6 @@ package briscola.behaviours.player;
 
 import briscola.Player;
 import briscola.PlayerAgent;
-import briscola.behaviours.PrintFacts;
 import static briscola.common.ACLCodes.ACL_TELL_GIOCATA;
 import briscola.memory.TurnStatus;
 import briscola.messages.GiocataMessage;
