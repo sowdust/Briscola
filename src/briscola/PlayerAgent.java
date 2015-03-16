@@ -73,6 +73,7 @@ public class PlayerAgent extends GeneralAgent {
         try {
             rete.batch(rulesFile);
             rete.reset();
+            rete.store("IO", new Value(this.getPlayer()));
         } catch (JessException ex) {
             ex.printStackTrace();
         }

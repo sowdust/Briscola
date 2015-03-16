@@ -94,7 +94,7 @@ public class PlayGame extends Behaviour {
 
     @Override
     public boolean done() {
-        return mano == 7;
+        return receiveGiocate != null && (mano == 7 && receiveGiocate.counter == 5);
     }
 
     class ReceiveGiocate extends Behaviour {

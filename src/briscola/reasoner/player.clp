@@ -11,6 +11,10 @@
 ;   tutti i tipi di fatti che ci sono utili (slot per ora ridondanti)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+( deftemplate io "chi sono io"
+    (slot player)
+)
+
 ( deftemplate in-mano "carte che posso ancora giocare"
     (slot card)
     (slot rank)
@@ -76,7 +80,7 @@
 ;; PRINTS DEBUG MESSAGES IF GLOBAL VAR ?*debug* SET TO TRUE
 ( deffunction debug (?list)
     (if ?*debug* then
-        (printout t ?list crlf)
+        (printout t ((fetch IO) getName) ": " ?list crlf)
     )
 )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -165,7 +169,7 @@
         (debug (create$ "non prende più " (?prende-player toString) " con " (?prende-card toString) " bensì " (?p toString) " con " (?c toString) " seme mano: " (?seme-mano toString)))
         (remove prende)
         (assert (prende (player ?p) (card ?c)))
-   
+
     ))
 
     (bind ?new-counter-giocata (+ ?counter-giocata 1))
