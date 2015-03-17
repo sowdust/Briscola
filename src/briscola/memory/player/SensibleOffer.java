@@ -14,12 +14,15 @@ import static briscola.objects.Rank.THREE;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 class SensibleOffer {
 
     public final int howMany;
     public final Rank minimum;
     public final List<Rank> mustHave;
+    private static final Random rand = new Random();
+    private static final int MAX_BLUFF = 10;
 
     SensibleOffer(int howMany, Rank minimum, List<Rank> mustHave) {
         this.howMany = howMany;
@@ -32,6 +35,7 @@ class SensibleOffer {
         List<Rank> mustHave = new LinkedList<>();
         int howMany = 0;
         Rank minimum = ACE;
+        int probability;
 
         if (Arrays.equals(distr, new int[]{8, 0, 0, 0})) {
 
@@ -52,7 +56,13 @@ class SensibleOffer {
             } else if (punteggio > 15) {
                 minimum = FOUR;
             } else {
-                howMany = -1;
+                probability = rand.nextInt(MAX_BLUFF);
+                if (rand.nextInt(probability) == 1) {
+                    minimum = Rank.values()[rand.nextInt(
+                        Rank.getValues().size())];
+                } else {
+                    howMany = -1;
+                }
             }
 
         } else if (Arrays.equals(distr, new int[]{7, 1, 0, 0})) {
@@ -94,7 +104,13 @@ class SensibleOffer {
             } else if (punteggio > 15) {
                 minimum = SEVEN;
             } else {
-                howMany = -1;
+                probability = rand.nextInt(MAX_BLUFF);
+                if (rand.nextInt(probability) == 1) {
+                    minimum = Rank.values()[rand.nextInt(
+                        Rank.getValues().size())];
+                } else {
+                    howMany = -1;
+                }
             }
         } else if (Arrays.equals(distr, new int[]{5, 3, 0, 0})
             || Arrays.equals(distr, new int[]{5, 2, 1, 0})
@@ -142,7 +158,13 @@ class SensibleOffer {
                 mustHave.add(THREE);
                 howMany = 1;
             } else {
-                howMany = -1;
+                probability = rand.nextInt(MAX_BLUFF);
+                if (rand.nextInt(probability) == 1) {
+                    minimum = Rank.values()[rand.nextInt(
+                        Rank.getValues().size())];
+                } else {
+                    howMany = -1;
+                }
             }
         } else if (Arrays.equals(distr, new int[]{4, 4, 0, 0})
             || Arrays.equals(distr, new int[]{4, 3, 1, 0})
@@ -195,7 +217,13 @@ class SensibleOffer {
                 mustHave.add(THREE);
                 howMany = 1;
             } else {
-                howMany = -1;
+                probability = rand.nextInt(MAX_BLUFF);
+                if (rand.nextInt(probability) == 1) {
+                    minimum = Rank.values()[rand.nextInt(
+                        Rank.getValues().size())];
+                } else {
+                    howMany = -1;
+                }
             }
         } else if (Arrays.equals(distr, new int[]{3, 3, 2, 0})
             || Arrays.equals(distr, new int[]{3, 3, 1, 1})
@@ -247,7 +275,13 @@ class SensibleOffer {
                 mustHave.add(THREE);
                 howMany = 1;
             } else {
-                howMany = -1;
+                probability = rand.nextInt(MAX_BLUFF);
+                if (rand.nextInt(probability) == 1) {
+                    minimum = Rank.values()[rand.nextInt(
+                        Rank.getValues().size())];
+                } else {
+                    howMany = -1;
+                }
             }
         } else if (Arrays.equals(distr, new int[]{2, 2, 2, 2})) {
             if (punteggio > 50) {
@@ -291,7 +325,13 @@ class SensibleOffer {
             } else if (punteggio > 15) {
                 howMany = -1;
             } else {
-                howMany = -1;
+                probability = rand.nextInt(MAX_BLUFF);
+                if (rand.nextInt(probability) == 1) {
+                    minimum = Rank.values()[rand.nextInt(
+                        Rank.getValues().size())];
+                } else {
+                    howMany = -1;
+                }
             }
         }
         return new SensibleOffer(howMany, minimum, mustHave);
