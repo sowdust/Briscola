@@ -37,7 +37,7 @@ public class GeneralAgent extends Agent {
     public void say(String s, boolean t) {
         gui.say(s);
         if (t) {
-            System.out.println("[ " + name + " ]" + s);
+            System.out.println("[" + name + "]" + s);
         }
     }
 

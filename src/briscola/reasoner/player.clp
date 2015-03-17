@@ -11,7 +11,7 @@
 ;   tutti i tipi di fatti che ci sono utili (slot per ora ridondanti)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-( deftemplate io "chi sono io"
+(deftemplate io "chi sono io"
     (slot player)
 )
 
@@ -235,9 +235,26 @@
 =>
     ;(printout t "potrei giocare " (?c toString) crlf)
     ;(store DA-GIOCARE ?c)
-    (assert (calcola-giocata))
+    (assert (analizza-giocata))
     (retract ?mio-turno)
 )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;   ANALISI DELLA SITUAZIONE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+( defrule analisi-propria-mano "Che carte ho?"
+
+    ?w <- (analizza-giocata)
+
+=>
+    (bind ?punti-in-tavola (get-punti-in-tavola))
+    (debug (create$ in tavola ci sono ?punti-in-tavola))
+    (assert (calcola-giocata))
+    (retract ?w)
+
+)
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
