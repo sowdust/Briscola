@@ -53,6 +53,13 @@
     (slot suit)
 )
 
+( deftemplate carichi-in-mano "Le carte da punto che ho in mano"
+    (slot card)
+    (slot rank)
+    (slot suit)
+    (slot points)
+)
+
 ( deftemplate giaguaro  (slot player) )
 ( deftemplate socio (slot player) )
 ( deftemplate villano   (slot player) )
@@ -148,6 +155,16 @@
     )
 )
 
+( deffunction analizza-carichi-in-mano ()
+    "Asserisco fatti riguardo ai miei carichi"
+    (bind ?it (run-query* carichi-in-mano ?*briscola*))
+    (while (?it next)
+        (assert (carichi-in-mano (card (?it getObject c)) (rank (?it getObject r)) (suit (?it getObject s))    (points ((?it getObject r) getValue)) ))
+        ;(debug (create$ carico in mano: ((?it getObject c) toString)))
+    )
+)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     QUERIES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -160,7 +177,11 @@
 ( defquery non-briscole-in-mano "Ritorna tutte le carte non briscole"
     (declare (variables ?seme))
     (in-mano (card ?c) (suit ?s&:(<> ?seme ?s)) (rank ?r))
+)
 
+( defquery carichi-in-mano "Le carte che ho in mano"
+    (declare (variables ?seme))
+    (in-mano (card ?c) (suit ?s&:(<> ?seme ?s)) (rank ?r&:(< 0 (?r getValue))))
 )
 
 ( defquery carte-in-tavola "Ritorna tutte le carte in tavola"
@@ -248,7 +269,17 @@
     ?w <- (analizza-giocata)
 
 =>
+    ;;  quanti punti ci sono in tavola
     (bind ?punti-in-tavola (get-punti-in-tavola))
+    (assert (punti-in-tavola ?punti-in-tavola))
+
+    ;;  ho dei carichi?
+    (analizza-carichi-in-mano)
+
+    ;;  posso prendere?
+
+
+
     (debug (create$ in tavola ci sono ?punti-in-tavola))
     (assert (calcola-giocata))
     (retract ?w)
