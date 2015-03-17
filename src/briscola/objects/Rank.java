@@ -3,6 +3,8 @@
 package briscola.objects;
 
 import static briscola.common.Names.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public enum Rank {
 
@@ -48,5 +50,20 @@ public enum Rank {
 
     public boolean equals(Rank r) {
         return r.getPosition() == position;
+    }
+
+    public static List<Rank> getValues() {
+        List<Rank> l = new LinkedList<>();
+        l.add(0, DEUCE);
+        l.add(0, FOUR);
+        l.add(0, FIVE);
+        l.add(0, SIX);
+        l.add(0, SEVEN);
+        l.add(0, JACK);
+        l.add(0, QUEEN);
+        l.add(0, KING);
+        l.add(0, THREE);
+        l.add(0, ACE);
+        return l;
     }
 }

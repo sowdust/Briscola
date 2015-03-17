@@ -57,4 +57,5 @@ public class Card implements Serializable {
         hash = 59 * hash + Objects.hashCode(this.suit);
         return hash;
     }
+
 }

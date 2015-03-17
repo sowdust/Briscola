@@ -30,6 +30,9 @@ public class Bid implements Serializable {
     }
 
     public int getValue() {
+        if (rank == null) {
+            return -1;
+        }
         return rank.getValue();
     }
 

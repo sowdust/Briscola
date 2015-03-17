@@ -43,7 +43,7 @@ public class PlayAuction extends Behaviour {
             //  WHEN OFFERING BIDS
             ACLMessage offerBid = new ACLMessage(ACL_BID_OFFER);
             offerBid.addReceiver(agent.getMazziereAID());
-            Bid myBid = status.computeBid(agent.getHand());
+            Bid myBid = status.computeBid();
             try {
                 offerBid.setContentObject(myBid);
             } catch (IOException ex) {
@@ -112,7 +112,7 @@ public class PlayAuction extends Behaviour {
     @Override
     public boolean done() {
         if (done) {
-            agent.say("Asta conclusa");
+            agent.say("### Asta conclusa");
             if (winner) {
                 myAgent.addBehaviour(new DeclareBriscola(agent));
                 myAgent.addBehaviour(new WaitForBriscola(agent));
