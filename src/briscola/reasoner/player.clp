@@ -60,6 +60,12 @@
     (slot points)
 )
 
+( deftemplate posso-prendere "Carte con le quali posso prendere la mano"
+    (slot card)
+    (slot rank)
+    (slot suit)
+)
+
 ( deftemplate giaguaro  (slot player) )
 ( deftemplate socio (slot player) )
 ( deftemplate villano   (slot player) )
@@ -155,6 +161,9 @@
     )
 )
 
+;;;     Funzioni di analisi 
+;;;     ( asseriscono fatti prima di giocare ) 
+
 ( deffunction analizza-carichi-in-mano ()
     "Asserisco fatti riguardo ai miei carichi"
     (bind ?it (run-query* carichi-in-mano ?*briscola*))
@@ -164,6 +173,19 @@
     )
 )
 
+( deffunction analizza-possibili-prese (?sta-prendendo ?seme-mano)
+    "Asserisco fatti riguardo le carte con le quali posso prendere"
+    (bind ?im (run-query* carte-in-mano ))
+    (while (?im next)
+        (if (batte (?im getObject c) ?sta-prendendo ?seme-mano) then
+            (assert (posso-prendere (card (?im getObject c)) (rank (?im getObject r))  (suit (?im getObject s))))
+            (debug (create$ posso prendere con ((?im getObject c) toString) sta prendendo (?sta-prendendo toString))) 
+        else
+            (debug (create$ NON posso prendere con ((?im getObject c) toString) sta prendendo (?sta-prendendo toString))) 
+            
+        )
+    )
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     QUERIES
@@ -188,6 +210,9 @@
     (in-tavolo (card ?c) (rank ?r) (suit ?s))
 )
 
+( defquery carte-in-mano "Ritorna tutte le carte che ho in mano"
+    (in-mano (card ?c) (suit ?s) (rank ?r))
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;      RULES
@@ -208,6 +233,7 @@
     (remove giocata-numero)
     (remove seme-mano-fact)
     (remove punti-in-tavola)
+    (remove posso-prendere)
     (assert (seme-mano-fact (suit nil)))
     (assert (mano-numero ?number))
     (assert (prende (player nil) (card nil) (rank nil) (suit nil)))
@@ -267,20 +293,28 @@
 ( defrule analisi-propria-mano "Che carte ho?"
 
     ?w <- (analizza-giocata)
+    (giocata-numero ?counter-giocata)
+    (seme-mano-fact (suit ?seme-mano))
+    (prende (player ?prende-player) (card ?prende-card) (suit ?prende-suit) (rank ?prende-rank))
 
 =>
     ;;  quanti punti ci sono in tavola
+    ;;  (punti-in-tavola n)
     (bind ?punti-in-tavola (get-punti-in-tavola))
     (assert (punti-in-tavola ?punti-in-tavola))
 
     ;;  ho dei carichi?
+    ;;  (carichi-in-mano (card) (rank) (suit) (points)
     (analizza-carichi-in-mano)
 
     ;;  posso prendere?
+    ;;  (posso-prendere (card) (rank) (suit))
+    (if (> ?counter-giocata -1) then
+        (analizza-possibili-prese ?prende-card ?seme-mano)
+    )
 
 
-
-    (debug (create$ in tavola ci sono ?punti-in-tavola))
+    ;(debug (create$ in tavola ci sono ?punti-in-tavola))
     (assert (calcola-giocata))
     (retract ?w)
 
