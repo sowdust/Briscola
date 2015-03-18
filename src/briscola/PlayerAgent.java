@@ -222,7 +222,7 @@ public class PlayerAgent extends GeneralAgent {
         rete.assertFact(z);
 
         //  TODO: il seguente codice può essere spostato nel reasoner
-        if (justCard.equals(briscolaCard) && justPlayer.getAID() != getAID()) {
+        if (justCard.equals(briscolaCard)) {
             say("Ta-dah! Il socio è venuto fuori! Il vecchio " + justPlayer.getName() + " sociello");
             Fact s = new Fact("socio", rete);
             s.setSlotValue("player", new Value(justPlayer));
@@ -306,6 +306,21 @@ public class PlayerAgent extends GeneralAgent {
 
     public Strategy getStrategy() {
         return strategy;
+    }
+
+    public void computeStrenght() throws JessException {
+        List<Card> list = getHand().getCards(briscolaSuit);
+        int value = 0;
+        for (Card c : list) {
+            value += c.getPosition();
+        }
+        if (list.size() > 3 || value > 20) {
+            rete.assertString("(socio-forte)");
+        }
+        if (list.size() < 3 && value < 17) {
+            rete.assertString("(socio-debole)");
+        }
+
     }
 
 }

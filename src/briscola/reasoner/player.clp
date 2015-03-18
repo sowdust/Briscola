@@ -240,6 +240,8 @@
     )
 )
 
+
+;;;;; TODO:
 ( deffunction piu-bassa-che-prende (?seme-mano)
     "Data una carta, dico se fra quelle in mano è la più bassa che prende"
     (bind ?it (run-query* prendono-in-mano))
@@ -425,14 +427,14 @@
 ( defrule socio-tiene-giaguaro-ultimo "lasciamo il giaguaro ultimo nelle mani finali"
     ?w <- (calcola-giocata) 
     (mio-ruolo socio)
-    ;(mano-numero ?mano&:(> ?mano 4))
+    (socio (player ?socio))
     (giaguaro (player ?g))
     (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
     (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (+ ?n 1))))
-    ;(briscola (card ?b))
-    ;(posso-prendere (card ?c&:(<> ?c ?b)) )
+    (briscola (card ?b))
+    (posso-prendere (card ?c&:(or (<> ?c ?b) (= ?socio (fetch IO)))))
 =>
-    ;(gioca ?c 50)
+    (gioca ?c 50)
     (debug (create$ sono socio e vorrei lasciare il giaguaro ultimo alla mano ))
     (retract ?w)
 )

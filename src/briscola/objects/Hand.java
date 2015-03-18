@@ -68,6 +68,16 @@ public class Hand implements Serializable {
         return Collections.unmodifiableList(cards);
     }
 
+    public List<Card> getCards(Suit s) {
+        List<Card> list = new LinkedList<>();
+        for (Card c : cards) {
+            if (c.getSuit().equals(s)) {
+                list.add(c);
+            }
+        }
+        return list;
+    }
+
     public int[] getDistribution() {
         if (null == this.distribution) {
             int[] distr = new int[4];

@@ -62,11 +62,7 @@ public class WaitForBriscola extends Behaviour {
 
                 if (player.hasCard(briscolaCard)) {
                     player.setRole(SOCIO);
-
-                    Fact s = new Fact("socio", player.getRete());
-                    s.setSlotValue("player", new Value(
-                                   player.getPlayer()));
-                    player.assertFact(s);
+                    player.computeStrenght();
                 } else if (giaguaro.getAID().equals(player.getAID())) {
                     player.setRole(GIAGUARO);
                 } else {
