@@ -126,6 +126,21 @@
     return ?result
 )
 
+( deffunction get-maggior-carico (?seme)
+    (bind ?it (run-query* carichi-in-mano ?seme))
+    (?it next)
+    (bind ?result (?it getObject c))
+    (if (instanceof ?result briscola.objects.Card) then
+    (while (?it next)
+        (bind ?card (?it getObject c))
+        (if ( > (?card getValue) (?result getValue)) then
+            (bind ?result ?card)
+        )
+    ))
+    return ?result
+
+)
+
 
 
 ( deffunction get-minor-valore (?it)
@@ -257,7 +272,7 @@
     (in-mano (card ?c) (suit ?s&:(<> ?seme ?s)) (rank ?r))
 )
 
-( defquery carichi-in-mano "Le carte che ho in mano"
+( defquery carichi-in-mano "I carichi che ho in mano"
     (declare (variables ?seme))
     (in-mano (card ?c) (suit ?s&:(<> ?seme ?s)) (rank ?r&:(< 0 (?r getValue))))
 )
@@ -414,11 +429,11 @@
     (giaguaro (player ?g))
     (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
     (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (+ ?n 1))))
-    (briscola (card ?b))
-    (posso-prendere (card ?c&:(<> ?c ?b)) )
+    ;(briscola (card ?b))
+    ;(posso-prendere (card ?c&:(<> ?c ?b)) )
 =>
-    (gioca ?c 50)
-    (debug (create$ gioco (?c toString) per lasciare il giaguaro ultimo alla mano ?mano))
+    ;(gioca ?c 50)
+    (debug (create$ sono socio e vorrei lasciare il giaguaro ultimo alla mano ))
     (retract ?w)
 )
 
@@ -439,6 +454,28 @@
     (gioca ?c 0)
     (retract ?w)
 )
+
+
+( defrule villano-carica-se-villano-prende
+    ?w <- (calcola-giocata)
+    (mio-ruolo villano)
+    (giaguaro (player ?gia))
+    (socio (player ?soc))
+    (briscola (suit ?briscola))
+    (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
+    (turno (player ?player&:(= ?player ?gia)) (posizione ?pos&:(< ?pos ?n)))
+    (turno (player ?player2&:(= ?player2 ?soc)) (posizione ?pos2&:(< ?pos2 ?n))) 
+    (prende (player ?prende&:(and (<> ?prende ?soc) (<> ?prende ?gia) )))
+    ;(in-mano (card ?carico));&:(= ?carico (get-maggior-carico ?briscola))))
+    (carichi-in-mano (card ?carico&:(= ?carico (get-maggior-carico ?briscola))))
+=>
+    
+    (debug (create$ carico al massimo perchè prende il mio compagno (?prende toString)  (?carico toString)))
+    (gioca ?carico)
+    ;(debug (create$ il mio maggior carico e (get-maggior-carico ?briscola)))
+)
+
+
 
     
 

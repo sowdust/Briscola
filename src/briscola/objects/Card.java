@@ -47,6 +47,11 @@ public class Card implements Comparable, Serializable {
         if (c == null) {
             return false;
         }
+        if (!(c instanceof briscola.objects.Card)) {
+            System.out.println("Qualcosa di molto strano!");
+            System.out.println("Ricevuta " + c + " al posto di card");
+            return false;
+        }
         return ((Card) c).getRank().equals(this.rank) && ((Card) c).getSuit().equals(
             this.suit);
     }
