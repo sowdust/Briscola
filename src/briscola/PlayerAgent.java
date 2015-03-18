@@ -44,7 +44,7 @@ public class PlayerAgent extends GeneralAgent {
 
         Object[] args = getArguments();
 
-        if (args != null && args.length == 2) {
+        if (args != null && args.length == 3) {
             name = (String) args[0];
             String strategyName = (String) args[1];
             switch (strategyName) {
@@ -58,8 +58,8 @@ public class PlayerAgent extends GeneralAgent {
                     this.strategy = RANDOM;
                     break;
             }
+            visible = (((String) args[2]).equals("true"));
 
-            visible = true;
         } else {
             visible = false;
             name = briscola.common.Names.randomName();
@@ -160,12 +160,14 @@ public class PlayerAgent extends GeneralAgent {
             f.setSlotValue("posizione", new Value(i, RU.INTEGER));
             rete.assertFact(f);
             if (p.equals(this.getPlayer())) {
-                rete.assertString("(mio-turno-numero " + (i + 1) + ")");
+                rete.assertString("(mio-turno-numero " + i + ")");
             }
 
         }
         //  aggiorniamo la gui
+
         rete.run();
+        //rete.eval("(facts)");
         gui().initMano(mano, next);
     }
 

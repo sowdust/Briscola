@@ -3,7 +3,7 @@ package briscola;
 import jade.core.AID;
 import java.io.Serializable;
 
-public class Player implements Serializable {
+public class Player implements Serializable, Comparable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,5 +30,15 @@ public class Player implements Serializable {
 
     public boolean equals(Player p) {
         return p.name.equals(name) && p.getAID().equals(agentID);
+    }
+
+    @Override
+    public int compareTo(Object t) {
+        if (t instanceof briscola.Player) {
+            if (this.equals((Player) t)) {
+                return 0;
+            }
+        }
+        return -1;
     }
 }

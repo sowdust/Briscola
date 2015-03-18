@@ -169,9 +169,7 @@ public class PlayGame extends Behaviour {
                     Value v = agent.getRete().fetch("DA-GIOCARE");
                     if (null == v) {
 
-                        agent.say(
-                            "Giocando a caso",
-                            true);
+                        agent.say("Giocando a caso");
                         c = agent.getHand().drawRandom();
                     } else {
                         c = (Card) v.javaObjectValue(

@@ -225,9 +225,27 @@
     )
 )
 
+( deffunction piu-bassa-che-prende (?seme-mano)
+    "Data una carta, dico se fra quelle in mano è la più bassa che prende"
+    (bind ?it (run-query* prendono-in-mano))
+    (?it next)
+    (bind ?card (?it getObject c))
+    (while (?it next)
+        (bind ?temp (?it getObject c))
+        (if (batte ?card ?temp) then
+            (bind ?card ?temp)
+        )
+    )
+    return ?card
+)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     QUERIES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+( defquery prendono-in-mano "Ritorna tutte le carte che prendono"
+    (posso-prendere (card ?c) (rank ?r) (suit ?s))
+)
 
 ( defquery briscole-in-mano    "Ritorna tutte le briscole che ho in mano"
     (declare (variables ?seme))
@@ -273,12 +291,19 @@
     (remove seme-mano-fact)
     (remove punti-in-tavola)
     (remove posso-prendere)
+    (remove analizza-giocate)
+    (remove calcola-giocata)
+    (remove carichi-in-mano)
+    (remove posso-prendere)
+    (remove mio-turno-numero)
+
     (assert (seme-mano-fact (suit nil)))
     (assert (mano-numero ?number))
     (assert (prende (player nil) (card nil) (rank nil) (suit nil)))
     (assert (giocata-numero -1))
     (store DA-GIOCARE nil)
-    ;(debug (create$ "inizializzando mano" ?number))
+    (debug (create$ "inizializzando mano" ?number))
+
 )
 
 
@@ -367,31 +392,54 @@
 
 ( defrule se-posso-prendere-gratis-villano-prendo "Se ho un carico che può prendere tutto"
     ;;  importante!
-    (declare (salience 100))
-    ;(mio-ruolo villano)
+    ;(declare (salience 100))
+    (mio-ruolo villano)
+    (mano-numero ?m)
     ?w <- (calcola-giocata)
     (mio-turno-numero 5)
     (briscola (card ?b))
     (posso-prendere (card ?c&:(= ?c (get-piu-alta-seme ?s))) (suit ?s&:(<> ?s ?*briscola*)))
 =>
     (gioca ?c 100)
-    (debug (create$ sono ultimo di mano, prendo gratis! (?c toString)))
+    (debug (create$ sono ultimo di mano, prendo gratis! (?c toString) ?m ))
+    (retract ?w)
 )
 
 
 
 ( defrule socio-tiene-giaguaro-ultimo "lasciamo il giaguaro ultimo nelle mani finali"
+    ?w <- (calcola-giocata) 
     (mio-ruolo socio)
-    (mano-numero ?n)
+    ;(mano-numero ?mano&:(> ?mano 4))
     (giaguaro (player ?g))
-    (mio-turno ?n)
-    (turno (player ?g) (posizione ?m&:(=?m (+ 1 ?m))))
+    (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (+ ?n 1))))
     (briscola (card ?b))
-    (prende (card ?c&:(<> ?c ?b)))
+    (posso-prendere (card ?c&:(<> ?c ?b)) )
 =>
     (gioca ?c 50)
-    (debug (create$ gioco (?c toString) per lasciare il giaguaro ultimo alla mano ?n))
+    (debug (create$ gioco (?c toString) per lasciare il giaguaro ultimo alla mano ?mano))
+    (retract ?w)
 )
+
+( defrule villano-prende-prima-giaguaro "villano prova a prendere prima del giaguaro"
+    ?w <- (calcola-giocata)
+    (mio-ruolo villano)
+    (giaguaro (player ?g))
+    (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (- ?n 1))))
+    ;(turno (player ?g) (posizione ?pos));&:(= ?pos (- ?n 1))))
+    ;(turno (player ?g) (posizione ?m));&:(= ?m (- 1 ?m))))
+    ;(punti-in-tavola ?x)
+    ;(posso-prendere (card ?c))
+    (seme-mano-fact (suit ?seme-mano))
+    (posso-prendere (card ?c));&:(= ?c (piu-bassa-che-prende ?seme-mano))) )  
+=>
+    (debug (create$ gioco la più bassa che prende (?c toString), per tenere giaguaro ultimo))
+    (gioca ?c 0)
+    (retract ?w)
+)
+
     
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
