@@ -76,6 +76,13 @@
     (slot points)
 )
 
+( deftemplate carico-piu-alto "Le carte da punto che ho in mano"
+    (slot card)
+    (slot rank)
+    (slot suit)
+    (slot points)
+)
+
 ( deftemplate posso-prendere "Carte con le quali posso prendere la mano"
     (slot card)
     (slot rank)
@@ -125,23 +132,6 @@
     ) 
     return ?result
 )
-
-( deffunction get-maggior-carico (?seme)
-    (bind ?it (run-query* carichi-in-mano ?seme))
-    (?it next)
-    (bind ?result (?it getObject c))
-    (if (instanceof ?result briscola.objects.Card) then
-    (while (?it next)
-        (bind ?card (?it getObject c))
-        (if ( > (?card getValue) (?result getValue)) then
-            (bind ?result ?card)
-        )
-    ))
-    return ?result
-
-)
-
-
 
 ( deffunction get-minor-valore (?it)
     (if (?it next) then
@@ -220,9 +210,17 @@
 ( deffunction analizza-carichi-in-mano ()
     "Asserisco fatti riguardo ai miei carichi"
     (bind ?it (run-query* carichi-in-mano ?*briscola*))
+    (bind ?piualto nil)
     (while (?it next)
+        (if (or (not (instanceof ?piualto briscola.objects.Card)) (< (?piualto getValue) ((?it getObject c) getValue)) )then 
+            (bind ?piualto (?it getObject c))
+        )
         (assert (carichi-in-mano (card (?it getObject c)) (rank (?it getObject r)) (suit (?it getObject s))    (points ((?it getObject r) getValue)) ))
         ;(debug (create$ carico in mano: ((?it getObject c) toString)))
+    )
+
+    (if (<> ?piualto nil) then
+        (assert (carico-piu-alto (card ?piualto)))
     )
 )
 
@@ -311,6 +309,7 @@
     (remove analizza-giocate)
     (remove calcola-giocata)
     (remove carichi-in-mano)
+    (remove carico-piu-alto)
     (remove posso-prendere)
     (remove mio-turno-numero)
 
@@ -425,17 +424,19 @@
 
 
 ( defrule socio-tiene-giaguaro-ultimo "lasciamo il giaguaro ultimo nelle mani finali"
-    ?w <- (calcola-giocata) 
+    ?w <- (calcola-giocata)
+    (mano-numero ?mano)
     (mio-ruolo socio)
     (socio (player ?socio))
+    (socio-forte ?forza)
     (giaguaro (player ?g))
     (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
     (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (+ ?n 1))))
     (briscola (card ?b))
-    (posso-prendere (card ?c&:(or (<> ?c ?b) (= ?socio (fetch IO)))))
+    (posso-prendere (card ?c&:(or (> ?mano 4) (or (> ?forza 20) (or (<> ?c ?b) (= ?socio (fetch IO)))))))
 =>
     (gioca ?c 50)
-    (debug (create$ sono socio e vorrei lasciare il giaguaro ultimo alla mano ))
+    (debug (create$ sono socio -scoperto o forte: ?forza- per lasciare al giaguaro ultimo alla mano gioco (?c toString)))
     (retract ?w)
 )
 
@@ -469,11 +470,12 @@
     (turno (player ?player2&:(= ?player2 ?soc)) (posizione ?pos2&:(< ?pos2 ?n))) 
     (prende (player ?prende&:(and (<> ?prende ?soc) (<> ?prende ?gia) )))
     ;(in-mano (card ?carico));&:(= ?carico (get-maggior-carico ?briscola))))
-    (carichi-in-mano (card ?carico&:(= ?carico (get-maggior-carico ?briscola))))
+    (carico-piu-alto (card ?carico))
+    ;(carichi-in-mano (card ?carico&:(= ?carico (get-maggior-carico))))
 =>
     
     (debug (create$ carico al massimo perchè prende il mio compagno (?prende toString)  (?carico toString)))
-    (gioca ?carico)
+    (gioca ?carico 0)
     ;(debug (create$ il mio maggior carico e (get-maggior-carico ?briscola)))
 )
 

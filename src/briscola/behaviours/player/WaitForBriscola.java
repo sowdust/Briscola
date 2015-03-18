@@ -62,7 +62,11 @@ public class WaitForBriscola extends Behaviour {
 
                 if (player.hasCard(briscolaCard)) {
                     player.setRole(SOCIO);
-                    player.computeStrenght();
+                    try {
+                        player.computeStrenght();
+                    } catch (JessException e) {
+                        e.printStackTrace();
+                    }
                 } else if (giaguaro.getAID().equals(player.getAID())) {
                     player.setRole(GIAGUARO);
                 } else {

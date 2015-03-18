@@ -315,10 +315,11 @@ public class PlayerAgent extends GeneralAgent {
             value += c.getPosition();
         }
         if (list.size() > 3 || value > 20) {
-            rete.assertString("(socio-forte)");
-        }
-        if (list.size() < 3 && value < 17) {
-            rete.assertString("(socio-debole)");
+            rete.assertString("(socio-forza 20)");
+        } else if (list.size() < 3 && value < 17) {
+            rete.assertString("(socio-forza 0)");
+        } else {
+            rete.assertString("(socio-forza 10)");
         }
 
     }
