@@ -8,8 +8,24 @@
 (defclass Player briscola.Player)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;   variabili disponibili per il fetch
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;   IO  :   il mio Player
+;   AGENT:  il mio PlayerAgent
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;   tutti i tipi di fatti che ci sono utili (slot per ora ridondanti)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;   (mio-turno)
+;   (mio-turno-numero n)
+;   (mio-ruolo ruolo)
+;   (giocabile card)
+
+
 
 (deftemplate io "chi sono io"
     (slot player)
@@ -98,6 +114,20 @@
 ;;      FUNCTIONS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+( deffunction get-piu-alta-seme (?seme)
+    (bind ?it (run-query* briscole-in-mano ?seme))
+    (bind ?result nil)
+    (while (?it next)
+        (bind ?card (?it getObject c))
+        (if (batte ?card ?result ?seme) then
+            (bind ?result ?card)
+        )
+    ) 
+    return ?result
+)
+
+
+
 ( deffunction get-minor-valore (?it)
     (if (?it next) then
         (bind ?min (?it getObject c))
@@ -125,6 +155,12 @@
 ( deffunction batte (?c ?max ?seme-mano)
     "dice se c batte max"
 
+        (if (not(instanceof ?c briscola.objects.Card)) then
+            return FALSE    
+        else
+        (if (not(instanceof ?max briscola.objects.Card)) then
+            return TRUE 
+        else
 
        ; (debug (create$  "confronto fra max, " (?max toString) " e c: " (?c toString)))
         ;;  se c è briscola e max no
@@ -150,16 +186,18 @@
             ;(bind ?max ?c)
             ;(debug (create$ "tutti e due" (?c toString) "prende il posto di " (?max toString)))
             return TRUE
-        ))))
+        ))))))
 )
 
-( deffunction gioca (?c)    "se c non nulla, la metto in memoria per essere giocata"
+( deffunction gioca (?c ?int)    "se c non nulla, la metto in memoria per essere giocata"
     (if (instanceof ?c briscola.objects.Card) then
         (store DA-GIOCARE ?c)
     else
         (debug "provando a giocare una carta nulla. Si lascia al caso")
     )
 )
+
+
 
 ;;;     Funzioni di analisi 
 ;;;     ( asseriscono fatti prima di giocare ) 
@@ -179,9 +217,9 @@
     (while (?im next)
         (if (batte (?im getObject c) ?sta-prendendo ?seme-mano) then
             (assert (posso-prendere (card (?im getObject c)) (rank (?im getObject r))  (suit (?im getObject s))))
-            (debug (create$ posso prendere con ((?im getObject c) toString) sta prendendo (?sta-prendendo toString))) 
+;            (debug (create$ posso prendere con ((?im getObject c) toString) sta prendendo (?sta-prendendo toString))) 
         else
-            (debug (create$ NON posso prendere con ((?im getObject c) toString) sta prendendo (?sta-prendendo toString))) 
+;            (debug (create$ NON posso prendere con ((?im getObject c) toString) sta prendendo (?sta-prendendo toString))) 
             
         )
     )
@@ -213,6 +251,7 @@
 ( defquery carte-in-mano "Ritorna tutte le carte che ho in mano"
     (in-mano (card ?c) (suit ?s) (rank ?r))
 )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;      RULES
@@ -281,8 +320,8 @@
     (in-mano (card ?c))
 =>
     ;(printout t "potrei giocare " (?c toString) crlf)
-    ;(store DA-GIOCARE ?c)
-    (assert (analizza-giocata))
+    ;(store IOOCARE ?c)
+    (assert (analizza-giocate))
     (retract ?mio-turno)
 )
 
@@ -292,7 +331,7 @@
 
 ( defrule analisi-propria-mano "Che carte ho?"
 
-    ?w <- (analizza-giocata)
+    ?w <- (analizza-giocate)
     (giocata-numero ?counter-giocata)
     (seme-mano-fact (suit ?seme-mano))
     (prende (player ?prende-player) (card ?prende-card) (suit ?prende-suit) (rank ?prende-rank))
@@ -323,8 +362,44 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;   REGOLE GENERALI
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+( defrule se-posso-prendere-gratis-villano-prendo "Se ho un carico che può prendere tutto"
+    ;;  importante!
+    (declare (salience 100))
+    ;(mio-ruolo villano)
+    ?w <- (calcola-giocata)
+    (mio-turno-numero 5)
+    (briscola (card ?b))
+    (posso-prendere (card ?c&:(= ?c (get-piu-alta-seme ?s))) (suit ?s&:(<> ?s ?*briscola*)))
+=>
+    (gioca ?c 100)
+    (debug (create$ sono ultimo di mano, prendo gratis! (?c toString)))
+)
+
+
+
+( defrule socio-tiene-giaguaro-ultimo "lasciamo il giaguaro ultimo nelle mani finali"
+    (mio-ruolo socio)
+    (mano-numero ?n)
+    (giaguaro (player ?g))
+    (mio-turno ?n)
+    (turno (player ?g) (posizione ?m&:(=?m (+ 1 ?m))))
+    (briscola (card ?b))
+    (prende (card ?c&:(<> ?c ?b)))
+=>
+    (gioca ?c 50)
+    (debug (create$ gioco (?c toString) per lasciare il giaguaro ultimo alla mano ?n))
+)
+    
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;   PRIMA MANO  #0
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
 
 ( defrule gioca-mano-0-giaguaro "Gioca la carta minore che ha"
     ?w <- (calcola-giocata)
@@ -334,7 +409,7 @@
     (bind ?it (run-query* non-briscole-in-mano ?*briscola*))
     (bind ?da-giocare  (get-minor-valore ?it))
     (debug  (create$ "Sono il giaguaro. Gioco la più bassa: " (?da-giocare toString)))
-    (gioca ?da-giocare)
+    (gioca ?da-giocare 0)
 
     (retract ?w)
 )

@@ -74,6 +74,7 @@ public class PlayerAgent extends GeneralAgent {
             rete.batch(rulesFile);
             rete.reset();
             rete.store("IO", new Value(this.getPlayer()));
+            rete.store("AGENT", new Value(this));
         } catch (JessException ex) {
             ex.printStackTrace();
         }
@@ -154,10 +155,14 @@ public class PlayerAgent extends GeneralAgent {
 
         for (int i = 0; i < players.size(); ++i) {
             Fact f = new Fact("turno", rete);
-            f.setSlotValue("player",
-                           new Value(players.get((i + firstIndex) % 5)));
+            Player p = players.get((i + firstIndex) % 5);
+            f.setSlotValue("player", new Value(p));
             f.setSlotValue("posizione", new Value(i, RU.INTEGER));
             rete.assertFact(f);
+            if (p.equals(this.getPlayer())) {
+                rete.assertString("(mio-turno-numero " + (i + 1) + ")");
+            }
+
         }
         //  aggiorniamo la gui
         rete.run();

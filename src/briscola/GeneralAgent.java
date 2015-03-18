@@ -30,6 +30,10 @@ public class GeneralAgent extends Agent {
         return chatID;
     }
 
+    public void reason(String s) {
+        gui.say("** " + s);
+    }
+
     public void say(String s) {
         gui.say(s);
     }

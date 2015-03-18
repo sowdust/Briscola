@@ -176,6 +176,7 @@ public class PlayGame extends Behaviour {
                     } else {
                         c = (Card) v.javaObjectValue(
                             agent.getRete().getGlobalContext());
+                        agent.getHand().removeCard(c);
                     }
                 }
 

@@ -160,4 +160,8 @@ public class Hand implements Serializable {
         }
         return Collections.unmodifiableList(this.semeLungo);
     }
+
+    public void removeCard(Card c) {
+        cards.remove(c);
+    }
 }
