@@ -292,6 +292,9 @@ public class PlayerAgent extends GeneralAgent {
         Value v = new Value(c.getSuit());
         Defglobal k = new Defglobal("*briscola*", v);
         rete.addDefglobal(k);
+
+        getHand().sort(briscolaSuit);
+        ((PlayerGUI) gui).setHand(getHand());
     }
 
     /**

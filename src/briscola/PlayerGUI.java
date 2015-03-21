@@ -34,6 +34,9 @@ public class PlayerGUI extends GeneralGUI {
     }
 
     public void setHand(Hand h) {
+        DefaultListModel<Card> l
+            = (DefaultListModel<Card>) cardList.getModel();
+        l.removeAllElements();
         for (int i = 0; i < h.size(); ++i) {
             addCard(h.get(i));
         }
@@ -268,6 +271,10 @@ public class PlayerGUI extends GeneralGUI {
             = (DefaultListModel<String>) listGiocate.getModel();
         l.addElement(
             "[" + counter + " ] " + justPlayer.getName() + ": " + justCard);
+        int lastIndex = l.getSize() - 1;
+        if (lastIndex >= 0) {
+            listGiocate.ensureIndexIsVisible(lastIndex);
+        }
     }
 
     public void initMano(int counter, Player next) {

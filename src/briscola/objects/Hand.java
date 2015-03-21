@@ -174,4 +174,41 @@ public class Hand implements Serializable {
     public void removeCard(Card c) {
         cards.remove(c);
     }
+
+    public void sort(Suit briscola) {
+        Collections.sort(cards, new CardComparator(briscola));
+    }
+
+    class CardComparator implements Comparator {
+
+        private Suit briscola;
+
+        public CardComparator(Suit briscola) {
+            this.briscola = briscola;
+        }
+
+        @Override
+        public int compare(Object t, Object t1) {
+            if (!(t instanceof briscola.objects.Card && t1 instanceof briscola.objects.Card)) {
+                throw new IllegalArgumentException(
+                    "Provando a comparare due oggetti non carte");
+            }
+            Card c = (Card) t;
+            Card d = (Card) t1;
+
+            if (c.equals(d)) {
+                return 0;
+            }
+            if (c.getSuit().equals(briscola) && !d.getSuit().equals(briscola)) {
+                return 1;
+            }
+            if (d.getSuit().equals(briscola) && !c.getSuit().equals(briscola)) {
+                return -1;
+            }
+            if (d.getSuit() == c.getSuit()) {
+                return c.getValue() - d.getValue();
+            }
+            return c.getSuit().getN() - d.getSuit().getN();
+        }
+    }
 }
