@@ -94,7 +94,7 @@ public class PlayGame extends Behaviour {
     public boolean done() {
         if (mano == 7 && status.getCounter() == 5) {
             agent.say("Partita terminata");
-            agent.exit();
+            myAgent.addBehaviour(new ReceiveScore(agent));
             return true;
         }
         return false;

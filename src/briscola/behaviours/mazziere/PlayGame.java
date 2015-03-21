@@ -2,11 +2,14 @@ package briscola.behaviours.mazziere;
 
 import briscola.MazziereAgent;
 import briscola.Player;
+import briscola.behaviours.SendAndWait;
 import briscola.behaviours.SendMessage;
 import static briscola.common.ACLCodes.ACL_BOUNCE_GIOCATA;
+import static briscola.common.ACLCodes.ACL_SCORE_MESSAGE;
 import static briscola.common.ACLCodes.ACL_TELL_FIRST_TURN;
 import briscola.memory.TurnStatus;
 import briscola.messages.GiocataMessage;
+import briscola.messages.ScoreMessage;
 import briscola.messages.TurnStatusMessage;
 import briscola.objects.Card;
 import jade.core.behaviours.Behaviour;
@@ -15,6 +18,7 @@ import static jade.core.behaviours.ParallelBehaviour.WHEN_ALL;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
+import java.util.ArrayList;
 import java.util.List;
 import jess.Funcall;
 import jess.JessException;
@@ -128,9 +132,15 @@ public class PlayGame extends Behaviour {
 
             } else {
                 mazziere.say("Partita conclusa. Punteggi dei singoli:");
+                List<Integer> points = new ArrayList<>();
                 for (Player p : players) {
                     mazziere.say(p.getName() + "\t " + status.getScore(p));
+                    points.add(status.getScore(p));
                 }
+                ScoreMessage scoreMessage = new ScoreMessage(players, points);
+                SendAndWait b = new SendAndWait(players, ACL_SCORE_MESSAGE,
+                                                scoreMessage);
+                myAgent.addBehaviour(b);
                 done = true;
             }
         }
