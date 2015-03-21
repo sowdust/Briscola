@@ -14,6 +14,8 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jess.Fact;
 import jess.JessException;
 import jess.Value;
@@ -178,7 +180,13 @@ public class PlayGame extends Behaviour {
                  agent.getHand().removeCard(c);
                  }
                  }*/
-                Card c = agent.play();
+                Card c;
+                try {
+                    c = agent.play();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                    c = null;
+                }
                 agent.setCardToPlay(null);
 
                 GiocataMessage g = new GiocataMessage(agent.getPlayer(), c,

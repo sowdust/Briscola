@@ -13,7 +13,6 @@ import jade.domain.FIPAException;
 import java.util.ArrayList;
 import java.util.List;
 import jess.Defglobal;
-;
 import jess.JessException;
 import jess.Rete;
 import jess.Value;
@@ -30,8 +29,6 @@ import jess.Value;
  *
  * @author mat
  */
-
-
 public class MazziereAgent extends GeneralAgent {
 
     private static final long serialVersionUID = 1L;
@@ -40,7 +37,7 @@ public class MazziereAgent extends GeneralAgent {
     //private MazziereGUI gui;
     private DFAgentDescription dfd;
     private ServiceDescription sd;
-    private static final String rulesFile = "/home/mat/school/Tesi/src/briscola/reasoner/mazziere.clp";
+    private static final String rulesFile = "briscola/reasoner/mazziere.clp";
 
     @Override
     protected void setup() {
@@ -55,6 +52,7 @@ public class MazziereAgent extends GeneralAgent {
             rete.batch(rulesFile);
             rete.reset();
         } catch (JessException ex) {
+            System.out.println("Impossibile aprire il file " + rulesFile);
             ex.printStackTrace();
         }
 
@@ -63,9 +61,16 @@ public class MazziereAgent extends GeneralAgent {
         } else {
             name = "Gianni";
         }
+        if (args != null && args.length > 1) {
+            graphic = ((String) args[1]).equals("true");
+        } else {
+            graphic = false;
+        }
 
-        gui = new MazziereGUI(this);
-        gui.setVisible(true);
+        if (graphic) {
+            gui = new MazziereGUI(this);
+            gui.setVisible(true);
+        }
 
         say("Mazziere " + name + " al suo servizio");
 
@@ -98,13 +103,17 @@ public class MazziereAgent extends GeneralAgent {
     public void addPlayer(AID agente, String name) {
         Player player = new Player(agente, name);
         players.add(player);
-        gui.addPlayer(player);
+        if (graphic) {
+            gui.addPlayer(player);
+        }
     }
 
     @Override
     protected void takeDown() {
         say("Felice di aver giocato con voi. Addio!");
-        gui.dispose();
+        if (graphic) {
+            gui.dispose();
+        }
         dfd.removeServices(sd);
         super.takeDown();
     }

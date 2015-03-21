@@ -20,6 +20,7 @@ public class GeneralAgent extends Agent {
     protected GeneralGUI gui;
     protected AID mazziereAID;
     protected Rete rete;
+    protected boolean graphic = true;
     private String chatID;
 
     public void setChatID(String uniqueKey) {
@@ -31,35 +32,43 @@ public class GeneralAgent extends Agent {
     }
 
     public void reason(String s) {
-        gui.say("** " + s);
+        if (graphic) {
+            gui.say("** " + s);
+        }
     }
 
     public void say(String s) {
-        gui.say(s);
+        if (graphic) {
+            gui.say(s);
+        }
     }
 
     public void say(String s, boolean t) {
-        gui.say(s);
-        if (t) {
-            System.out.println("[" + name + "]" + s);
+        if (graphic) {
+            gui.say(s);
+            if (t) {
+                System.out.println("[" + name + "]" + s);
+            }
         }
     }
 
     public void printChat(AID player, String s) {
-        int i = 0;
-        for (Player p : players) {
-            if (p.getAID().equals(player)) {
-                gui.appendChat(p.getName(), s, i);
+        if (graphic) {
+            int i = 0;
+            for (Player p : players) {
+                if (p.getAID().equals(player)) {
+                    gui.appendChat(p.getName(), s, i);
+                    return;
+                }
+                ++i;
+            }
+            if (player.equals(mazziereAID)) {
+                gui.appendChat(briscola.common.Names.MAZZIERE, s, i);
+
                 return;
             }
-            ++i;
+            gui.appendChat(briscola.common.Names.UNKNOWN, s, ++i);
         }
-        if (player.equals(mazziereAID)) {
-            gui.appendChat(briscola.common.Names.MAZZIERE, s, i);
-
-            return;
-        }
-        gui.appendChat(briscola.common.Names.UNKNOWN, s, ++i);
     }
 
     /**

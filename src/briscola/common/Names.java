@@ -48,13 +48,13 @@ public class Names {
 
     //  STRATEGIES
     public static final String STRATEGY_RANDOM_NAME = "Casuale";
-    public static final String STRATEGY_RANDOM_FILE = "/home/mat/school/Tesi/src/briscola/reasoner/player.clp";
+    public static final String STRATEGY_RANDOM_FILE = "briscola/reasoner/player.clp";
 
     public static final String STRATEGY_NORMAL_NAME = "Base";
-    public static final String STRATEGY_NORMAL_FILE = "/home/mat/school/Tesi/src/briscola/reasoner/player.clp";
+    public static final String STRATEGY_NORMAL_FILE = "briscola/reasoner/player.clp";
 
     public static final String STRATEGY_MANUAL_NAME = "Manuale";
-    public static final String STRATEGY_MANUAL_FILE = "/home/mat/school/Tesi/src/briscola/reasoner/player.clp";
+    public static final String STRATEGY_MANUAL_FILE = "briscola/reasoner/player.clp";
 
     public static final String[] playerNames
         = {

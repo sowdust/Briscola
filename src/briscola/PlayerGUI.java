@@ -290,7 +290,6 @@ public class PlayerGUI extends GeneralGUI {
     }
 
     void beginGiocata() {
-        ///agent.say("Aspettando la mia giocata manuale");
         giocaButton.setEnabled(true);
     }
 }
