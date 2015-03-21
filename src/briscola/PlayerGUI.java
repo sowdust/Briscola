@@ -7,7 +7,6 @@ import briscola.objects.Card;
 import briscola.objects.Hand;
 import java.awt.event.KeyEvent;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 /**
@@ -27,13 +26,13 @@ public class PlayerGUI extends GeneralGUI {
 
     }
 
-    protected void addBid(Bid bid) {
+    synchronized protected void addBid(Bid bid) {
         DefaultListModel<Bid> l
             = (DefaultListModel<Bid>) bidsList.getModel();
         l.addElement(bid);
     }
 
-    public void setHand(Hand h) {
+    synchronized public void setHand(Hand h) {
         DefaultListModel<Card> l
             = (DefaultListModel<Card>) cardList.getModel();
         l.removeAllElements();
@@ -266,24 +265,24 @@ public class PlayerGUI extends GeneralGUI {
 
     protected JLabel[] cardLabels;
 
-    void addGiocata(int counter, Player justPlayer, Card justCard) {
+    synchronized void addGiocata(int counter, Player justPlayer, Card justCard) {
         DefaultListModel<String> l
             = (DefaultListModel<String>) listGiocate.getModel();
         l.addElement(
             "[" + counter + " ] " + justPlayer.getName() + ": " + justCard);
         int lastIndex = l.getSize() - 1;
-        if (lastIndex >= 0) {
+        if (lastIndex >= 0 && listGiocate != null) {
             listGiocate.ensureIndexIsVisible(lastIndex);
         }
     }
 
-    public void initMano(int counter, Player next) {
+    synchronized public void initMano(int counter, Player next) {
         DefaultListModel<String> l
             = (DefaultListModel<String>) listGiocate.getModel();
         l.addElement("Mano #" + (counter + 1));
     }
 
-    protected void addCard(Card card) {
+    synchronized protected void addCard(Card card) {
         DefaultListModel<Card> l
             = (DefaultListModel<Card>) cardList.getModel();
         l.addElement(card);

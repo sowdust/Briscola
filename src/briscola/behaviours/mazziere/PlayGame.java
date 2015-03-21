@@ -57,7 +57,7 @@ public class PlayGame extends Behaviour {
     }
 
     @Override
-    public void action() {
+    synchronized public void action() {
 
         //  in case it is a new turn, start it
         if (status == null) {
@@ -176,7 +176,7 @@ public class PlayGame extends Behaviour {
         }
 
         @Override
-        public void action() {
+        synchronized public void action() {
 
             MessageTemplate info1 = MessageTemplate.MatchSender(player.getAID());
             MessageTemplate info2 = MessageTemplate.MatchPerformative(
@@ -195,6 +195,8 @@ public class PlayGame extends Behaviour {
                     myAgent.addBehaviour(new SendMessage(players,
                                                          ACL_BOUNCE_GIOCATA,
                                                          ms));
+                    mazziere.say(
+                        "Mandando la giocata a " + players.size() + " giocatori");
                     received = true;
                 } catch (UnreadableException ex) {
                     ex.printStackTrace();

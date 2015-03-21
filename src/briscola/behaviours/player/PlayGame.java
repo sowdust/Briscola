@@ -38,7 +38,7 @@ public class PlayGame extends Behaviour {
     }
 
     @Override
-    public void action() {
+    synchronized public void action() {
 
         //  se ancora non sappiamo il primo che comincia
         if (status == null) {

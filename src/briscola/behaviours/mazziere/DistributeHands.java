@@ -56,6 +56,7 @@ public class DistributeHands extends OneShotBehaviour {
         }
         SequentialBehaviour doAll = new SequentialBehaviour();
         OneShotBehaviour whatNext = new OneShotBehaviour() {
+            private static final long serialVersionUID = 1L;
 
             @Override
             public void action() {
