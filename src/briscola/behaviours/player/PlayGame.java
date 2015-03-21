@@ -14,11 +14,8 @@ import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jess.Fact;
 import jess.JessException;
-import jess.Value;
 
 public class PlayGame extends Behaviour {
 
@@ -95,7 +92,11 @@ public class PlayGame extends Behaviour {
 
     @Override
     public boolean done() {
-        return receiveGiocate != null && (mano == 7 && receiveGiocate.counter == 5);
+        if (mano == 7 && status.getCounter() == 5) {
+            agent.say("Partita terminata");
+            return true;
+        }
+        return false;
     }
 
     class ReceiveGiocate extends Behaviour {
