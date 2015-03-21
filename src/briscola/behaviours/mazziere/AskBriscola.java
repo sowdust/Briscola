@@ -21,6 +21,8 @@ import jess.JessException;
  */
 public class AskBriscola extends Behaviour {
 
+    private static final long serialVersionUID = 1L;
+
     private final MazziereAgent mazziere;
     private final Player vincitore;
     private final Rank rank;
@@ -64,7 +66,7 @@ public class AskBriscola extends Behaviour {
             if (briscolaM != null) {
                 try {
                     briscolaSuit = (Suit) briscolaM.getContentObject();
-                    mazziere.setBriscola(briscolaSuit);
+                    mazziere.setBriscola(briscolaSuit, rank);
                     mazziere.say("Ricevuta briscola: " + briscolaSuit);
                     received = true;
 

@@ -18,8 +18,10 @@ import java.util.List;
  */
 public class DistributeHands extends OneShotBehaviour {
 
-    private MazziereAgent mazziere;
-    private Deck deck;
+    private static final long serialVersionUID = 1L;
+
+    private final MazziereAgent mazziere;
+    private final Deck deck;
     //private final boolean visto = false;
 
     public DistributeHands(MazziereAgent mazziere) {
@@ -46,6 +48,7 @@ public class DistributeHands extends OneShotBehaviour {
         for (int i = 0; i < 5; ++i) {
             List<Player> rcp = new LinkedList<>();
             rcp.add(players.get(i));
+            mazziere.setHand(players.get(i), h[i]);
             SendAndWait b = new SendAndWait(rcp, ACL_YOUR_HAND, h[i]);
             sendMessages.addSubBehaviour(b);
             mazziere.say(rcp.get(0) + "\t" + h[i]);

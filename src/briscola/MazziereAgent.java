@@ -3,6 +3,10 @@
 package briscola;
 
 import briscola.behaviours.mazziere.OpenTable;
+import static briscola.common.Names.MAZZIERE;
+import briscola.objects.Card;
+import briscola.objects.Hand;
+import briscola.objects.Rank;
 import briscola.objects.Suit;
 import briscola.objects.Table;
 import jade.core.AID;
@@ -11,7 +15,9 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import jess.Defglobal;
 import jess.JessException;
 import jess.Rete;
@@ -38,10 +44,15 @@ public class MazziereAgent extends GeneralAgent {
     private DFAgentDescription dfd;
     private ServiceDescription sd;
     private static final String rulesFile = "briscola/reasoner/mazziere.clp";
+    private Player giaguaro;
+    private Player socio;
+    private Card briscola;
+    private Map<Player, Hand> hands;
 
     @Override
     protected void setup() {
         this.mazziereAID = this.getAID();
+        this.hands = new HashMap<>();
         Object[] args = getArguments();
         players = new ArrayList<>();
         table = new Table();
@@ -78,7 +89,7 @@ public class MazziereAgent extends GeneralAgent {
         dfd = new DFAgentDescription();
         dfd.setName(getAID());
         sd = new ServiceDescription();
-        sd.setType(briscola.common.Names.MAZZIERE);
+        sd.setType(MAZZIERE);
         sd.setName(name);
         dfd.addServices(sd);
         try {
@@ -94,10 +105,18 @@ public class MazziereAgent extends GeneralAgent {
         return name;
     }
 
-    public void setBriscola(Suit r) throws JessException {
+    public void setBriscola(Suit r, Rank rank) throws JessException {
         table.setBriscola(r);
+        this.briscola = new Card(rank, r);
         Defglobal g = new Defglobal("*briscola*", new Value(r));
         rete.addDefglobal(g);
+        for (Player p : players) {
+            Hand h = hands.get(p);
+            if (h.contains(briscola)) {
+                this.socio = p;
+                say("Il socio è " + p);
+            }
+        }
     }
 
     public void addPlayer(AID agente, String name) {
@@ -138,8 +157,16 @@ public class MazziereAgent extends GeneralAgent {
     }
 
     public void setGiaguaro(Player bestBidder) {
-        table.setGiaguaro(bestBidder);
+        say("Il giaguaro è " + bestBidder);
+        giaguaro = bestBidder;
+    }
 
+    public Player getGiaguaro() {
+        return giaguaro;
+    }
+
+    public void setHand(Player p, Hand h) {
+        hands.put(p, h);
     }
 
 }
