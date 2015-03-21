@@ -115,7 +115,6 @@ public class MazziereAgent extends GeneralAgent {
             gui.dispose();
         }
         dfd.removeServices(sd);
-        super.takeDown();
     }
 
     public List<AID> getPlayersAID() {

@@ -371,4 +371,14 @@ public class PlayerAgent extends GeneralAgent {
         return c;
     }
 
+    @Override
+    protected void takeDown() {
+        say("È stato bello giocare! Addio!", true);
+    }
+
+    public void exit() {
+        //gui.dispose();
+        takeDown();
+    }
+
 }

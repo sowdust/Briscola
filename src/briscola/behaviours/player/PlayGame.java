@@ -94,6 +94,7 @@ public class PlayGame extends Behaviour {
     public boolean done() {
         if (mano == 7 && status.getCounter() == 5) {
             agent.say("Partita terminata");
+            agent.exit();
             return true;
         }
         return false;
@@ -144,14 +145,12 @@ public class PlayGame extends Behaviour {
             } else {
                 block();
             }
-
         }
 
         @Override
         public boolean done() {
             return counter == 5;
         }
-
     }
 
     class SendGiocata extends OneShotBehaviour {
