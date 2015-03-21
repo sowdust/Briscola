@@ -1,5 +1,7 @@
 package briscola.objects;
 
+import static briscola.common.Names.STRATEGY_MANUAL_FILE;
+import static briscola.common.Names.STRATEGY_MANUAL_NAME;
 import static briscola.common.Names.STRATEGY_NORMAL_FILE;
 import static briscola.common.Names.STRATEGY_NORMAL_NAME;
 import static briscola.common.Names.STRATEGY_RANDOM_FILE;
@@ -8,7 +10,8 @@ import static briscola.common.Names.STRATEGY_RANDOM_NAME;
 public enum Strategy {
 
     RANDOM(STRATEGY_RANDOM_NAME, STRATEGY_RANDOM_FILE, true),
-    NORMAL(STRATEGY_NORMAL_NAME, STRATEGY_NORMAL_FILE, false);
+    NORMAL(STRATEGY_NORMAL_NAME, STRATEGY_NORMAL_FILE, false),
+    MANUAL(STRATEGY_MANUAL_NAME, STRATEGY_MANUAL_FILE, false);
 
     private final boolean random;
     private final String name;
@@ -32,6 +35,7 @@ public enum Strategy {
         return random;
     }
 
+    @Override
     public String toString() {
         return "Strategia " + name + " [file: " + fileName + " ]. Rand: " + random;
     }

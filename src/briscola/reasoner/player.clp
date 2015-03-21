@@ -197,6 +197,7 @@
 ( deffunction gioca (?c ?int)    "se c non nulla, la metto in memoria per essere giocata"
     (if (instanceof ?c briscola.objects.Card) then
         (store DA-GIOCARE ?c)
+        ;;; METTERE QUALCOSA CHE FERMI TUTTO IL RESTO!!
     else
         (debug "provando a giocare una carta nulla. Si lascia al caso")
     )

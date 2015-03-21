@@ -162,21 +162,24 @@ public class PlayGame extends Behaviour {
                 agent.getRete().assertFact(f);
                 agent.getRete().run();
 
-                Card c;
-                if (agent.getStrategy().random()) {
-                    c = agent.getHand().drawRandom();
-                } else {
-                    Value v = agent.getRete().fetch("DA-GIOCARE");
-                    if (null == v) {
+                /*
+                 Card c;
+                 if (agent.getStrategy().random()) {
+                 c = agent.getHand().drawRandom();
+                 } else {
+                 Value v = agent.getRete().fetch("DA-GIOCARE");
+                 if (null == v) {
 
-                        agent.say("Giocando a caso");
-                        c = agent.getHand().drawRandom();
-                    } else {
-                        c = (Card) v.javaObjectValue(
-                            agent.getRete().getGlobalContext());
-                        agent.getHand().removeCard(c);
-                    }
-                }
+                 agent.say("Giocando a caso");
+                 c = agent.getHand().drawRandom();
+                 } else {
+                 c = (Card) v.javaObjectValue(
+                 agent.getRete().getGlobalContext());
+                 agent.getHand().removeCard(c);
+                 }
+                 }*/
+                Card c = agent.play();
+                agent.setCardToPlay(null);
 
                 GiocataMessage g = new GiocataMessage(agent.getPlayer(), c,
                                                       status.getMano(),

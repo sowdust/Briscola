@@ -25,16 +25,6 @@ public class PlayerGUI extends GeneralGUI {
         this.agent = agent;
         initComponents();
 
-        cardLabels = new JLabel[8];
-        cardLabels[0] = jLabel1;
-        cardLabels[1] = jLabel2;
-        cardLabels[2] = jLabel3;
-        cardLabels[3] = jLabel4;
-        cardLabels[4] = jLabel5;
-        cardLabels[5] = jLabel6;
-        cardLabels[6] = jLabel7;
-        cardLabels[7] = jLabel8;
-
     }
 
     protected void addBid(Bid bid) {
@@ -45,10 +35,7 @@ public class PlayerGUI extends GeneralGUI {
 
     public void setHand(Hand h) {
         for (int i = 0; i < h.size(); ++i) {
-            String imgURL = h.get(i).getImage();
-            ImageIcon cardIcon = new ImageIcon(imgURL);
-            //cardLabels[i].setIcon(cardIcon);
-            cardLabels[i].setText(h.get(i).toString());
+            addCard(h.get(i));
         }
 
     }
@@ -70,18 +57,14 @@ public class PlayerGUI extends GeneralGUI {
         chatPanel = new javax.swing.JTextPane();
         chatTextAreaPane = new javax.swing.JScrollPane();
         chatTextArea = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         bidsList = new javax.swing.JList();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        giocatePane = new javax.swing.JScrollPane();
         listGiocate = new javax.swing.JList();
+        CardsPane = new javax.swing.JScrollPane();
+        cardList = new javax.swing.JList();
+        giocaButton = new javax.swing.JButton();
         logPane = new javax.swing.JScrollPane();
         logTextArea = new javax.swing.JTextArea();
         nameLabel = new javax.swing.JLabel();
@@ -119,20 +102,6 @@ public class PlayerGUI extends GeneralGUI {
         });
         chatTextAreaPane.setViewportView(chatTextArea);
 
-        jLabel1.setText("");
-
-        jLabel2.setText("");
-
-        jLabel3.setText("");
-
-        jLabel4.setText("");
-
-        jLabel5.setText("");
-
-        jLabel6.setText("");
-
-        jLabel7.setText("");
-
         jLabel8.setText("");
 
         bidsList.setBackground(new java.awt.Color(51, 51, 51));
@@ -142,69 +111,74 @@ public class PlayerGUI extends GeneralGUI {
         jScrollPane1.setViewportView(bidsList);
 
         listGiocate.setModel(new javax.swing.DefaultListModel<String>());
-        jScrollPane2.setViewportView(listGiocate);
+        giocatePane.setViewportView(listGiocate);
+
+        cardList.setModel(new javax.swing.DefaultListModel<Card>()
+        );
+        CardsPane.setViewportView(cardList);
+
+        giocaButton.setText("Gioca");
+        giocaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                giocaButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout gamePaneLayout = new javax.swing.GroupLayout(gamePane);
         gamePane.setLayout(gamePaneLayout);
         gamePaneLayout.setHorizontalGroup(
             gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(gamePaneLayout.createSequentialGroup()
-                .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap()
+                .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(gamePaneLayout.createSequentialGroup()
-                        .addComponent(playersPane, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
+                            .addComponent(playersPane))
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(giocatePane, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(gamePaneLayout.createSequentialGroup()
                         .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(chatTextAreaPane, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
-                            .addComponent(chatContainerPane))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2))))
+                            .addComponent(chatContainerPane)
+                            .addComponent(chatTextAreaPane, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE))
+                        .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(gamePaneLayout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(CardsPane))
+                            .addGroup(gamePaneLayout.createSequentialGroup()
+                                .addGap(119, 119, 119)
+                                .addComponent(giocaButton)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
+                .addGap(193, 193, 193)
+                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(97, Short.MAX_VALUE))
         );
         gamePaneLayout.setVerticalGroup(
             gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, gamePaneLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addGap(26, 26, 26)
                 .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(gamePaneLayout.createSequentialGroup()
                         .addComponent(playersPane, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(giocatePane))
+                .addGap(18, 18, 18)
+                .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(gamePaneLayout.createSequentialGroup()
+                        .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chatContainerPane, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(chatContainerPane, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chatTextAreaPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(gamePaneLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2)))
-                .addGap(38, 38, 38)
-                .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(95, Short.MAX_VALUE))
+                        .addComponent(CardsPane, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(giocaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        giocaButton.setEnabled(false);
 
         jTabbedPane1.addTab("Game", gamePane);
 
@@ -254,29 +228,36 @@ public class PlayerGUI extends GeneralGUI {
         }
     }//GEN-LAST:event_chatTextAreaKeyReleased
 
+    private void giocaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_giocaButtonActionPerformed
+
+        Card daGiocare = (Card) cardList.getSelectedValue();
+        agent.say("Gioco la carta " + daGiocare, true);
+        agent.setCardToPlay(daGiocare);
+        DefaultListModel<Card> dlm = (DefaultListModel<Card>) cardList.getModel();
+        dlm.removeElement(daGiocare);
+        giocaButton.setEnabled(false);
+
+    }//GEN-LAST:event_giocaButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    protected javax.swing.JList bidsList;
+    private javax.swing.JScrollPane CardsPane;
+    private javax.swing.JList bidsList;
+    private javax.swing.JList cardList;
     private javax.swing.JScrollPane chatContainerPane;
-    //protected javax.swing.JTextPane chatPanel;
-    //protected javax.swing.JTextArea chatTextArea;
+//    protected javax.swing.JTextPane chatPanel;
+//    protected javax.swing.JTextArea chatTextArea;
     private javax.swing.JScrollPane chatTextAreaPane;
     private javax.swing.JPanel gamePane;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
+    private javax.swing.JButton giocaButton;
+    private javax.swing.JScrollPane giocatePane;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JList listGiocate;
     private javax.swing.JScrollPane logPane;
-    //protected javax.swing.JTextArea logTextArea;
+//    protected javax.swing.JTextArea logTextArea;
     private javax.swing.JLabel nameLabel;
-    //protected javax.swing.JList playersList;
+//    protected javax.swing.JList playersList;
     private javax.swing.JScrollPane playersPane;
     // End of variables declaration//GEN-END:variables
 
@@ -293,5 +274,16 @@ public class PlayerGUI extends GeneralGUI {
         DefaultListModel<String> l
             = (DefaultListModel<String>) listGiocate.getModel();
         l.addElement("Mano #" + (counter + 1));
+    }
+
+    protected void addCard(Card card) {
+        DefaultListModel<Card> l
+            = (DefaultListModel<Card>) cardList.getModel();
+        l.addElement(card);
+    }
+
+    void beginGiocata() {
+        ///agent.say("Aspettando la mia giocata manuale");
+        giocaButton.setEnabled(true);
     }
 }

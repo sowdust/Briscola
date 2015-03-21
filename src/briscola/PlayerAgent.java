@@ -11,6 +11,7 @@ import briscola.objects.Deck;
 import briscola.objects.Hand;
 import briscola.objects.Role;
 import briscola.objects.Strategy;
+import static briscola.objects.Strategy.MANUAL;
 import static briscola.objects.Strategy.NORMAL;
 import static briscola.objects.Strategy.RANDOM;
 import briscola.objects.Suit;
@@ -37,6 +38,7 @@ public class PlayerAgent extends GeneralAgent {
     private Suit briscolaSuit;
     private TurnStatus status;
     private Strategy strategy;
+    private Card cartaDaGiocare;
 
     //private PlayerGUI gui;
     @Override
@@ -53,6 +55,9 @@ public class PlayerAgent extends GeneralAgent {
                     break;
                 case "normal":
                     this.strategy = NORMAL;
+                    break;
+                case "manual":
+                    this.strategy = MANUAL;
                     break;
                 default:
                     this.strategy = RANDOM;
@@ -322,6 +327,45 @@ public class PlayerAgent extends GeneralAgent {
             rete.assertString("(socio-forza 10)");
         }
 
+    }
+
+    public void setCardToPlay(Card c) {
+        cartaDaGiocare = c;
+    }
+
+    public Card play() throws JessException, InterruptedException {
+        Card c;
+        switch (strategy) {
+            case RANDOM:
+                c = getHand().drawRandom();
+                break;
+            case NORMAL:
+                Value v = getRete().fetch("DA-GIOCARE");
+                if (null == v) {
+
+                    say("Giocando a caso");
+                    c = getHand().drawRandom();
+                } else {
+                    c = (Card) v.javaObjectValue(
+                        getRete().getGlobalContext());
+                    getHand().removeCard(c);
+                }
+                break;
+            case MANUAL:
+                ((PlayerGUI) gui).beginGiocata();
+                while (cartaDaGiocare == null) {
+                    Thread.sleep(1000);
+                }
+                c = cartaDaGiocare;
+                cartaDaGiocare = null;
+                break;
+            default:
+                say("Strategia sconosciuta", true);
+                c = getHand().drawRandom();
+                break;
+
+        }
+        return c;
     }
 
 }
