@@ -18,8 +18,11 @@ import static jade.core.behaviours.ParallelBehaviour.WHEN_ALL;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jess.Funcall;
 import jess.JessException;
 import jess.RU;
@@ -118,6 +121,11 @@ public class PlayGame extends Behaviour {
             int totalScore = status.updateScore(prossimo, partialScore);
             mazziere.say(
                 "Prende " + prossimo.getName() + " che fa " + partialScore + " punti per un totale di " + totalScore);
+            try {
+                mazziere.csvWriteScore(prossimo.getName(), partialScore);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
             if (status.initMano(prossimo)) {
                 TurnStatusMessage msg = new TurnStatusMessage(0,

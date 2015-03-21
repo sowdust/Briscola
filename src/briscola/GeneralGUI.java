@@ -19,6 +19,7 @@ public class GeneralGUI extends javax.swing.JFrame {
 
     protected void say(String s) {
         logTextArea.append(s + "\n");
+        logTextArea.setCaretPosition(logTextArea.getDocument().getLength());
     }
 
     public void appendChat(String name, String s, int color) {

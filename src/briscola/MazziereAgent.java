@@ -9,15 +9,20 @@ import briscola.objects.Hand;
 import briscola.objects.Rank;
 import briscola.objects.Suit;
 import briscola.objects.Table;
+import com.opencsv.CSVWriter;
 import jade.core.AID;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jess.Defglobal;
 import jess.JessException;
 import jess.Rete;
@@ -48,14 +53,20 @@ public class MazziereAgent extends GeneralAgent {
     private Player socio;
     private Card briscola;
     private Map<Player, Hand> hands;
+    private CSVWriter csvWriter;
+    private String csvFile;
+    private boolean writeCSV;
+
+    public MazziereAgent() {
+        this.hands = new HashMap<>();
+        players = new ArrayList<>();
+        table = new Table();
+    }
 
     @Override
     protected void setup() {
         this.mazziereAID = this.getAID();
-        this.hands = new HashMap<>();
         Object[] args = getArguments();
-        players = new ArrayList<>();
-        table = new Table();
 
         //  SETTING UP THE RETE INSTANCE FOR JESS RULE PROCESSING
         rete = new Rete();
@@ -78,9 +89,27 @@ public class MazziereAgent extends GeneralAgent {
             graphic = false;
         }
 
+        if (args != null && args.length > 2) {
+            csvFile = ((String) args[2]);
+            writeCSV = true;
+            try {
+                csvWriter = new CSVWriter(new FileWriter(csvFile), '\t');
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            writeCSV = false;
+        }
+
         if (graphic) {
             gui = new MazziereGUI(this);
             gui.setVisible(true);
+        }
+
+        try {
+            csvWriter = new CSVWriter(new FileWriter(csvFile), '\t');
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
 
         say("Mazziere " + name + " al suo servizio");
@@ -129,11 +158,20 @@ public class MazziereAgent extends GeneralAgent {
 
     @Override
     protected void takeDown() {
+
         say("Felice di aver giocato con voi. Addio!");
+        dfd.removeServices(sd);
+
         if (graphic) {
             gui.dispose();
         }
-        dfd.removeServices(sd);
+        if (writeCSV) {
+            try {
+                csvWriter.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public List<AID> getPlayersAID() {
@@ -167,6 +205,23 @@ public class MazziereAgent extends GeneralAgent {
 
     public void setHand(Player p, Hand h) {
         hands.put(p, h);
+    }
+
+    public void logCSV(String[] values) throws IOException {
+        csvWriter.writeNext(values);
+        // TODO: move to another place at the end of the game 
+        csvWriter.flushQuietly();
+    }
+
+    public void csvWriteScore(String name, int partialScore) throws IOException {
+        String[] values = new String[3];
+        values[0] = Integer.toString(partialScore);
+        values[1] = name;
+        logCSV(values);
+    }
+
+    public CSVWriter getCsvWriter() {
+        return csvWriter;
     }
 
 }

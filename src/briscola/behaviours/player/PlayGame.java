@@ -34,7 +34,6 @@ public class PlayGame extends Behaviour {
         this.mano = -1;
         this.lastPlayed = -1;
         this.receiveGiocate = null;
-
     }
 
     @Override
@@ -81,6 +80,11 @@ public class PlayGame extends Behaviour {
             //  se la mano è finita
             if (status.getCounter() == 5) {
                 agent.say("Mano terminata");
+                StringBuilder s = new StringBuilder("");
+                for (int i = 30; i > 0; --i) {
+                    s.append("=");
+                }
+                agent.say(s.toString());
 
                 myAgent.addBehaviour(new ReceiveNext());
                 receiveGiocate = null;

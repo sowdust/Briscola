@@ -102,19 +102,19 @@ public class TurnStatus {
         return Collections.unmodifiableList(giocate);
     }
 
-    public int getCounter() {
+    synchronized public int getCounter() {
         return counter[mano];
     }
 
-    public int getMano() {
+    synchronized public int getMano() {
         return mano;
     }
 
-    public Mano getCurrentMano() {
+    synchronized public Mano getCurrentMano() {
         return giocate.get(mano);
     }
 
-    public void addGiocata(Player player, Card card, int mano) {
+    synchronized public void addGiocata(Player player, Card card, int mano) {
         if (counter[mano] >= 5) {
             throw new IllegalArgumentException("Già 5 giocate");
         }
@@ -126,7 +126,7 @@ public class TurnStatus {
         }
     }
 
-    public void computeNext() {
+    synchronized public void computeNext() {
         if (counter[mano] < 5) {
             int i = 1;
             do {
@@ -137,7 +137,7 @@ public class TurnStatus {
         }
     }
 
-    public synchronized void setNext(Player next) {
+    synchronized public void setNext(Player next) {
         if (next == null) {
             this.next = -1;
         } else {

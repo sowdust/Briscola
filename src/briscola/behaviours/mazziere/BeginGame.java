@@ -1,5 +1,3 @@
-/*
- */
 package briscola.behaviours.mazziere;
 
 import briscola.MazziereAgent;
@@ -20,6 +18,8 @@ import java.util.UUID;
  * @author mat
  */
 public class BeginGame extends Behaviour {
+
+    private static final long serialVersionUID = 1L;
 
     private final MazziereAgent mazziere;
     private boolean sent;
