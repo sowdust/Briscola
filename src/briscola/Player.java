@@ -32,6 +32,13 @@ public class Player implements Serializable, Comparable {
         return p.name.equals(name) && p.getAID().equals(agentID);
     }
 
+    public boolean equals(Object p) {
+        if (!(p instanceof briscola.Player)) {
+            return false;
+        }
+        return this.equals(p);
+    }
+
     @Override
     public int compareTo(Object t) {
         if (t instanceof briscola.Player) {

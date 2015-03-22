@@ -8,6 +8,7 @@ import briscola.objects.Bid;
 import briscola.objects.Card;
 import briscola.objects.Hand;
 import briscola.objects.Role;
+import jade.core.AID;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class GameMemory implements Serializable {
     private static final long serialVersionUID = 1L;
     private final MazziereAgent mazziere;
     private List<Player> players;
-    private final Map<Player, Role> roles;
+    private final Map<AID, Role> roles;
     private final Map<Role, Player> playerRoles;
     private final Map<Player, Hand> hands;
     private final List<Bid> bids;
@@ -53,8 +54,9 @@ public class GameMemory implements Serializable {
     }
 
     public void setRole(Player giaguaro, Role role) {
-        roles.put(giaguaro, role);
+        roles.put(giaguaro.getAID(), role);
         playerRoles.put(role, giaguaro);
+        mazziere.say("Ruolo settato " + role + " per " + giaguaro);
     }
 
     public Hand getHand(Player p) {
@@ -66,11 +68,15 @@ public class GameMemory implements Serializable {
     }
 
     public void addGiocata(int mano, int counter, Player player, Card card) {
-        giocate.add(new Giocata(mano, counter, player, roles.get(player), card));
+        giocate.add(new Giocata(mano, counter, player,
+                                roles.get(player.getAID()), card));
+        if (roles.get(player.getAID()) == null) {
+            mazziere.say("ruolo nullo per " + player);
+        }
     }
 
     public void addPresa(Player prossimo, int partialScore) {
-        prese.add(new Presa(this.mano++, prossimo, roles.get(prossimo),
+        prese.add(new Presa(this.mano++, prossimo, roles.get(prossimo.getAID()),
                             partialScore));
     }
 
@@ -80,13 +86,13 @@ public class GameMemory implements Serializable {
 
         //  LOG PLAYERS AND THEIR ROLES
         List<String> playerNames = new LinkedList<>();
-        List<String> roles = new LinkedList<>();
+        List<String> rolesList = new LinkedList<>();
         for (Player p : players) {
             playerNames.add(p.getName());
-            roles.add(this.roles.get(p).toString());
+            rolesList.add(this.roles.get(p.getAID()).toString());
         }
         mazziere.logCSV(playerNames.toArray(new String[playerNames.size()]));
-        mazziere.logCSV(roles.toArray(new String[roles.size()]));
+        mazziere.logCSV(rolesList.toArray(new String[roles.size()]));
 
         //  LOG BIDS HISTORY (skip pass)
         separator[0] = "Asta";

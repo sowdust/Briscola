@@ -1,15 +1,11 @@
 package briscola.behaviours.mazziere;
 
 import briscola.MazziereAgent;
-import briscola.memory.Giocata;
 import briscola.messages.GiocataCommentMessage;
-import briscola.messages.GiocataMessage;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class GetGiocataComment extends CyclicBehaviour {
 
