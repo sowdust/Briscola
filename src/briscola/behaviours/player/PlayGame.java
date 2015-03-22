@@ -131,7 +131,8 @@ public class PlayGame extends Behaviour {
                     TurnStatusMessage msg = (TurnStatusMessage) confM.getContentObject();
                     agent.say(msg.toString());
                     status.addGiocata(msg.justPlayer, msg.justCard, msg.mano);
-                    agent.addGiocata(msg.counter, msg.justPlayer, msg.justCard);
+                    agent.addGiocata(msg.mano, msg.counter, msg.justPlayer,
+                                     msg.justCard);
                     status.setNext(msg.next);
                     //agent.say("[ Next ]\t " + status.getNext());
                     ++counter;

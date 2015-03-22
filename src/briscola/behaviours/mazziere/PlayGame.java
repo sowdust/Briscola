@@ -8,6 +8,7 @@ import static briscola.common.ACLCodes.ACL_BOUNCE_GIOCATA;
 import static briscola.common.ACLCodes.ACL_SCORE_MESSAGE;
 import static briscola.common.ACLCodes.ACL_TELL_FIRST_TURN;
 import briscola.memory.TurnStatus;
+import briscola.memory.mazziere.GameMemory;
 import briscola.messages.GiocataMessage;
 import briscola.messages.ScoreMessage;
 import briscola.messages.TurnStatusMessage;
@@ -21,8 +22,6 @@ import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jess.Funcall;
 import jess.JessException;
 import jess.RU;
@@ -46,7 +45,6 @@ public class PlayGame extends Behaviour {
     private final MazziereAgent mazziere;
     private final List<Player> players;
     private TurnStatus status;
-    private int counter;
     private boolean done;
     private ManageTurn manageTurn;
 
@@ -54,7 +52,6 @@ public class PlayGame extends Behaviour {
         this.mazziere = mazziere;
         this.players = mazziere.getPlayers();
         //this.status = new TurnStatus(mazziere.getPlayers(), 0);
-        this.counter = 0;
         this.done = false;
         this.manageTurn = null;
     }
@@ -121,11 +118,7 @@ public class PlayGame extends Behaviour {
             int totalScore = status.updateScore(prossimo, partialScore);
             mazziere.say(
                 "Prende " + prossimo.getName() + " che fa " + partialScore + " punti per un totale di " + totalScore);
-            try {
-                mazziere.csvWriteScore(prossimo.getName(), partialScore);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            mazziere.getMemory().addPresa(prossimo, partialScore);
 
             if (status.initMano(prossimo)) {
                 TurnStatusMessage msg = new TurnStatusMessage(0,
@@ -139,6 +132,7 @@ public class PlayGame extends Behaviour {
                 myAgent.addBehaviour(manageTurn);
 
             } else {
+                mazziere.addBehaviour(new EndGame(mazziere));
                 mazziere.say("Partita conclusa. Punteggi dei singoli:");
                 List<Integer> points = new ArrayList<>();
                 for (Player p : players) {
@@ -163,6 +157,8 @@ public class PlayGame extends Behaviour {
 
     class ManageTurn extends ParallelBehaviour {
 
+        private static final long serialVersionUID = 1L;
+
         ManageTurn() {
             super(WHEN_ALL);
             for (Player p : players) {
@@ -173,14 +169,16 @@ public class PlayGame extends Behaviour {
 
     class ReceiveGiocata extends Behaviour {
 
-        private Player player;
+        private static final long serialVersionUID = 1L;
+
+        private final Player player;
         private boolean received;
-        private Card giocata;
+        //private final Card giocata;
 
         ReceiveGiocata(Player player) {
             this.player = player;
             this.received = false;
-            this.giocata = null;
+            //  this.giocata = null;
         }
 
         @Override
@@ -200,6 +198,10 @@ public class PlayGame extends Behaviour {
                         status.getCounter(), status.getMano(), msg.player,
                         msg.card,
                         status.getNext());
+                    // add card to game memory
+                    mazziere.getMemory().addGiocata(status.getMano(),
+                                                    status.getCounter(),
+                                                    msg.player, msg.card);
                     myAgent.addBehaviour(new SendMessage(players,
                                                          ACL_BOUNCE_GIOCATA,
                                                          ms));

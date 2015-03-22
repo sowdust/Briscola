@@ -59,6 +59,8 @@ public class WaitForSubscriptionConfirmation extends Behaviour {
     @Override
     public boolean done() {
         if (done) {
+            ((MazziereAgent) myAgent).getMemory().setPlayers(
+                ((MazziereAgent) myAgent).getPlayers());
             return true;
         }
         if ((System.currentTimeMillis() - start) > briscola.common.Names.WAIT_FOR_CONFIRMATION) {

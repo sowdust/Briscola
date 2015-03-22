@@ -9,6 +9,8 @@ import jade.lang.acl.MessageTemplate;
 
 public class GetChatMessage extends CyclicBehaviour {
 
+    private static final long serialVersionUID = 1L;
+
     GeneralAgent agent;
 
     public GetChatMessage(GeneralAgent agent) {

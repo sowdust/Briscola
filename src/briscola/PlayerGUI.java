@@ -2,10 +2,15 @@
  */
 package briscola;
 
+import static briscola.common.ACLCodes.ACL_COMMENT_GIOCATA;
+import briscola.memory.Giocata;
+import briscola.messages.GiocataCommentMessage;
 import briscola.objects.Bid;
 import briscola.objects.Card;
 import briscola.objects.Hand;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 
@@ -16,6 +21,7 @@ import javax.swing.JLabel;
 public class PlayerGUI extends GeneralGUI {
 
     private final PlayerAgent agent;
+    private final Map<String, Giocata> giocate = new HashMap<>();
 
     /**
      * Creates new form PlayerGUI
@@ -23,6 +29,7 @@ public class PlayerGUI extends GeneralGUI {
     public PlayerGUI(PlayerAgent agent) {
         this.agent = agent;
         initComponents();
+        commentButton.setEnabled(false);
 
     }
 
@@ -67,6 +74,9 @@ public class PlayerGUI extends GeneralGUI {
         CardsPane = new javax.swing.JScrollPane();
         cardList = new javax.swing.JList();
         giocaButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        commentTextArea = new javax.swing.JTextArea();
+        commentButton = new javax.swing.JButton();
         logPane = new javax.swing.JScrollPane();
         logTextArea = new javax.swing.JTextArea();
         nameLabel = new javax.swing.JLabel();
@@ -113,6 +123,11 @@ public class PlayerGUI extends GeneralGUI {
         jScrollPane1.setViewportView(bidsList);
 
         listGiocate.setModel(new javax.swing.DefaultListModel<String>());
+        listGiocate.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                listGiocateValueChanged(evt);
+            }
+        });
         giocatePane.setViewportView(listGiocate);
 
         cardList.setModel(new javax.swing.DefaultListModel<Card>()
@@ -123,6 +138,17 @@ public class PlayerGUI extends GeneralGUI {
         giocaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 giocaButtonActionPerformed(evt);
+            }
+        });
+
+        commentTextArea.setColumns(20);
+        commentTextArea.setRows(5);
+        jScrollPane2.setViewportView(commentTextArea);
+
+        commentButton.setText("Commenta");
+        commentButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                commentButtonActionPerformed(evt);
             }
         });
 
@@ -151,9 +177,21 @@ public class PlayerGUI extends GeneralGUI {
                                 .addGap(119, 119, 119)
                                 .addComponent(giocaButton)
                                 .addGap(0, 0, Short.MAX_VALUE)))))
-                .addGap(193, 193, 193)
-                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(gamePaneLayout.createSequentialGroup()
+                        .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(gamePaneLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2))
+                            .addGroup(gamePaneLayout.createSequentialGroup()
+                                .addGap(193, 193, 193)
+                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 85, Short.MAX_VALUE)))
+                        .addContainerGap())
+                    .addGroup(gamePaneLayout.createSequentialGroup()
+                        .addGap(125, 125, 125)
+                        .addComponent(commentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         gamePaneLayout.setVerticalGroup(
             gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -164,7 +202,11 @@ public class PlayerGUI extends GeneralGUI {
                         .addComponent(playersPane, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(giocatePane))
+                    .addComponent(giocatePane)
+                    .addGroup(gamePaneLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(commentButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(gamePaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(gamePaneLayout.createSequentialGroup()
@@ -177,7 +219,7 @@ public class PlayerGUI extends GeneralGUI {
                         .addComponent(CardsPane, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(giocaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         giocaButton.setEnabled(false);
@@ -241,6 +283,27 @@ public class PlayerGUI extends GeneralGUI {
 
     }//GEN-LAST:event_giocaButtonActionPerformed
 
+    private void commentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentButtonActionPerformed
+        String s = listGiocate.getSelectedValue().toString();
+        Giocata g = giocate.get(s);
+        String comment = commentTextArea.getText();
+        commentTextArea.setText("");
+        agent.say("Commento " + comment + " alla giocata" + s);
+        GiocataCommentMessage m = new GiocataCommentMessage(agent.getPlayer(), g,
+                                                            comment);
+        agent.sendMessage(agent.getMazziereAID(), ACL_COMMENT_GIOCATA, m);
+
+        commentButton.setEnabled(false);
+    }//GEN-LAST:event_commentButtonActionPerformed
+
+    private void listGiocateValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listGiocateValueChanged
+        if (listGiocate.getSelectedIndex() == -1) {
+            commentButton.setEnabled(false);
+        } else {
+            commentButton.setEnabled(true);
+        }
+    }//GEN-LAST:event_listGiocateValueChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane CardsPane;
     private javax.swing.JList bidsList;
@@ -249,11 +312,14 @@ public class PlayerGUI extends GeneralGUI {
 //    protected javax.swing.JTextPane chatPanel;
 //    protected javax.swing.JTextArea chatTextArea;
     private javax.swing.JScrollPane chatTextAreaPane;
+    private javax.swing.JButton commentButton;
+    private javax.swing.JTextArea commentTextArea;
     private javax.swing.JPanel gamePane;
     private javax.swing.JButton giocaButton;
     private javax.swing.JScrollPane giocatePane;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JList listGiocate;
     private javax.swing.JScrollPane logPane;
@@ -265,11 +331,14 @@ public class PlayerGUI extends GeneralGUI {
 
     protected JLabel[] cardLabels;
 
-    synchronized void addGiocata(int counter, Player justPlayer, Card justCard) {
+    synchronized void addGiocata(int mano, int counter, Player justPlayer,
+                                 Card justCard) {
+        String s = "[" + counter + " ] " + justPlayer.getName() + ": " + justCard;
+        Giocata g = new Giocata(mano, counter, justPlayer, null, justCard);
+        giocate.put(s, g);
         DefaultListModel<String> l
             = (DefaultListModel<String>) listGiocate.getModel();
-        l.addElement(
-            "[" + counter + " ] " + justPlayer.getName() + ": " + justCard);
+        l.addElement(s);
         int lastIndex = l.getSize() - 1;
         if (lastIndex >= 0 && listGiocate != null) {
             listGiocate.ensureIndexIsVisible(lastIndex);

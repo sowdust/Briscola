@@ -2,11 +2,16 @@
  */
 package briscola;
 
+import briscola.behaviours.mazziere.GetGiocataComment;
 import briscola.behaviours.mazziere.OpenTable;
 import static briscola.common.Names.MAZZIERE;
+import briscola.memory.mazziere.GameMemory;
 import briscola.objects.Card;
 import briscola.objects.Hand;
 import briscola.objects.Rank;
+import static briscola.objects.Role.GIAGUARO;
+import static briscola.objects.Role.SOCIO;
+import static briscola.objects.Role.VILLANO;
 import briscola.objects.Suit;
 import briscola.objects.Table;
 import com.opencsv.CSVWriter;
@@ -18,11 +23,7 @@ import jade.domain.FIPAException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jess.Defglobal;
 import jess.JessException;
 import jess.Rete;
@@ -38,7 +39,6 @@ import jess.Value;
  * hand collect cards declare winner of the hand counting points declaring the
  * winner
  *
- * @author mat
  */
 public class MazziereAgent extends GeneralAgent {
 
@@ -52,15 +52,17 @@ public class MazziereAgent extends GeneralAgent {
     private Player giaguaro;
     private Player socio;
     private Card briscola;
-    private Map<Player, Hand> hands;
+    //private final Map<Player, Hand> hands;
     private CSVWriter csvWriter;
     private String csvFile;
     private boolean writeCSV;
+    private GameMemory gameMem;
 
     public MazziereAgent() {
-        this.hands = new HashMap<>();
+        //this.hands = new HashMap<>();
         players = new ArrayList<>();
         table = new Table();
+        this.gameMem = new GameMemory(this);
     }
 
     @Override
@@ -128,6 +130,7 @@ public class MazziereAgent extends GeneralAgent {
             fe.printStackTrace();
         }
         addBehaviour(new OpenTable(this));
+        addBehaviour(new GetGiocataComment(this));
     }
 
     public String getRealName() {
@@ -139,11 +142,18 @@ public class MazziereAgent extends GeneralAgent {
         this.briscola = new Card(rank, r);
         Defglobal g = new Defglobal("*briscola*", new Value(r));
         rete.addDefglobal(g);
+        gameMem.setBriscola(briscola);
+
         for (Player p : players) {
-            Hand h = hands.get(p);
+            Hand h = gameMem.getHand(p);
             if (h.contains(briscola)) {
                 this.socio = p;
                 say("Il socio è " + p);
+                gameMem.setRole(p, SOCIO);
+            } else {
+                if (!p.equals(giaguaro)) {
+                    gameMem.setRole(p, VILLANO);
+                }
             }
         }
     }
@@ -197,6 +207,7 @@ public class MazziereAgent extends GeneralAgent {
     public void setGiaguaro(Player bestBidder) {
         say("Il giaguaro è " + bestBidder);
         giaguaro = bestBidder;
+        gameMem.setRole(giaguaro, GIAGUARO);
     }
 
     public Player getGiaguaro() {
@@ -204,24 +215,43 @@ public class MazziereAgent extends GeneralAgent {
     }
 
     public void setHand(Player p, Hand h) {
-        hands.put(p, h);
+        gameMem.setHand(p, h);
     }
 
     public void logCSV(String[] values) throws IOException {
         csvWriter.writeNext(values);
-        // TODO: move to another place at the end of the game 
-        csvWriter.flushQuietly();
     }
 
-    public void csvWriteScore(String name, int partialScore) throws IOException {
-        String[] values = new String[3];
-        values[0] = Integer.toString(partialScore);
-        values[1] = name;
-        logCSV(values);
-    }
-
+    /*    public void csvWriteScore(String name, int partialScore) throws
+     IOException {
+     String[] values = new String[3];
+     values[0] = Integer.toString(partialScore);
+     values[1] = name;
+     logCSV(values);
+     }*/
     public CSVWriter getCsvWriter() {
         return csvWriter;
+    }
+
+    public GameMemory getMemory() {
+        return gameMem;
+    }
+
+    public void resetGameMemory() {
+        this.gameMem = new GameMemory(this);
+        players = new ArrayList<>();
+        table = new Table();
+        giaguaro = null;
+        socio = null;
+        briscola = null;
+    }
+
+    public boolean writeCSV() {
+        return writeCSV;
+    }
+
+    public String getCsvFile() {
+        return csvFile;
     }
 
 }

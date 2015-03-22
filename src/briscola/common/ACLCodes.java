@@ -16,6 +16,7 @@ public class ACLCodes {
     public static final int ACL_TELL_FIRST_TURN = 400;
     public static final int ACL_TELL_GIOCATA = 401;
     public static final int ACL_BOUNCE_GIOCATA = 402;
+    public static final int ACL_COMMENT_GIOCATA = 420;
     public static final int ACL_SCORE_MESSAGE = 450;
     public static final int ACL_ILLEGAL_MOVE = -999;
 

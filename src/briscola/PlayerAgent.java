@@ -216,7 +216,8 @@ public class PlayerAgent extends GeneralAgent {
      * @param justCard
      * @throws JessException
      */
-    public void addGiocata(int counter, Player justPlayer, Card justCard) throws
+    public void addGiocata(int mano, int counter, Player justPlayer,
+                           Card justCard) throws
         JessException {
 
         Fact z = new Fact("nuova-giocata", rete);
@@ -258,7 +259,7 @@ public class PlayerAgent extends GeneralAgent {
         rete.assertFact(q);
 
         rete.run();
-        ((PlayerGUI) gui).addGiocata(counter, justPlayer, justCard);
+        ((PlayerGUI) gui).addGiocata(mano, counter, justPlayer, justCard);
 
     }
 

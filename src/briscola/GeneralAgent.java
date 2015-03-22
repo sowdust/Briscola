@@ -1,5 +1,6 @@
 package briscola;
 
+import briscola.behaviours.SendMessage;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
@@ -7,6 +8,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jess.Fact;
 import jess.JessException;
 import jess.Rete;
@@ -115,6 +118,18 @@ public class GeneralAgent extends Agent {
         ACLMessage m = new ACLMessage(type);
         m.addReceiver(rcp);
         m.setContent(content);
+        m.setPerformative(type);
+        send(m);
+    }
+
+    public void sendMessage(AID rcp, int type, Serializable content) {
+        ACLMessage m = new ACLMessage(type);
+        m.addReceiver(rcp);
+        try {
+            m.setContentObject(content);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         m.setPerformative(type);
         send(m);
     }

@@ -97,6 +97,7 @@ public class ManageBid extends Behaviour {
                         waiting = false;
                         mazziere.say(
                             "Offerta #" + status.getCounter() + ": " + bid);
+                        mazziere.getMemory().addBid(bid);
                     }
                 } catch (UnreadableException ex) {
                     ex.printStackTrace();
