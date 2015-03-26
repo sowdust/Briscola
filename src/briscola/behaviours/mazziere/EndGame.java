@@ -28,5 +28,8 @@ public class EndGame extends OneShotBehaviour {
         }
         mazziere.say("Resetting memory");
         mazziere.resetGameMemory();
+        mazziere.say("Advertising a new table");
+        mazziere.startNewGame();
+
     }
 }

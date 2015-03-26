@@ -45,7 +45,8 @@ public class ReceiveScore extends Behaviour {
                 confirm.addReceiver(agent.getMazziereAID());
                 confirm.setConversationId(myHandMsg.getConversationId());
                 myAgent.send(confirm);
-                myAgent.addBehaviour(new PlayAuction(agent));
+                //myAgent.addBehaviour(new PlayAuction(agent));
+                agent.endGame();
                 done = true;
 
             } catch (UnreadableException ex) {

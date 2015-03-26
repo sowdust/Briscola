@@ -382,4 +382,15 @@ public class PlayerAgent extends GeneralAgent {
         takeDown();
     }
 
+    void newGame() {
+        say("Iniziando nuova partita...");
+        ((PlayerGUI) gui).newGame();
+        addBehaviour(new Subscribe(this));
+    }
+
+    public void endGame() {
+        //  enable new game button
+        ((PlayerGUI) gui).enableNewGame();
+    }
+
 }

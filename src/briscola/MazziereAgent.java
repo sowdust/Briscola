@@ -2,6 +2,7 @@
  */
 package briscola;
 
+import briscola.behaviours.GetChatMessage;
 import briscola.behaviours.mazziere.GetGiocataComment;
 import briscola.behaviours.mazziere.OpenTable;
 import static briscola.common.Names.MAZZIERE;
@@ -45,21 +46,20 @@ public class MazziereAgent extends GeneralAgent {
     private static final long serialVersionUID = 1L;
 
     private Table table;
-    //private MazziereGUI gui;
     private DFAgentDescription dfd;
     private ServiceDescription sd;
     private static final String rulesFile = "briscola/reasoner/mazziere.clp";
     private Player giaguaro;
     private Player socio;
     private Card briscola;
-    //private final Map<Player, Hand> hands;
     private CSVWriter csvWriter;
     private String csvFile;
     private boolean writeCSV;
     private GameMemory gameMem;
+    private GetGiocataComment getGiocataComment;
+    private GetChatMessage getChatMessage;
 
     public MazziereAgent() {
-        //this.hands = new HashMap<>();
         players = new ArrayList<>();
         table = new Table();
         this.gameMem = new GameMemory(this);
@@ -123,8 +123,15 @@ public class MazziereAgent extends GeneralAgent {
             say("Errore durante la registrazione alle pagine gialle");
             fe.printStackTrace();
         }
+
+        startNewGame();
+
+    }
+
+    public void startNewGame() {
         addBehaviour(new OpenTable(this));
-        addBehaviour(new GetGiocataComment(this));
+        getGiocataComment = new GetGiocataComment(this);
+        addBehaviour(getGiocataComment);
     }
 
     public String getRealName() {
@@ -238,6 +245,8 @@ public class MazziereAgent extends GeneralAgent {
         giaguaro = null;
         socio = null;
         briscola = null;
+        removeBehaviour(getGiocataComment);
+        removeBehaviour(getChatMessage);
     }
 
     public boolean writeCSV() {
@@ -246,6 +255,11 @@ public class MazziereAgent extends GeneralAgent {
 
     public String getCsvFile() {
         return csvFile;
+    }
+
+    public void setChatBehaviour() {
+        this.getChatMessage = new GetChatMessage(this);
+        addBehaviour(getChatMessage);
     }
 
 }

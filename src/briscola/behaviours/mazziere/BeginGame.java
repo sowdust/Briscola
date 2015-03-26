@@ -40,7 +40,7 @@ public class BeginGame extends Behaviour {
             UUID uniqueKey = UUID.randomUUID();
             mazziere.setChatID(uniqueKey.toString());
             mazziere.say("Chat id: " + uniqueKey);
-            myAgent.addBehaviour(new GetChatMessage(mazziere));
+            mazziere.setChatBehaviour();
 
             try {
                 //  send players list

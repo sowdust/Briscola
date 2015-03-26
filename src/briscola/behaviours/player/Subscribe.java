@@ -16,6 +16,8 @@ import jade.lang.acl.MessageTemplate;
 
 public class Subscribe extends Behaviour {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * STATI. 0 nessun tavolo libero. 1 trovato tavolo libero. 2 richiesta
      * spedita a tavolo libero. 3 partecipazione confermata
