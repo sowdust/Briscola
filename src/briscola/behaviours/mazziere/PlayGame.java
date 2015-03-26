@@ -8,7 +8,6 @@ import static briscola.common.ACLCodes.ACL_BOUNCE_GIOCATA;
 import static briscola.common.ACLCodes.ACL_SCORE_MESSAGE;
 import static briscola.common.ACLCodes.ACL_TELL_FIRST_TURN;
 import briscola.memory.TurnStatus;
-import briscola.memory.mazziere.GameMemory;
 import briscola.messages.GiocataMessage;
 import briscola.messages.ScoreMessage;
 import briscola.messages.TurnStatusMessage;
@@ -19,7 +18,6 @@ import static jade.core.behaviours.ParallelBehaviour.WHEN_ALL;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import jess.Funcall;
@@ -208,11 +206,12 @@ public class PlayGame extends Behaviour {
                     mazziere.say(
                         "Mandando la giocata a " + players.size() + " giocatori");
                     received = true;
+                    block();
                 } catch (UnreadableException ex) {
                     ex.printStackTrace();
                 }
             } else {
-                //mazziere.say("attendendo la giocata di " + status.getNext());
+                mazziere.say("attendendo la giocata di " + status.getNext());
                 block();
             }
         }

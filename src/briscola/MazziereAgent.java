@@ -95,7 +95,7 @@ public class MazziereAgent extends GeneralAgent {
             csvFile = ((String) args[2]);
             writeCSV = true;
             try {
-                csvWriter = new CSVWriter(new FileWriter(csvFile), '\t');
+                csvWriter = new CSVWriter(new FileWriter(csvFile, true), '\t');
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -106,12 +106,6 @@ public class MazziereAgent extends GeneralAgent {
         if (graphic) {
             gui = new MazziereGUI(this);
             gui.setVisible(true);
-        }
-
-        try {
-            csvWriter = new CSVWriter(new FileWriter(csvFile), '\t');
-        } catch (IOException ex) {
-            ex.printStackTrace();
         }
 
         say("Mazziere " + name + " al suo servizio");

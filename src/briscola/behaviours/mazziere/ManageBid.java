@@ -24,6 +24,8 @@ import java.util.List;
  */
 public class ManageBid extends Behaviour {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * @field counter keeps track of # of bids. STARTS WITH 1 !!!
      * @field bidders is a list of all players active in the auction.

@@ -340,8 +340,12 @@ public class PlayerGUI extends GeneralGUI {
             = (DefaultListModel<String>) listGiocate.getModel();
         l.addElement(s);
         int lastIndex = l.getSize() - 1;
-        if (lastIndex >= 0 && listGiocate != null) {
-            listGiocate.ensureIndexIsVisible(lastIndex);
+        try {
+            if (lastIndex >= 0 && listGiocate != null) {
+                listGiocate.ensureIndexIsVisible(lastIndex);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

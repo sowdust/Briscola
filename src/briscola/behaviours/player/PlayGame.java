@@ -160,11 +160,12 @@ public class PlayGame extends Behaviour {
 
     class SendGiocata extends OneShotBehaviour {
 
+        private static final long serialVersionUID = 1L;
+
         @Override
         public void action() {
             ACLMessage gMsg = new ACLMessage(ACL_TELL_GIOCATA);
             try {
-
                 Fact f = new Fact("mio-turno", agent.getRete());
                 agent.getRete().assertFact(f);
                 agent.getRete().run();
