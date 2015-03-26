@@ -15,7 +15,9 @@ import java.util.HashMap;
  */
 public class OpenTable extends Behaviour {
 
-    private final Integer requests;
+    private static final long serialVersionUID = 1L;
+
+    private Integer requests;
     private final HashMap<AID, Long> requesters;
     private final MazziereAgent mazziere;
 
@@ -26,24 +28,40 @@ public class OpenTable extends Behaviour {
         requests = 0;
     }
 
+    synchronized public int getRequests() {
+        return requests;
+    }
+
+    synchronized public void augmentReq() {
+        ++requests;
+    }
+
+    synchronized public void diminishReq() {
+        --requests;
+    }
+
     @Override
     public void action() {
 
-        if (requests + ((MazziereAgent) myAgent).getPlayersAID().size() < 5) {
-            MessageTemplate request = MessageTemplate.MatchContent(briscola.common.Messages.CAN_I_PLAY);
+        if (getRequests() + ((MazziereAgent) myAgent).getPlayersAID().size() < 5) {
+            MessageTemplate request = MessageTemplate.MatchContent(
+                briscola.common.Messages.CAN_I_PLAY);
             ACLMessage requestMsg = myAgent.receive(request);
 
             if (requestMsg != null) {
                 AID agentName = requestMsg.getSender();
                 if (((MazziereAgent) myAgent).getPlayersAID().contains(agentName)) {
-                    mazziere.say("Agente " + agentName.getName() + " già iscritto");
+                    mazziere.say(
+                        "Agente " + agentName.getName() + " già iscritto");
                     return;
                 }
                 Long reqTime = requesters.get(agentName);
                 //  se agente sconosciuto
                 if (reqTime == null || ((System.currentTimeMillis() - reqTime) > briscola.common.Names.WAIT_FOR_CONFIRMATION)) {
                     requesters.put(agentName, System.currentTimeMillis());
-                    myAgent.addBehaviour(new OfferAChair(mazziere, requestMsg, agentName, requests));
+                    myAgent.addBehaviour(new OfferAChair(this, mazziere,
+                                                         requestMsg,
+                                                         agentName));
                 }
 
             } else {
@@ -51,6 +69,7 @@ public class OpenTable extends Behaviour {
             }
         } else {
             mazziere.say("Siamo già a 5 richieste..");
+            block();
         }
     }
 

@@ -41,7 +41,7 @@ public class GameMemory implements Serializable {
         this.mano = 0;
     }
 
-    public void setPlayers(List<Player> players) {
+    synchronized public void setPlayers(List<Player> players) {
         this.players = new LinkedList<>(players);
     }
 

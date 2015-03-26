@@ -145,7 +145,7 @@ public class GeneralAgent extends Agent {
         send(m);
     }
 
-    public List<Player> getPlayers() {
+    synchronized public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
     }
 

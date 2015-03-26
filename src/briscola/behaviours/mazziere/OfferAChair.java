@@ -9,14 +9,17 @@ import jade.lang.acl.ACLMessage;
 
 public class OfferAChair extends OneShotBehaviour {
 
+    private static final long serialVersionUID = 1L;
+
     AID requester;
-    Integer requests;
     ACLMessage originalMsg;
     MazziereAgent mazziere;
+    OpenTable behav;
 
-    public OfferAChair(MazziereAgent mazziere, ACLMessage originalMsg, AID agent, Integer requests) {
+    public OfferAChair(OpenTable behav, MazziereAgent mazziere,
+                       ACLMessage originalMsg, AID agent) {
         this.requester = agent;
-        this.requests = requests;
+        this.behav = behav;
         this.originalMsg = originalMsg;
         this.mazziere = mazziere;
     }
@@ -24,11 +27,13 @@ public class OfferAChair extends OneShotBehaviour {
     @Override
     public void action() {
         mazziere.say("Posizione offerta a " + requester.getName());
-        ++requests;
+        behav.augmentReq();
         ACLMessage proposal = originalMsg.createReply();
         proposal.setContent(briscola.common.Messages.YOU_CAN_PLAY);
         myAgent.send(proposal);
-        myAgent.addBehaviour(new WaitForSubscriptionConfirmation(mazziere, requests, requester));
+        myAgent.addBehaviour(
+            new WaitForSubscriptionConfirmation(behav, mazziere,
+                                                requester));
     }
 
 }

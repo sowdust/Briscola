@@ -58,7 +58,7 @@ public class BeginGame extends Behaviour {
         if (infoChatMsg != null) {
             player.setChatID(infoChatMsg.getContent());
             player.say("Ricevute info chat");
-            myAgent.addBehaviour(new GetChatMessage(player));
+            player.startChat();
             ++received;
         } else {
             block();

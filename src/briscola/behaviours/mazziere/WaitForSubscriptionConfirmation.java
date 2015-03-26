@@ -20,28 +20,29 @@ public class WaitForSubscriptionConfirmation extends Behaviour {
 
     private final long start;
     private boolean done;
-    private Integer requests;
     private final AID agent;
     private final MazziereAgent mazziere;
+    private OpenTable behav;
 
-    public WaitForSubscriptionConfirmation(MazziereAgent mazziere,
-                                           Integer requests, AID agent) {
+    public WaitForSubscriptionConfirmation(OpenTable behav,
+                                           MazziereAgent mazziere,
+                                           AID agent) {
+        this.behav = behav;
         this.start = System.currentTimeMillis();
-        this.requests = requests;
         this.mazziere = mazziere;
         this.agent = agent;
     }
 
     @Override
-    public void action() {
-        //mazziere.say("In attesa di conferma da " + agent.getName());
+    synchronized public void action() {
+
         MessageTemplate confirmation = MessageTemplate.and(
             MessageTemplate.MatchSender(agent), MatchPerformative(
                 ACLMessage.ACCEPT_PROPOSAL));
 
         ACLMessage confirmationMsg = myAgent.receive(confirmation);
         if (confirmationMsg != null) {
-            --requests;
+            behav.diminishReq();
             ((MazziereAgent) myAgent).addPlayer(agent,
                                                 confirmationMsg.getContent());
             ACLMessage confirmTable = confirmationMsg.createReply();
@@ -64,7 +65,7 @@ public class WaitForSubscriptionConfirmation extends Behaviour {
             return true;
         }
         if ((System.currentTimeMillis() - start) > briscola.common.Names.WAIT_FOR_CONFIRMATION) {
-            --requests;
+            behav.diminishReq();
             return true;
         }
         return false;

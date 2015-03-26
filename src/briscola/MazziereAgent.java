@@ -159,11 +159,15 @@ public class MazziereAgent extends GeneralAgent {
         }
     }
 
-    public void addPlayer(AID agente, String name) {
-        Player player = new Player(agente, name);
-        players.add(player);
-        if (graphic) {
-            gui.addPlayer(player);
+    synchronized public void addPlayer(AID agente, String name) {
+        if (players.size() >= 5) {
+            say("siamo già a 5, non possiamo accettarne altri");
+        } else {
+            Player player = new Player(agente, name);
+            players.add(player);
+            if (graphic) {
+                gui.addPlayer(player);
+            }
         }
     }
 
@@ -185,7 +189,7 @@ public class MazziereAgent extends GeneralAgent {
         }
     }
 
-    public List<AID> getPlayersAID() {
+    synchronized public List<AID> getPlayersAID() {
         List<AID> r = new ArrayList<>();
         for (Player p : players) {
             r.add(p.getAID());

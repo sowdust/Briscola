@@ -2,6 +2,7 @@
  */
 package briscola;
 
+import briscola.behaviours.GetChatMessage;
 import briscola.behaviours.player.Subscribe;
 import briscola.memory.TurnStatus;
 import briscola.memory.player.AuctionMemory;
@@ -16,6 +17,7 @@ import static briscola.objects.Strategy.NORMAL;
 import static briscola.objects.Strategy.RANDOM;
 import briscola.objects.Suit;
 import jade.core.AID;
+import java.util.ArrayList;
 import java.util.List;
 import jess.Defglobal;
 import jess.Fact;
@@ -39,6 +41,7 @@ public class PlayerAgent extends GeneralAgent {
     private TurnStatus status;
     private Strategy strategy;
     private Card cartaDaGiocare;
+    private GetChatMessage getChatMessage;
 
     //private PlayerGUI gui;
     @Override
@@ -73,7 +76,18 @@ public class PlayerAgent extends GeneralAgent {
 
         rulesFile = strategy.getFile();
 
+        startRete();
+
         //  SETTING UP THE RETE INSTANCE FOR JESS RULE PROCESSING
+        gui = new PlayerGUI(this);
+        gui.setVisible(visible);
+
+        say("Giocatore " + getAID().getName() + " iscritto alla piattaforma");
+        say("Utilizzerò la strategia " + strategy);
+        addBehaviour(new Subscribe(this));
+    }
+
+    public void startRete() {
         rete = new Rete();
         try {
             rete.batch(rulesFile);
@@ -83,13 +97,6 @@ public class PlayerAgent extends GeneralAgent {
         } catch (JessException ex) {
             ex.printStackTrace();
         }
-
-        gui = new PlayerGUI(this);
-        gui.setVisible(visible);
-
-        say("Giocatore " + getAID().getName() + " iscritto alla piattaforma");
-        say("Utilizzerò la strategia " + strategy);
-        addBehaviour(new Subscribe(this));
     }
 
     public String getRealName() {
@@ -386,11 +393,29 @@ public class PlayerAgent extends GeneralAgent {
         say("Iniziando nuova partita...");
         ((PlayerGUI) gui).newGame();
         addBehaviour(new Subscribe(this));
+        startRete();
+        setMazziereAID(null);
+        players = new ArrayList<>();
+
     }
 
     public void endGame() {
         //  enable new game button
         ((PlayerGUI) gui).enableNewGame();
+
+        auctionMemory = null;
+        myHand = null;
+        role = null;
+        briscolaCard = null;
+        briscolaSuit = null;
+        status = null;
+        cartaDaGiocare = null;
+        removeBehaviour(getChatMessage);
+    }
+
+    public void startChat() {
+        getChatMessage = new GetChatMessage(this);
+        addBehaviour(getChatMessage);
     }
 
 }

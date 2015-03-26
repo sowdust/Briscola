@@ -62,6 +62,7 @@ public class ManageBid extends Behaviour {
 
     @Override
     public void action() {
+        mazziere.say("in manage bid");
         //  in case we are not waiting for any bid
         if (!waiting && (true || status.getCounter() == counterSent)) {
 
@@ -75,7 +76,8 @@ public class ManageBid extends Behaviour {
 
             SendAndWait b = new SendAndWait(mazziere.getPlayers(),
                                             ACL_BID_STATUS, m);
-            b.setConvId(AUCTION_CONV_ID + status.getCounter());
+            b.setConvId(
+                AUCTION_CONV_ID + status.getCounter() + "a");
             //  sends "blocking" message to everyone to update about current situation
             myAgent.addBehaviour(b);
             status.setLastMessageSent(b);
@@ -129,7 +131,8 @@ public class ManageBid extends Behaviour {
                 next, status.getCounter(), true);
             SendAndWait b = new SendAndWait(mazziere.getPlayers(),
                                             ACL_BID_STATUS, m);
-            b.setConvId(AUCTION_CONV_ID + status.getCounter());
+            b.setConvId(
+                AUCTION_CONV_ID + status.getCounter() + "a");
             myAgent.addBehaviour(b);
 
             myAgent.addBehaviour(new AskBriscola(mazziere,

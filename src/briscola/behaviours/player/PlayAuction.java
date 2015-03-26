@@ -50,7 +50,7 @@ public class PlayAuction extends Behaviour {
                 ex.printStackTrace();
             }
             myAgent.send(offerBid);
-            //agent.say("Offerto " + myBid);
+            agent.say("Offerto " + myBid, true);
             myTurn = false;
             block();
 
@@ -58,7 +58,7 @@ public class PlayAuction extends Behaviour {
 
             //  WHEN RECEIVING BIDS
             finalMt = MessageTemplate.and(MessageTemplate.MatchConversationId(
-                AUCTION_CONV_ID + (status.counter())), mt);
+                AUCTION_CONV_ID + (status.counter()) + "a"), mt);
 
             ACLMessage statusMsg = myAgent.receive(finalMt);
             if (statusMsg == null) {

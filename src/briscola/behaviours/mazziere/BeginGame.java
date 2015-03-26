@@ -1,7 +1,6 @@
 package briscola.behaviours.mazziere;
 
 import briscola.MazziereAgent;
-import briscola.behaviours.GetChatMessage;
 import jade.core.AID;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;

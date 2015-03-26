@@ -61,6 +61,7 @@ public class DistributeHands extends OneShotBehaviour {
             @Override
             public void action() {
                 // HERE GOES WHAT TO DO NEXT!!!!
+                mazziere.say("in what next action");
                 myAgent.addBehaviour(new ManageBid(mazziere));
             }
         };
