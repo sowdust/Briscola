@@ -144,7 +144,8 @@ public class MazziereAgent extends GeneralAgent {
         giaguaro = null;
         socio = null;
         briscola = null;
-        gui.clean();
+//            gui.clean();
+
         gameMem = null;
         clearMessageQueue();
         removeAllBehaviours();
