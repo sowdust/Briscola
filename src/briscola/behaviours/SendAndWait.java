@@ -21,6 +21,14 @@ public class SendAndWait extends SendMessage {
 
     private int confirmations;
 
+    synchronized void augmentConfirmations() {
+        confirmations++;
+    }
+
+    synchronized int getConfirmations() {
+        return confirmations;
+    }
+
     public SendAndWait(List<Player> rcp, int type, String content) {
         super(rcp, type, content);
         confirmations = 0;
@@ -55,7 +63,7 @@ public class SendAndWait extends SendMessage {
         MessageTemplate info = MessageTemplate.and(info1, info2);
         ACLMessage confM = myAgent.receive(info);
         if (confM != null) {
-            confirmations++;
+            augmentConfirmations();
             confM = null;
         } else {
             block();
@@ -65,9 +73,9 @@ public class SendAndWait extends SendMessage {
     @Override
     public boolean done() {
         if (rcp != null) {
-            return confirmations == rcp.size();
+            return getConfirmations() == rcp.size();
         } else {
-            return confirmations == 1;
+            return getConfirmations() == 1;
         }
     }
 

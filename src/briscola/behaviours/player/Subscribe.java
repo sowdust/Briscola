@@ -89,8 +89,8 @@ public class Subscribe extends Behaviour {
             player.say(
                 "Iscritto alla partita col mazziere " + confirmMsg.getSender().getName());
             player.setMazziereAID(confirmMsg.getSender());
-            // todo: remove
-            player.clearMessageQueue();
+            // todo: remove (commento)
+            //          player.clearMessageQueue();
             state = 3;
         } else {
             player.say("Messaggio conferma non trovato");

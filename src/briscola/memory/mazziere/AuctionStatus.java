@@ -42,15 +42,15 @@ public class AuctionStatus {
      *
      * @return
      */
-    public Player getNext() {
+    synchronized public Player getNext() {
         return bidders.get(turn);
     }
 
-    public void setLastMessageSent(SendAndWait b) {
+    synchronized public void setLastMessageSent(SendAndWait b) {
         this.lastMessageSent = b;
     }
 
-    public void computeNext() {
+    synchronized public void computeNext() {
 
         int c = 1;
         while ((bidders.get((turn + c) % 5) == null) && c < 5) {
@@ -63,31 +63,31 @@ public class AuctionStatus {
         }
     }
 
-    public Bid getBestBid() {
+    synchronized public Bid getBestBid() {
         return bestBid;
     }
 
-    public Player getBestBidder() {
+    synchronized public Player getBestBidder() {
         return bestBidder;
     }
 
-    public Bid getJustBid() {
+    synchronized public Bid getJustBid() {
         return justBid;
     }
 
-    public Player getJustBidder() {
+    synchronized public Player getJustBidder() {
         return justBidder;
     }
 
-    public int getCounter() {
+    synchronized public int getCounter() {
         return counter;
     }
 
-    public boolean done() {
+    synchronized public boolean done() {
         return inGame == 1 || (bestBid != null && bestBid.rank() == DEUCE);
     }
 
-    public boolean addBid(Player bidder, Bid bid) {
+    synchronized public boolean addBid(Player bidder, Bid bid) {
         if (bidder != getNext()) {
             String error = "Deve giocare " + getNext() + " ma ha giocato " + bidder;
             //mazziere.say(error);

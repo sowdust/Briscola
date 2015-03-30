@@ -43,6 +43,7 @@ public class PlayerAgent extends GeneralAgent {
     private Strategy strategy;
     private Card cartaDaGiocare;
     private GetChatMessage getChatMessage;
+    private boolean gameOver;
 
     //private PlayerGUI gui;
     @Override
@@ -68,6 +69,7 @@ public class PlayerAgent extends GeneralAgent {
                     break;
             }
             visible = (((String) args[2]).equals("true"));
+            graphic = visible;
 
         } else {
             visible = false;
@@ -76,6 +78,7 @@ public class PlayerAgent extends GeneralAgent {
         }
 
         this.behaviours = new LinkedList<>();
+        this.gameOver = false;
 
         rulesFile = strategy.getFile();
 
@@ -398,9 +401,16 @@ public class PlayerAgent extends GeneralAgent {
         setMazziereAID(null);
         players = new ArrayList<>();
         clearMessageQueue();
-        ((PlayerGUI) gui).newGame();
+        if (graphic) {
+            ((PlayerGUI) gui).newGame();
+            ((PlayerGUI) gui).setEndGameButton(false);
+        }
         startRete();
         addBehaviour(new Subscribe(this));
+    }
+
+    public void setEndGameButton(boolean b) {
+        ((PlayerGUI) gui).setEndGameButton(b);
     }
 
     public void endGame() {
@@ -416,12 +426,25 @@ public class PlayerAgent extends GeneralAgent {
         cartaDaGiocare = null;
         removeAllBehaviours();
         clearMessageQueue();
-
     }
 
     public void startChat() {
         getChatMessage = new GetChatMessage(this);
         addBehaviour(getChatMessage);
+    }
+
+    public boolean gameOver() {
+        return gameOver;
+    }
+
+    void setGameOver(boolean b) {
+        gameOver = b;
+    }
+
+    public void toggleEndGameButton() {
+        if (visible) {
+            ((PlayerGUI) gui).toggleEndGameButton();
+        }
     }
 
 }

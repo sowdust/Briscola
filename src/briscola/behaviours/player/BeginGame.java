@@ -14,20 +14,14 @@ public class BeginGame extends Behaviour {
 
     private static final long serialVersionUID = 1L;
 
-    private int received;
+    private boolean chatReceived;
+    private boolean infoReceived;
     PlayerAgent player;
 
     public BeginGame(PlayerAgent player) {
         this.player = player;
-        this.received = 0;
-    }
-
-    synchronized private void augmentReceived() {
-        ++received;
-    }
-
-    synchronized private int getReceived() {
-        return received;
+        this.chatReceived = false;
+        this.infoReceived = false;
     }
 
     @Override
@@ -47,7 +41,7 @@ public class BeginGame extends Behaviour {
             MessageTemplate.MatchSender(player.getMazziereAID()));
         ACLMessage infoChatMsg = myAgent.receive(mc);
 
-        if (infoPlayersMsg != null) {
+        if (infoPlayersMsg != null && !this.infoReceived) {
             try {
                 List<Player> players = (List<Player>) infoPlayersMsg.getContentObject();
                 if (players.size() < 5) {
@@ -59,7 +53,7 @@ public class BeginGame extends Behaviour {
                 for (Player p : players) {
                     player.say(p.toString());
                 }
-                augmentReceived();
+                this.infoReceived = true;
                 infoPlayersMsg = null;
             } catch (UnreadableException ex) {
                 ex.printStackTrace();
@@ -69,11 +63,11 @@ public class BeginGame extends Behaviour {
             block();
         }
 
-        if (infoChatMsg != null) {
+        if (infoChatMsg != null && !this.chatReceived) {
             player.setChatID(infoChatMsg.getContent());
             player.say("Settate info chat " + player.getChatID());
             player.startChat();
-            augmentReceived();
+            this.chatReceived = true;
         } else {
             player.say("attendendo info chat ");
             block();
@@ -82,7 +76,7 @@ public class BeginGame extends Behaviour {
 
     @Override
     public boolean done() {
-        if (getReceived() == 2) {
+        if (this.chatReceived && this.infoReceived) {
             //  send confirm : we have received all info
             player.sendMessage(player.getMazziereAID(), ACLMessage.CONFIRM,
                                briscola.common.Messages.INFO_RECEIVED);

@@ -13,25 +13,31 @@ public class ReceiveScore extends Behaviour {
 
     private final PlayerAgent agent;
     private boolean done;
+    private boolean received = false;
+    private String convID;
 
     public ReceiveScore(PlayerAgent agent) {
         this.agent = agent;
         this.done = false;
+        this.convID = "";
+        agent.setEndGameButton(true);
     }
 
     @Override
     public void action() {
-        MessageTemplate info1 = MessageTemplate.MatchSender(
-            agent.getMazziereAID());
-        MessageTemplate info2 = MessageTemplate.MatchPerformative(
-            briscola.common.ACLCodes.ACL_SCORE_MESSAGE);
-        MessageTemplate info = MessageTemplate.and(info1, info2);
 
-        ACLMessage myHandMsg = myAgent.receive(info);
-        if (myHandMsg != null) {
+        if (!received) {
+            MessageTemplate info1 = MessageTemplate.MatchSender(
+                agent.getMazziereAID());
+            MessageTemplate info2 = MessageTemplate.MatchPerformative(
+                briscola.common.ACLCodes.ACL_SCORE_MESSAGE);
+            MessageTemplate info = MessageTemplate.and(info1, info2);
+
+            ACLMessage myScoreMessage = myAgent.receive(info);
+            convID = myScoreMessage.getConversationId();
 
             try {
-                ScoreMessage h = (ScoreMessage) myHandMsg.getContentObject();
+                ScoreMessage h = (ScoreMessage) myScoreMessage.getContentObject();
 
                 agent.say("### Punteggi:");
                 for (int i = 0; i < h.players.size(); ++i) {
@@ -39,22 +45,27 @@ public class ReceiveScore extends Behaviour {
                         h.players.get(i).getName() + "\t" + h.points.get(i));
                 }
 
+            } catch (UnreadableException ex) {
+                ex.printStackTrace();
+            }
+
+            received = true;
+
+        } else {
+
+            if (!agent.graphic() || agent.gameOver()) {
                 //  send confirmation message to mazziere
                 ACLMessage confirm = new ACLMessage(
                     briscola.common.ACLCodes.ACL_MESSAGE_RECEIVED);
                 confirm.addReceiver(agent.getMazziereAID());
-                confirm.setConversationId(myHandMsg.getConversationId());
+                confirm.setConversationId(convID);
                 myAgent.send(confirm);
-                //agent.addBehaviour(new PlayAuction(agent));
+                agent.say("Messaggio di fine partita spedito " + convID);
 
                 done = true;
-
-            } catch (UnreadableException ex) {
-                ex.printStackTrace();
             }
-        } else {
-            block();
         }
+
     }
 
     @Override

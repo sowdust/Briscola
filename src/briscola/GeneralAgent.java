@@ -21,7 +21,7 @@ public class GeneralAgent extends Agent {
     protected GeneralGUI gui;
     protected AID mazziereAID;
     protected Rete rete;
-    protected boolean graphic = true;
+    protected boolean graphic = false;
     protected List<Behaviour> behaviours;
 
     private String chatID;
@@ -199,5 +199,9 @@ public class GeneralAgent extends Agent {
         while (receive() != null)
             ++c;
         say(c + " messages ignored ");
+    }
+
+    public boolean graphic() {
+        return graphic;
     }
 }

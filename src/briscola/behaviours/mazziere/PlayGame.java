@@ -19,7 +19,6 @@ import jade.core.behaviours.SequentialBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import jess.Funcall;
