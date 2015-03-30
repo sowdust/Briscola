@@ -62,7 +62,6 @@ public class ManageBid extends Behaviour {
 
     @Override
     public void action() {
-        mazziere.say("in manage bid");
         //  in case we are not waiting for any bid
         if (!waiting && (true || status.getCounter() == counterSent)) {
 
@@ -77,9 +76,10 @@ public class ManageBid extends Behaviour {
             SendAndWait b = new SendAndWait(mazziere.getPlayers(),
                                             ACL_BID_STATUS, m);
             b.setConvId(
-                AUCTION_CONV_ID + status.getCounter() + "a");
+                AUCTION_CONV_ID + status.getCounter() + "a" + mazziere.getChatID().substring(
+                    0, 5));
             //  sends "blocking" message to everyone to update about current situation
-            myAgent.addBehaviour(b);
+            mazziere.addBehaviour(b);
             status.setLastMessageSent(b);
 
             waiting = true;
@@ -108,8 +108,6 @@ public class ManageBid extends Behaviour {
                 }
 
             } else {
-                mazziere.say(
-                    "Aspettando offerta #" + status.getCounter() + " di " + next + "...");
                 block();
             }
 
@@ -132,12 +130,16 @@ public class ManageBid extends Behaviour {
             SendAndWait b = new SendAndWait(mazziere.getPlayers(),
                                             ACL_BID_STATUS, m);
             b.setConvId(
-                AUCTION_CONV_ID + status.getCounter() + "a");
-            myAgent.addBehaviour(b);
+                AUCTION_CONV_ID + status.getCounter() + "a" + mazziere.getChatID().substring(
+                    0, 5));
+            mazziere.say(
+                AUCTION_CONV_ID + status.getCounter() + "a" + mazziere.getChatID().substring(
+                    0, 5));
+            mazziere.addBehaviour(b);
 
-            myAgent.addBehaviour(new AskBriscola(mazziere,
-                                                 status.getBestBidder(),
-                                                 status.getBestBid().rank()));
+            mazziere.addBehaviour(new AskBriscola(mazziere,
+                                                  status.getBestBidder(),
+                                                  status.getBestBid().rank()));
 
             mazziere.say("Asta conclusa");
             mazziere.setGiaguaro(status.getBestBidder());

@@ -22,7 +22,7 @@ public class WaitForSubscriptionConfirmation extends Behaviour {
     private boolean done;
     private final AID agent;
     private final MazziereAgent mazziere;
-    private OpenTable behav;
+    private final OpenTable behav;
 
     public WaitForSubscriptionConfirmation(OpenTable behav,
                                            MazziereAgent mazziere,
@@ -34,7 +34,7 @@ public class WaitForSubscriptionConfirmation extends Behaviour {
     }
 
     @Override
-    synchronized public void action() {
+    public void action() {
 
         MessageTemplate confirmation = MessageTemplate.and(
             MessageTemplate.MatchSender(agent), MatchPerformative(
@@ -52,6 +52,7 @@ public class WaitForSubscriptionConfirmation extends Behaviour {
             mazziere.say(
                 "Aggiunto giocatore # " + ((MazziereAgent) myAgent).getPlayersAID().size() + ": " + agent.getName());
             done = true;
+            done();
         } else {
             block();
         }

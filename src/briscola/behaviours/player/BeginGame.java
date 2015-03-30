@@ -4,7 +4,6 @@ package briscola.behaviours.player;
 
 import briscola.Player;
 import briscola.PlayerAgent;
-import briscola.behaviours.GetChatMessage;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -15,7 +14,7 @@ public class BeginGame extends Behaviour {
 
     private static final long serialVersionUID = 1L;
 
-    short received;
+    private int received;
     PlayerAgent player;
 
     public BeginGame(PlayerAgent player) {
@@ -23,20 +22,30 @@ public class BeginGame extends Behaviour {
         this.received = 0;
     }
 
+    synchronized private void augmentReceived() {
+        ++received;
+    }
+
+    synchronized private int getReceived() {
+        return received;
+    }
+
     @Override
     public void action() {
 
         //  template for message containing players list
-        ACLMessage infoPlayersMsg = myAgent.receive(MessageTemplate.and(
+        MessageTemplate mt = MessageTemplate.and(
             MessageTemplate.MatchPerformative(
                 briscola.common.ACLCodes.ACL_SEND_PLAYERS),
-            MessageTemplate.MatchSender(player.getMazziereAID())));
+            MessageTemplate.MatchSender(player.getMazziereAID()));
+        ACLMessage infoPlayersMsg = myAgent.receive(mt);
 
         // template for message containing chat conversation-id
-        ACLMessage infoChatMsg = myAgent.receive(MessageTemplate.and(
+        MessageTemplate mc = MessageTemplate.and(
             MessageTemplate.MatchPerformative(
                 briscola.common.ACLCodes.ACL_SEND_CHAT_ID),
-            MessageTemplate.MatchSender(player.getMazziereAID())));
+            MessageTemplate.MatchSender(player.getMazziereAID()));
+        ACLMessage infoChatMsg = myAgent.receive(mc);
 
         if (infoPlayersMsg != null) {
             try {
@@ -46,32 +55,39 @@ public class BeginGame extends Behaviour {
                         "Non ho ricevuto tutti i giocatori!");
                 }
                 player.setPlayers(players);
-                player.say("Ricevute info giocatori");
-                ++received;
+                player.say("Ricevute info giocatori. Gioco con:");
+                for (Player p : players) {
+                    player.say(p.toString());
+                }
+                augmentReceived();
+                infoPlayersMsg = null;
             } catch (UnreadableException ex) {
                 ex.printStackTrace();
             }
         } else {
+            player.say("attendendo info giocatori ");
             block();
         }
 
         if (infoChatMsg != null) {
             player.setChatID(infoChatMsg.getContent());
-            player.say("Ricevute info chat");
+            player.say("Settate info chat " + player.getChatID());
             player.startChat();
-            ++received;
+            augmentReceived();
         } else {
+            player.say("attendendo info chat ");
             block();
         }
     }
 
     @Override
     public boolean done() {
-        if (received == 2) {
+        if (getReceived() == 2) {
             //  send confirm : we have received all info
             player.sendMessage(player.getMazziereAID(), ACLMessage.CONFIRM,
                                briscola.common.Messages.INFO_RECEIVED);
-            myAgent.addBehaviour(new ReceiveHand(player));
+            player.say("Spedendo conferma");
+            player.addBehaviour(new ReceiveHand(player));
             return true;
         }
         return false;

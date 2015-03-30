@@ -18,6 +18,7 @@ import static briscola.objects.Strategy.RANDOM;
 import briscola.objects.Suit;
 import jade.core.AID;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import jess.Defglobal;
 import jess.Fact;
@@ -73,6 +74,8 @@ public class PlayerAgent extends GeneralAgent {
             name = briscola.common.Names.randomName();
             this.strategy = RANDOM;
         }
+
+        this.behaviours = new LinkedList<>();
 
         rulesFile = strategy.getFile();
 
@@ -391,12 +394,13 @@ public class PlayerAgent extends GeneralAgent {
 
     void newGame() {
         say("Iniziando nuova partita...");
-        ((PlayerGUI) gui).newGame();
-        addBehaviour(new Subscribe(this));
-        startRete();
+        setChatID(null);
         setMazziereAID(null);
         players = new ArrayList<>();
-
+        clearMessageQueue();
+        ((PlayerGUI) gui).newGame();
+        startRete();
+        addBehaviour(new Subscribe(this));
     }
 
     public void endGame() {
@@ -410,7 +414,9 @@ public class PlayerAgent extends GeneralAgent {
         briscolaSuit = null;
         status = null;
         cartaDaGiocare = null;
-        removeBehaviour(getChatMessage);
+        removeAllBehaviours();
+        clearMessageQueue();
+
     }
 
     public void startChat() {

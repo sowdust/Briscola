@@ -24,6 +24,8 @@ package briscola;
  */
 public class MazziereGUI extends GeneralGUI {
 
+    private static final long serialVersionUID = 1L;
+
     private MazziereAgent agent;
 
     /**

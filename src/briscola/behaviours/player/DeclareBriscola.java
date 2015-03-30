@@ -20,7 +20,7 @@ public class DeclareBriscola extends OneShotBehaviour {
         SendMessage m = new SendMessage(player.getMazziereAID(),
                                         ACL_TELL_BRISCOLA,
                                         s);
-        myAgent.addBehaviour(m);
+        player.addBehaviour(m);
 
     }
 

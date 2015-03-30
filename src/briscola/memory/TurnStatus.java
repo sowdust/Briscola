@@ -72,7 +72,8 @@ public class TurnStatus {
                 return initMano(i);
             }
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(
+            "Player " + p + " non nella mia lista");
     }
 
     public boolean initMano(int next) {

@@ -60,7 +60,7 @@ public class Subscribe extends Behaviour {
     @Override
     public boolean done() {
         if (state == 3) {
-            myAgent.addBehaviour(new BeginGame(player));
+            player.addBehaviour(new BeginGame(player));
             return true;
         }
         return false;
@@ -89,6 +89,8 @@ public class Subscribe extends Behaviour {
             player.say(
                 "Iscritto alla partita col mazziere " + confirmMsg.getSender().getName());
             player.setMazziereAID(confirmMsg.getSender());
+            // todo: remove
+            player.clearMessageQueue();
             state = 3;
         } else {
             player.say("Messaggio conferma non trovato");
@@ -121,6 +123,8 @@ public class Subscribe extends Behaviour {
     }
 
     private class FindTable extends TickerBehaviour {
+
+        private static final long serialVersionUID = 1L;
 
         Short state;
         ACLMessage responseMsg;

@@ -84,7 +84,7 @@ public class WaitForBriscola extends Behaviour {
     @Override
     public boolean done() {
         if (done) {
-            myAgent.addBehaviour(new PlayGame(player));
+            player.addBehaviour(new PlayGame(player));
             return true;
         }
         return false;

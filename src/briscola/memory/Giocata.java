@@ -6,6 +6,7 @@ import briscola.objects.Role;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Giocata implements Serializable {
 
@@ -56,6 +57,18 @@ public class Giocata implements Serializable {
         Giocata g = (Giocata) e;
         return mano == g.getMano() && turno == g.getTurno();
         //&& card.equals(            g.getCard()) && player.equals(g.getPlayer());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 41 * hash + Objects.hashCode(this.player);
+        hash = 41 * hash + this.mano;
+        hash = 41 * hash + this.turno;
+        hash = 41 * hash + Objects.hashCode(this.card);
+        hash = 41 * hash + Objects.hashCode(this.role);
+        hash = 41 * hash + Objects.hashCode(this.comments);
+        return hash;
     }
 
     public int getMano() {

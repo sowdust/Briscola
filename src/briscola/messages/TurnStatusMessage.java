@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 public class TurnStatusMessage implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     public final int counter;
     public final int mano;
     public final Player justPlayer;

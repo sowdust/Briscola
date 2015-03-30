@@ -49,7 +49,7 @@ public class AskBriscola extends Behaviour {
 
             //  se non l'abbiamo ancora chiesta al vincitore dell'asta
             SendMessage b = new SendMessage(vincitore, ACL_ASK_BRISCOLA, null);
-            myAgent.addBehaviour(b);
+            mazziere.addBehaviour(b);
             sent = true;
             block();
         }
@@ -85,7 +85,7 @@ public class AskBriscola extends Behaviour {
             SendAndWait send = new SendAndWait(mazziere.getPlayers(),
                                                ACL_COMMUNICATE_BRISCOLA,
                                                briscolaSuit);
-            myAgent.addBehaviour(send);
+            mazziere.addBehaviour(send);
             done = true;
         }
     }
@@ -93,7 +93,7 @@ public class AskBriscola extends Behaviour {
     @Override
     public boolean done() {
         if (done) {
-            myAgent.addBehaviour(new PlayGame(mazziere));
+            mazziere.addBehaviour(new PlayGame(mazziere));
             return true;
         }
         return false;

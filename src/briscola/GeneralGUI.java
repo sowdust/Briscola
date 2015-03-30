@@ -4,6 +4,7 @@ package briscola;
 
 import java.awt.Color;
 import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -16,6 +17,12 @@ public class GeneralGUI extends javax.swing.JFrame {
     protected javax.swing.JList playersList;
     protected javax.swing.JTextPane chatPanel;
     protected javax.swing.JTextArea chatTextArea;
+
+    protected void clean() {
+        logTextArea.append("\n\n\n\n\n");
+        DefaultListModel listModel = (DefaultListModel) playersList.getModel();
+        listModel.removeAllElements();
+    }
 
     protected void say(String s) {
         logTextArea.append(s + "\n");

@@ -17,7 +17,15 @@ import java.util.UUID;
  */
 public class SendAndWait extends SendMessage {
 
+    private static final long serialVersionUID = 1L;
+
     private int confirmations;
+
+    public SendAndWait(List<Player> rcp, int type, String content) {
+        super(rcp, type, content);
+        confirmations = 0;
+        convId = UUID.randomUUID().toString();
+    }
 
     public SendAndWait(List<Player> rcp, int type, Serializable content) {
         super(rcp, type, content);

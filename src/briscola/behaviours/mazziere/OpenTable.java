@@ -59,16 +59,20 @@ public class OpenTable extends Behaviour {
                 //  se agente sconosciuto
                 if (reqTime == null || ((System.currentTimeMillis() - reqTime) > briscola.common.Names.WAIT_FOR_CONFIRMATION)) {
                     requesters.put(agentName, System.currentTimeMillis());
-                    myAgent.addBehaviour(new OfferAChair(this, mazziere,
-                                                         requestMsg,
-                                                         agentName));
+                    mazziere.addBehaviour(new OfferAChair(this, mazziere,
+                                                          requestMsg,
+                                                          agentName));
                 }
 
             } else {
                 block();
             }
         } else {
-            mazziere.say("Siamo già a 5 richieste..");
+            /*            mazziere.say(
+             "Siamo già a " + ((MazziereAgent) myAgent).getPlayersAID().size() + " richieste..");
+             for (AID p : ((MazziereAgent) myAgent).getPlayersAID()) {
+             mazziere.say(p.toString());
+             }*/
             block();
         }
     }
@@ -78,7 +82,7 @@ public class OpenTable extends Behaviour {
         if (((MazziereAgent) myAgent).getPlayersAID().size() == 5) {
             mazziere.getDFA().removeServices(mazziere.getServiceDesc());
             mazziere.say("Tavolo al completo");
-            myAgent.addBehaviour(new BeginGame(mazziere));
+            mazziere.addBehaviour(new BeginGame(mazziere));
             return true;
         }
         return false;

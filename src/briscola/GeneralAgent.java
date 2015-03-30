@@ -1,15 +1,13 @@
 package briscola;
 
-import briscola.behaviours.SendMessage;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jess.Fact;
 import jess.JessException;
 import jess.Rete;
@@ -24,6 +22,8 @@ public class GeneralAgent extends Agent {
     protected AID mazziereAID;
     protected Rete rete;
     protected boolean graphic = true;
+    protected List<Behaviour> behaviours;
+
     private String chatID;
 
     public void setChatID(String uniqueKey) {
@@ -114,6 +114,17 @@ public class GeneralAgent extends Agent {
 //        m.setPerformative(type);
 //        send(m);
 //    }
+    public void sendMessage(List<Player> rcp, int type, String content)
+        throws IOException {
+        ACLMessage m = new ACLMessage(type);
+        for (Player p : rcp) {
+            m.addReceiver(p.getAID());
+        }
+        m.setContent(content);
+        m.setPerformative(type);
+        send(m);
+    }
+
     public void sendMessage(AID rcp, int type, String content) {
         ACLMessage m = new ACLMessage(type);
         m.addReceiver(rcp);
@@ -168,5 +179,25 @@ public class GeneralAgent extends Agent {
 
     public Rete getRete() {
         return rete;
+    }
+
+    @Override
+    public void addBehaviour(Behaviour b) {
+        super.addBehaviour(b);
+        this.behaviours.add(b);
+    }
+
+    synchronized public void removeAllBehaviours() {
+        for (Behaviour b : behaviours) {
+            removeBehaviour(b);
+        }
+    }
+
+    synchronized public void clearMessageQueue() {
+        int c = 0;
+        say("Clearing message queue");
+        while (receive() != null)
+            ++c;
+        say(c + " messages ignored ");
     }
 }

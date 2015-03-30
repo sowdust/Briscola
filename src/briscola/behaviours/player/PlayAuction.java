@@ -58,7 +58,8 @@ public class PlayAuction extends Behaviour {
 
             //  WHEN RECEIVING BIDS
             finalMt = MessageTemplate.and(MessageTemplate.MatchConversationId(
-                AUCTION_CONV_ID + (status.counter()) + "a"), mt);
+                AUCTION_CONV_ID + (status.counter()) + "a" + agent.getChatID().substring(
+                    0, 5)), mt);
 
             ACLMessage statusMsg = myAgent.receive(finalMt);
             if (statusMsg == null) {
@@ -114,10 +115,10 @@ public class PlayAuction extends Behaviour {
         if (done) {
             agent.say("### Asta conclusa");
             if (winner) {
-                myAgent.addBehaviour(new DeclareBriscola(agent));
-                myAgent.addBehaviour(new WaitForBriscola(agent));
+                agent.addBehaviour(new DeclareBriscola(agent));
+                agent.addBehaviour(new WaitForBriscola(agent));
             } else {
-                myAgent.addBehaviour(new WaitForBriscola(agent));
+                agent.addBehaviour(new WaitForBriscola(agent));
             }
         }
         return done;

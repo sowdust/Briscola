@@ -43,7 +43,7 @@ public class ReceiveHand extends Behaviour {
             confirm.addReceiver(agent.getMazziereAID());
             confirm.setConversationId(myHandMsg.getConversationId());
             myAgent.send(confirm);
-            myAgent.addBehaviour(new PlayAuction(agent));
+            agent.addBehaviour(new PlayAuction(agent));
             done = true;
 
         } else {

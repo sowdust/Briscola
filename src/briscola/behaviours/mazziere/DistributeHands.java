@@ -45,7 +45,7 @@ public class DistributeHands extends OneShotBehaviour {
         }
         List<Player> players = mazziere.getPlayers();
         ParallelBehaviour sendMessages = new ParallelBehaviour();
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < players.size(); ++i) {
             List<Player> rcp = new LinkedList<>();
             rcp.add(players.get(i));
             mazziere.setHand(players.get(i), h[i]);
@@ -62,13 +62,13 @@ public class DistributeHands extends OneShotBehaviour {
             public void action() {
                 // HERE GOES WHAT TO DO NEXT!!!!
                 mazziere.say("in what next action");
-                myAgent.addBehaviour(new ManageBid(mazziere));
+                mazziere.addBehaviour(new ManageBid(mazziere));
             }
         };
         doAll.addSubBehaviour(sendMessages);
         doAll.addSubBehaviour(whatNext);
 
-        myAgent.addBehaviour(doAll);
+        mazziere.addBehaviour(doAll);
 
     }
 

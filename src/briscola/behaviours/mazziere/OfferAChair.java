@@ -31,7 +31,7 @@ public class OfferAChair extends OneShotBehaviour {
         ACLMessage proposal = originalMsg.createReply();
         proposal.setContent(briscola.common.Messages.YOU_CAN_PLAY);
         myAgent.send(proposal);
-        myAgent.addBehaviour(
+        mazziere.addBehaviour(
             new WaitForSubscriptionConfirmation(behav, mazziere,
                                                 requester));
     }

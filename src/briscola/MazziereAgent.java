@@ -1,5 +1,3 @@
-/*
- */
 package briscola;
 
 import briscola.behaviours.GetChatMessage;
@@ -24,6 +22,7 @@ import jade.domain.FIPAException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import jess.Defglobal;
 import jess.JessException;
@@ -58,6 +57,7 @@ public class MazziereAgent extends GeneralAgent {
     private GameMemory gameMem;
     private GetGiocataComment getGiocataComment;
     private GetChatMessage getChatMessage;
+    private OpenTable openTable;
 
     public MazziereAgent() {
         players = new ArrayList<>();
@@ -69,6 +69,8 @@ public class MazziereAgent extends GeneralAgent {
     protected void setup() {
         this.mazziereAID = this.getAID();
         Object[] args = getArguments();
+
+        this.behaviours = new LinkedList<>();
 
         //  SETTING UP THE RETE INSTANCE FOR JESS RULE PROCESSING
         rete = new Rete();
@@ -129,9 +131,23 @@ public class MazziereAgent extends GeneralAgent {
     }
 
     public void startNewGame() {
-        addBehaviour(new OpenTable(this));
+        openTable = new OpenTable(this);
+        addBehaviour(openTable);
         getGiocataComment = new GetGiocataComment(this);
         addBehaviour(getGiocataComment);
+        this.gameMem = new GameMemory(this);
+    }
+
+    public void resetGameMemory() {
+        players = new ArrayList<>();
+        table = new Table();
+        giaguaro = null;
+        socio = null;
+        briscola = null;
+        gui.clean();
+        gameMem = null;
+        clearMessageQueue();
+        removeAllBehaviours();
     }
 
     public String getRealName() {
@@ -240,17 +256,6 @@ public class MazziereAgent extends GeneralAgent {
 
     public GameMemory getMemory() {
         return gameMem;
-    }
-
-    public void resetGameMemory() {
-        this.gameMem = new GameMemory(this);
-        players = new ArrayList<>();
-        table = new Table();
-        giaguaro = null;
-        socio = null;
-        briscola = null;
-        removeBehaviour(getGiocataComment);
-        removeBehaviour(getChatMessage);
     }
 
     public boolean writeCSV() {

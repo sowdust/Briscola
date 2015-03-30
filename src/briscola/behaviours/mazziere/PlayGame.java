@@ -15,9 +15,11 @@ import briscola.objects.Card;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.ParallelBehaviour;
 import static jade.core.behaviours.ParallelBehaviour.WHEN_ALL;
+import jade.core.behaviours.SequentialBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import jess.Funcall;
@@ -72,8 +74,8 @@ public class PlayGame extends Behaviour {
             status = new TurnStatus(players, players.get(next));
             TurnStatusMessage msg = new TurnStatusMessage(0, 0, null, null,
                                                           status.getNext());
-            myAgent.addBehaviour(new SendMessage(players, ACL_TELL_FIRST_TURN,
-                                                 msg));
+            mazziere.addBehaviour(new SendMessage(players, ACL_TELL_FIRST_TURN,
+                                                  msg));
             mazziere.say(
                 "Comunicato il primo giocatore: " + status.getNext());
 
@@ -81,7 +83,7 @@ public class PlayGame extends Behaviour {
 
         if (manageTurn == null) {
             manageTurn = new ManageTurn();
-            myAgent.addBehaviour(manageTurn);
+            mazziere.addBehaviour(manageTurn);
         }
 
 //  in case the turn has finished, communicate who scores
@@ -123,14 +125,13 @@ public class PlayGame extends Behaviour {
                                                               status.getMano(),
                                                               null, null,
                                                               prossimo);
-                myAgent.addBehaviour(new SendMessage(players,
-                                                     ACL_TELL_FIRST_TURN,
-                                                     msg));
+                mazziere.addBehaviour(new SendMessage(players,
+                                                      ACL_TELL_FIRST_TURN,
+                                                      msg));
                 manageTurn = new ManageTurn();
-                myAgent.addBehaviour(manageTurn);
+                mazziere.addBehaviour(manageTurn);
 
             } else {
-                mazziere.addBehaviour(new EndGame(mazziere));
                 mazziere.say("Partita conclusa. Punteggi dei singoli:");
                 List<Integer> points = new ArrayList<>();
                 for (Player p : players) {
@@ -140,7 +141,11 @@ public class PlayGame extends Behaviour {
                 ScoreMessage scoreMessage = new ScoreMessage(players, points);
                 SendAndWait b = new SendAndWait(players, ACL_SCORE_MESSAGE,
                                                 scoreMessage);
-                myAgent.addBehaviour(b);
+                mazziere.say("Spedendo punteggi...");
+                SequentialBehaviour bb = new SequentialBehaviour();
+                bb.addSubBehaviour(b);
+                bb.addSubBehaviour(new EndGame(mazziere));
+                mazziere.addBehaviour(bb);
                 done = true;
             }
         }
@@ -200,18 +205,17 @@ public class PlayGame extends Behaviour {
                     mazziere.getMemory().addGiocata(status.getMano(),
                                                     status.getCounter(),
                                                     msg.player, msg.card);
-                    myAgent.addBehaviour(new SendMessage(players,
-                                                         ACL_BOUNCE_GIOCATA,
-                                                         ms));
-                    mazziere.say(
-                        "Mandando la giocata a " + players.size() + " giocatori");
+                    mazziere.addBehaviour(new SendMessage(players,
+                                                          ACL_BOUNCE_GIOCATA,
+                                                          ms));
+
                     received = true;
                     block();
                 } catch (UnreadableException ex) {
                     ex.printStackTrace();
                 }
             } else {
-                mazziere.say("attendendo la giocata di " + status.getNext());
+
                 block();
             }
         }

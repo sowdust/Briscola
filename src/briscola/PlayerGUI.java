@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JList;
 
 /**
  *
@@ -34,13 +35,13 @@ public class PlayerGUI extends GeneralGUI {
 
     }
 
-    synchronized protected void addBid(Bid bid) {
+    protected void addBid(Bid bid) {
         DefaultListModel<Bid> l
             = (DefaultListModel<Bid>) bidsList.getModel();
         l.addElement(bid);
     }
 
-    synchronized public void setHand(Hand h) {
+    public void setHand(Hand h) {
         DefaultListModel<Card> l
             = (DefaultListModel<Card>) cardList.getModel();
         l.removeAllElements();
@@ -326,8 +327,8 @@ public class PlayerGUI extends GeneralGUI {
 
     protected JLabel[] cardLabels;
 
-    synchronized void addGiocata(int mano, int counter, Player justPlayer,
-                                 Card justCard) {
+    void addGiocata(int mano, int counter, Player justPlayer,
+                    Card justCard) {
         String s = "[" + counter + " ] " + justPlayer.getName() + ": " + justCard;
         Giocata g = new Giocata(mano, counter, justPlayer, null, justCard);
         giocate.put(s, g);
@@ -344,13 +345,13 @@ public class PlayerGUI extends GeneralGUI {
         }
     }
 
-    synchronized public void initMano(int counter, Player next) {
+    public void initMano(int counter, Player next) {
         DefaultListModel<String> l
             = (DefaultListModel<String>) listGiocate.getModel();
         l.addElement("Mano #" + (counter + 1));
     }
 
-    synchronized protected void addCard(Card card) {
+    protected void addCard(Card card) {
         DefaultListModel<Card> l
             = (DefaultListModel<Card>) cardList.getModel();
         l.addElement(card);
@@ -362,14 +363,26 @@ public class PlayerGUI extends GeneralGUI {
 
     void newGame() {
         newGameButton.setVisible(false);
+        clean();
     }
 
     public void enableNewGame() {
         newGameButton.setVisible(true);
     }
-    
-    
-    
+
+    @Override
+    public void clean() {
+        super.clean();
+        DefaultListModel listModel = (DefaultListModel) cardList.getModel();
+        listModel.removeAllElements();
+        listModel = (DefaultListModel) bidsList.getModel();
+        listModel.removeAllElements();
+        listModel = (DefaultListModel) listGiocate.getModel();
+        listModel.removeAllElements();
+        actionsTextArea.setText("");
+        chatTextArea.setText("");
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane CardsPane;
     private javax.swing.JTextArea actionsTextArea;

@@ -56,7 +56,7 @@ public class PlayGame extends Behaviour {
                     agent.say("Inizia: " + msg.next.getName());
                     agent.initMano(status.getMano(), msg.next);
                     if (status.getNext().getAID().equals(agent.getAID())) {
-                        myAgent.addBehaviour(new SendGiocata());
+                        agent.addBehaviour(new SendGiocata());
                     }
                 } catch (UnreadableException | JessException ex) {
                     ex.printStackTrace();
@@ -73,7 +73,7 @@ public class PlayGame extends Behaviour {
             //  se non siamo in attesa delle giocate del turno
             if (receiveGiocate == null) {
                 receiveGiocate = new ReceiveGiocate();
-                myAgent.addBehaviour(receiveGiocate);
+                agent.addBehaviour(receiveGiocate);
                 block();
             }
 
@@ -86,7 +86,7 @@ public class PlayGame extends Behaviour {
                 }
                 agent.say(s.toString());
 
-                myAgent.addBehaviour(new ReceiveNext());
+                agent.addBehaviour(new ReceiveNext());
                 receiveGiocate = null;
 
                 block();
@@ -97,8 +97,8 @@ public class PlayGame extends Behaviour {
     @Override
     public boolean done() {
         if (mano == 7 && status.getCounter() == 5) {
+            agent.addBehaviour(new ReceiveScore(agent));
             agent.say("Partita terminata");
-            myAgent.addBehaviour(new ReceiveScore(agent));
             return true;
         }
         return false;
@@ -138,10 +138,10 @@ public class PlayGame extends Behaviour {
                     ++counter;
                     if (status.getCounter() < 5 && status.getNext() != null && status.getNext().getAID().equals(
                         agent.getAID()) && status.getMano() > lastPlayed) {
-                        myAgent.addBehaviour(new SendGiocata());
+                        agent.addBehaviour(new SendGiocata());
 
                         /*if (status.getMano() == 0 || status.getMano() == 7) {
-                         myAgent.addBehaviour(new PrintFacts(agent));
+                         agent.addBehaviour(new PrintFacts(agent));
                          }*/
                     }
                 } catch (UnreadableException | JessException ex) {
@@ -232,7 +232,7 @@ public class PlayGame extends Behaviour {
                     status.initMano(msg.next);
                     agent.initMano(status.getMano(), status.getNext());
                     if (status.getNext().getAID().equals(agent.getAID())) {
-                        myAgent.addBehaviour(new SendGiocata());
+                        agent.addBehaviour(new SendGiocata());
                     }
                     receiveGiocate = null;
                 } catch (UnreadableException | JessException ex) {
