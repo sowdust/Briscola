@@ -74,11 +74,11 @@ public class BeginGame extends Behaviour {
             briscola.common.Messages.INFO_RECEIVED));
         if (ms != null) {
             if (conferme.get(ms.getSender()) == null) {
-                mazziere.say("Ricevuta conferma da " + ms.getSender());
+                // mazziere.say("Ricevuta conferma da " + ms.getSender());
                 conferme.put(ms.getSender(), 1);
                 augmetReceived();
             } else {
-                mazziere.say("Conferma di " + ms.getSender() + " già ricevuta");
+                // mazziere.say("Conferma di " + ms.getSender() + " già ricevuta");
             }
         } else {
             block();
@@ -108,15 +108,14 @@ public class BeginGame extends Behaviour {
             mazziere.addBehaviour(new DistributeHands(mazziere));
             return true;
         } else {
-            mazziere.say(
-                "Siamo a " + getReceived() + " conferme su 5. Attendendo:");
-            for (Player p : mazziere.getPlayers()) {
-                if (conferme.get(p) == null) {
-                    mazziere.say(p.toString());
-                }
-            }
+            /*mazziere.say(
+             "Siamo a " + getReceived() + " conferme su 5. Attendendo:");
+             for (Player p : mazziere.getPlayers()) {
+             if (conferme.get(p) == null) {
+             mazziere.say(p.toString());
+             }
+             }*/
             return false;
-
         }
 
     }
