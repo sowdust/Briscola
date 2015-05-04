@@ -44,7 +44,7 @@ public class GeneralAgent extends Agent {
         if (graphic) {
             gui.say(s);
         } else {
-            System.out.println("[" + name + "] " + s);
+            //System.out.println("[" + name + "] " + s);
         }
     }
 

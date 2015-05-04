@@ -84,7 +84,6 @@ public class PlayerAgent extends GeneralAgent {
 
         startRete();
 
-        //  SETTING UP THE RETE INSTANCE FOR JESS RULE PROCESSING
         gui = new PlayerGUI(this);
         gui.setVisible(visible);
 
@@ -92,6 +91,7 @@ public class PlayerAgent extends GeneralAgent {
         say("Utilizzerò la strategia " + strategy);
         addBehaviour(new Subscribe(this));
     }
+    //  SETTING UP THE RETE INSTANCE FOR JESS RULE PROCESSING
 
     public void startRete() {
         rete = new Rete();
@@ -397,6 +397,7 @@ public class PlayerAgent extends GeneralAgent {
 
     void newGame() {
         say("Iniziando nuova partita...");
+        gameOver = false;
         setChatID(null);
         setMazziereAID(null);
         players = new ArrayList<>();

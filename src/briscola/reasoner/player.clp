@@ -50,6 +50,11 @@
     (slot suit)
 )
 
+( deftemplate da-giocarsi "carte attivate per il gioco"
+    (slot card)
+    (slot sal)
+)
+
 ( deftemplate turno "ordine in cui si prende la mano"
     (slot player)
     (slot posizione)
@@ -69,6 +74,18 @@
     (slot suit)
 )
 
+( deftemplate lisci-in-mano
+    (slot card)
+    (slot rank)
+    (slot suit)
+)
+
+( deftemplate liscio-piu-basso
+    (slot card)
+    (slot rank)
+    (slot suit)
+)
+
 ( deftemplate carichi-in-mano "Le carte da punto che ho in mano"
     (slot card)
     (slot rank)
@@ -76,7 +93,14 @@
     (slot points)
 )
 
-( deftemplate carico-piu-alto "Le carte da punto che ho in mano"
+( deftemplate carico-piu-basso 
+    (slot card)
+    (slot rank)
+    (slot suit)
+    (slot points)
+)
+
+( deftemplate carico-piu-alto 
     (slot card)
     (slot rank)
     (slot suit)
@@ -87,6 +111,10 @@
     (slot card)
     (slot rank)
     (slot suit)
+)
+
+( deftemplate piu-bassa-che-prende "La meno potente che prende in mano"
+    (slot card)
 )
 
 ( deftemplate giaguaro  (slot player) )
@@ -197,6 +225,7 @@
 ( deffunction gioca (?c ?int)    "se c non nulla, la metto in memoria per essere giocata"
     (if (instanceof ?c briscola.objects.Card) then
         (store DA-GIOCARE ?c)
+        (assert (da-giocarsi (card ?c) (sal ?int)))
         ;;; METTERE QUALCOSA CHE FERMI TUTTO IL RESTO!!
     else
         (debug "provando a giocare una carta nulla. Si lascia al caso")
@@ -211,31 +240,63 @@
 ( deffunction analizza-carichi-in-mano ()
     "Asserisco fatti riguardo ai miei carichi"
     (bind ?it (run-query* carichi-in-mano ?*briscola*))
+    (bind ?piubasso nil)
     (bind ?piualto nil)
     (while (?it next)
+        (if (or (not (instanceof ?piubasso briscola.objects.Card)) (> (?piubasso getValue) ((?it getObject c) getValue)) )then 
+            (bind ?piubasso (?it getObject c))
+        )
         (if (or (not (instanceof ?piualto briscola.objects.Card)) (< (?piualto getValue) ((?it getObject c) getValue)) )then 
             (bind ?piualto (?it getObject c))
         )
         (assert (carichi-in-mano (card (?it getObject c)) (rank (?it getObject r)) (suit (?it getObject s))    (points ((?it getObject r) getValue)) ))
-        ;(debug (create$ carico in mano: ((?it getObject c) toString)))
     )
 
+    (if (<> ?piubasso nil) then
+        (assert (carico-piu-basso (card ?piubasso)))
+    )
     (if (<> ?piualto nil) then
         (assert (carico-piu-alto (card ?piualto)))
     )
 )
 
+( deffunction analizza-lisci-in-mano ()
+    "Asserisco fatti riguardo ai miei lisci"
+    (bind ?it (run-query* lisci-in-mano ?*briscola*))
+    (bind ?piualto nil) ;; sarebbe PIUBASSO in realta'....
+    (while (?it next)
+        (if (or (not (instanceof ?piualto briscola.objects.Card)) (> (?piualto getValue) ((?it getObject c) getValue)) )then 
+            (bind ?piualto (?it getObject c))
+        )
+        (assert (lisci-in-mano (card (?it getObject c)) (rank (?it getObject r)) (suit (?it getObject s))    ))
+        ;(debug (create$ carico in mano: ((?it getObject c) toString)))
+    )
+
+    (if (<> ?piualto nil) then
+        (assert (liscio-piu-basso (card ?piualto)))
+    )
+)
+
+
+
 ( deffunction analizza-possibili-prese (?sta-prendendo ?seme-mano)
     "Asserisco fatti riguardo le carte con le quali posso prendere"
     (bind ?im (run-query* carte-in-mano ))
+    (bind ?piubassa nil)
     (while (?im next)
         (if (batte (?im getObject c) ?sta-prendendo ?seme-mano) then
+            (if (or (not (instanceof ?piubassa briscola.objects.Card)) (batte ?piubassa  (?im getObject c) ?seme-mano) ) then 
+                (bind ?piubassa (?im getObject c))
+            )
             (assert (posso-prendere (card (?im getObject c)) (rank (?im getObject r))  (suit (?im getObject s))))
 ;            (debug (create$ posso prendere con ((?im getObject c) toString) sta prendendo (?sta-prendendo toString))) 
         else
 ;            (debug (create$ NON posso prendere con ((?im getObject c) toString) sta prendendo (?sta-prendendo toString))) 
             
         )
+    )
+    (if (instanceof ?piubassa briscola.objects.Card) then
+        (assert (piu-bassa-che-prende (card ?piubassa)))
     )
 )
 
@@ -255,9 +316,29 @@
     return ?card
 )
 
+
+( deffunction carta-da-giocarsi ()
+    "Tra tutte le carte selezionate, scelgo quella con priorità maggiore"
+    (bind ?it (run-query* da-giocarsi))
+    (?it next)
+    (bind ?card (?it getObject c))
+    (bind ?sal (?it getObject n))
+    (while (?it next)
+        (if ( > (?it getObject n) ?sal) then
+            (bind ?card (?it getObject c))
+            (bind ?sal (?it getObject n))
+        )
+    )
+    return ?card
+)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     QUERIES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+( defquery da-giocarsi "Ritorna tutte le carte selezionate da giocare"
+    (da-giocarsi (card ?c) (sal ?n))
+)
 
 ( defquery prendono-in-mano "Ritorna tutte le carte che prendono"
     (posso-prendere (card ?c) (rank ?r) (suit ?s))
@@ -271,6 +352,11 @@
 ( defquery non-briscole-in-mano "Ritorna tutte le carte non briscole"
     (declare (variables ?seme))
     (in-mano (card ?c) (suit ?s&:(<> ?seme ?s)) (rank ?r))
+)
+
+( defquery lisci-in-mano "I lisci che ho in mano"
+    (declare (variables ?seme))
+    (in-mano (card ?c) (suit ?s&:(<> ?seme ?s)) (rank ?r&:(= 0 (?r getValue))))
 )
 
 ( defquery carichi-in-mano "I carichi che ho in mano"
@@ -319,7 +405,7 @@
     (assert (prende (player nil) (card nil) (rank nil) (suit nil)))
     (assert (giocata-numero -1))
     (store DA-GIOCARE nil)
-    (debug (create$ "inizializzando mano" ?number))
+    ;(debug (create$ "inizializzando mano" ?number))
 
 )
 
@@ -407,7 +493,7 @@
 ;   REGOLE GENERALI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-( defrule se-posso-prendere-gratis-villano-prendo "Se ho un carico che può prendere tutto"
+( defrule se-posso-prendere-punti-gratis-villano-prendo "Se ho un carico che può prendere tutto"
     ;;  importante!
     ;(declare (salience 100))
     (mio-ruolo villano)
@@ -416,13 +502,44 @@
     (mio-turno-numero 5)
     (briscola (card ?b))
     (posso-prendere (card ?c&:(= ?c (get-piu-alta-seme ?s))) (suit ?s&:(<> ?s ?*briscola*)))
+    (punti-in-tavola ?punti&:(> ?punti 0))
+    (giaguaro (player ?g))
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(<> ?pos 1)))
 =>
-    (gioca ?c 100)
-    (debug (create$ sono ultimo di mano, prendo gratis! (?c toString) ?m ))
+    (gioca ?c 90)
+    (debug (create$ sono ultimo di mano, prendo gratis perchè ci sono punti e non lascio giaguaro ultimo! (?c toString) ?m ))
     (retract ?w)
 )
 
+( defrule se-posso-prendere-gratis-villano-prendo-senza-avv-giaguaro "Se ho un carico che può prendere tutto"
+    ;;  importante!
+    ;(declare (salience 100))
+    (mio-ruolo villano)
+    (mano-numero ?m)
+    ?w <- (calcola-giocata)
+    (mio-turno-numero 5)
+    (punti-in-tavola ?punti&:(> ?punti 9))
+    (briscola (card ?b))
+    (posso-prendere (card ?c&:(= ?c (get-piu-alta-seme ?s))) (suit ?s&:(<> ?s ?*briscola*)))
+=>
+    (gioca ?c 100)
+    (debug (create$ sono ultimo di mano, prendo gratis perchè non più di 9 punti! (?c toString) ?m ))
+    (retract ?w)
+)
 
+( defrule se-villano-non-ultimo-dopo-chiamante-non-prendo "Se villano e non ultimo, lascio il giaguaro prima di me"
+    ?w <- (calcola-giocata)
+    (mio-ruolo villano)
+    (mio-turno-numero ?n&:(<> ?n 5))
+    (giaguaro (player ?g))
+    (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (- ?n 1))))
+    (liscio-piu-basso (card ?c))
+=>
+    (gioca ?c 80)
+    (debug (create$ gioco prima del chiamante, lascio))
+    (retract ?w)
+)
 
 ( defrule socio-tiene-giaguaro-ultimo "lasciamo il giaguaro ultimo nelle mani finali"
     ?w <- (calcola-giocata)
@@ -477,12 +594,31 @@
     
     (debug (create$ carico al massimo perchè prende il mio compagno (?prende toString)  (?carico toString)))
     (gioca ?carico 0)
+    (retract ?w)
     ;(debug (create$ il mio maggior carico e (get-maggior-carico ?briscola)))
 )
 
 
 
-    
+( defrule villano-prima-di-giaguaro "Se sono villano e gioco per primo, giag secondo"
+    ?w <- (calcola-giocata)
+    (mio-ruolo villano)
+    (mio-turno-numero 0)
+    (giaguaro (player ?gia))
+    (turno (player ?player&:(= ?player ?gia)) (posizione ?pos&:(= ?pos 1)))
+    ;(in-mano (card ?c&:(( and (> (?c getValue) 0)) (< (?c getValue) 5)) ) (suit ?s&:(<> ?s ?*briscola*)))
+    (carico-piu-basso (card ?c))
+=>
+    (debug (create$ essendo io primo e giaguaro secondo, gioco una carta alta da k a j))
+    (gioca ?c 80)
+    (retract ?w)
+)
+
+
+
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;   PRIMA MANO  #0
@@ -500,25 +636,76 @@
     (bind ?da-giocare  (get-minor-valore ?it))
     (debug  (create$ "Sono il giaguaro. Gioco la più bassa: " (?da-giocare toString)))
     (gioca ?da-giocare 0)
-
     (retract ?w)
 )
 
 
-( defrule gioca1 "quando è il mio turno, meglio che giochi!"
+( defrule gioca-mano-0-socio "quando è il mio turno, meglio che giochi!"
     ?w <- (calcola-giocata)
     (mio-ruolo socio)
     (mano-numero 0)
+    (carico-piu-basso (card ?c))
+    (mio-turno-numero ?n&:(< ?n 4))
 =>
-    (debug "sono il socio e gioco la più bassa che ho. ")
+    (debug (create$ sono il socio e gioco un piccolo carico per confondere le idee. (?c toString) ))
+    (gioca ?c 70)
     (retract ?w)
 )
 
-( defrule gioca2 "quando è il mio turno, meglio che giochi!"
+( defrule gioca-mano-0-socio-ultimo
+    ?w <- (calcola-giocata)
+    (mio-ruolo socio)
+    (mano-numero 0)
+    (mio-turno-numero 5)
+    (posso-prendere (card ?c) (suit ?s&:(<> ?s ?*briscola*)))
+=>
+    (debug (create$ sono il socio,ultimo, e prendo senza una briscola ))
+    (gioca ?c 70)
+    (retract ?w)
+)
+
+
+
+
+( defrule gioca-villano-0-carico "quando è il mio turno, meglio che giochi!"
     ?w <- (calcola-giocata)
     (mio-ruolo villano)
     (mano-numero 0)
+    (mio-turno-numero ?n&:(< ?n 3))
+    (carico-piu-alto (card ?c))
 =>
-    (debug "sono il villano e gioco la più bassa che ho. ")
+    (debug "sono il villano, ho compagni dietro, gioco un carico alto. ")
+    (gioca ?c 50)
     (retract ?w)
 )
+
+( defrule gioca-villano-0-sciallo
+    ?w <- (calcola-giocata)
+    (mio-ruolo villano)
+    (mano-numero 0)
+    (mio-turno-numero ?n&:(= ?n 3))
+    (carico-piu-basso (card ?c))
+=>
+    (debug "sono il villano, forse ho compagni dietro, gioco un carico basso. ")
+    (gioca ?c 50)
+    (retract ?w)
+)
+
+( defrule gioca-villano-0-prende
+    ?w <- (calcola-giocata)
+    (mio-ruolo villano)
+    (mano-numero 0)
+    (mio-turno-numero 4)
+    (briscola (card ?briscola))
+    (piu-bassa-che-prende (card ?c&:(<> ?c ?briscola)))
+    (punti-in-tavola ?n&:(> ?n 0))
+=>
+    (debug "sono il villano da ultimo e prendo. ")
+    (gioca ?c 50)
+    (retract ?w)
+)
+    
+
+
+
+
