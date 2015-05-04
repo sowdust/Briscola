@@ -224,9 +224,7 @@
 
 ( deffunction gioca (?c ?int)    "se c non nulla, la metto in memoria per essere giocata"
     (if (instanceof ?c briscola.objects.Card) then
-        (store DA-GIOCARE ?c)
         (assert (da-giocarsi (card ?c) (sal ?int)))
-        ;;; METTERE QUALCOSA CHE FERMI TUTTO IL RESTO!!
     else
         (debug "provando a giocare una carta nulla. Si lascia al caso")
     )
@@ -397,9 +395,13 @@
     (remove calcola-giocata)
     (remove carichi-in-mano)
     (remove carico-piu-alto)
-    (remove posso-prendere)
+    (remove carico-piu-basso)
     (remove mio-turno-numero)
-
+    (remove da-giocarsi)
+    (remove lisci-in-mano)
+    (remove liscio-piu-basso)
+    (remove piu-bassa-che-prende)
+    
     (assert (seme-mano-fact (suit nil)))
     (assert (mano-numero ?number))
     (assert (prende (player nil) (card nil) (rank nil) (suit nil)))
@@ -408,6 +410,17 @@
     ;(debug (create$ "inizializzando mano" ?number))
 
 )
+
+
+( defrule al-momento-di-giocare
+    (ora-di-giocare)
+=>
+    (remove calcola-giocata)
+    (remove ora-di-giocare)
+    (bind ?da-giocare (carta-da-giocarsi))
+    (store DA-GIOCARE ?da-giocare)
+)
+
 
 
 ( defrule nuova-giocata "Ricevo una giocata: aggiorno la situa"
@@ -508,8 +521,7 @@
 =>
     (gioca ?c 90)
     (debug (create$ sono ultimo di mano, prendo gratis perchè ci sono punti e non lascio giaguaro ultimo! (?c toString) ?m ))
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
 
 ( defrule se-posso-prendere-gratis-villano-prendo-senza-avv-giaguaro "Se ho un carico che può prendere tutto"
     ;;  importante!
@@ -524,8 +536,7 @@
 =>
     (gioca ?c 100)
     (debug (create$ sono ultimo di mano, prendo gratis perchè non più di 9 punti! (?c toString) ?m ))
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
 
 ( defrule se-villano-non-ultimo-dopo-chiamante-non-prendo "Se villano e non ultimo, lascio il giaguaro prima di me"
     ?w <- (calcola-giocata)
@@ -538,8 +549,7 @@
 =>
     (gioca ?c 80)
     (debug (create$ gioco prima del chiamante, lascio))
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
 
 ( defrule socio-tiene-giaguaro-ultimo "lasciamo il giaguaro ultimo nelle mani finali"
     ?w <- (calcola-giocata)
@@ -555,8 +565,7 @@
 =>
     (gioca ?c 50)
     (debug (create$ sono socio -scoperto o forte: ?forza- per lasciare al giaguaro ultimo alla mano gioco (?c toString)))
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
 
 ( defrule villano-prende-prima-giaguaro "villano prova a prendere prima del giaguaro"
     ?w <- (calcola-giocata)
@@ -569,12 +578,12 @@
     ;(punti-in-tavola ?x)
     ;(posso-prendere (card ?c))
     (seme-mano-fact (suit ?seme-mano))
-    (posso-prendere (card ?c));&:(= ?c (piu-bassa-che-prende ?seme-mano))) )  
+    ;(posso-prendere (card ?c));&:(= ?c (piu-bassa-che-prende ?seme-mano))) )  
+    (piu-bassa-che-prende (card ?c))
 =>
     (debug (create$ gioco la più bassa che prende (?c toString), per tenere giaguaro ultimo))
     (gioca ?c 0)
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
 
 
 ( defrule villano-carica-se-villano-prende
@@ -594,8 +603,7 @@
     
     (debug (create$ carico al massimo perchè prende il mio compagno (?prende toString)  (?carico toString)))
     (gioca ?carico 0)
-    (retract ?w)
-    ;(debug (create$ il mio maggior carico e (get-maggior-carico ?briscola)))
+    (assert (ora-di-giocare))    ;(debug (create$ il mio maggior carico e (get-maggior-carico ?briscola)))
 )
 
 
@@ -611,13 +619,35 @@
 =>
     (debug (create$ essendo io primo e giaguaro secondo, gioco una carta alta da k a j))
     (gioca ?c 80)
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
 
 
+(defrule villano-tra-primi-gioca-carico-se-giag-ultimo
+    ?w <- (calcola-giocata)
+    (giaguaro (player ?gia))
+    (mano-numero ?n&:(< ?n 6))
+    (mio-ruolo villano)
+    (mio-turno-numero ?n&:(< ?n 2))
+    (carico-piu-alto (card ?c))
+    (turno (player ?player&:(= ?player ?gia)) (posizione ?pos&:(= ?pos 4)))
+=>
+    (gioca ?c 80)
+    (debug (create$ sono tra i primi, giaguaro ultimo, gioco un bel carico))
+    (assert (ora-di-giocare)))
 
-
-
+(defrule villano-giaguaro-ultimo-gioco-briscoletta
+    ?w <- (calcola-giocata)
+    (giaguaro (player ?gia))
+    (mano-numero ?n&:(< ?n  6))
+    (mio-ruolo villano)
+    (turno (player ?player&:(= ?player ?gia)) (posizione ?pos&:(= ?pos 4)))
+    (punti-in-tavola ?p&:(> ?p 3))
+=>
+    (bind ?it (run-query* briscole-in-mano ?*briscola*))
+    (bind ?da-giocare  (get-minor-valore ?it))
+    (gioca ?da-giocare 50)
+    (debug (create$ sono villano, giaguaro ultimo, punti in tavola, gioco briscoletta))
+    (assert (ora-di-giocare)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -636,8 +666,7 @@
     (bind ?da-giocare  (get-minor-valore ?it))
     (debug  (create$ "Sono il giaguaro. Gioco la più bassa: " (?da-giocare toString)))
     (gioca ?da-giocare 0)
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
 
 
 ( defrule gioca-mano-0-socio "quando è il mio turno, meglio che giochi!"
@@ -649,8 +678,7 @@
 =>
     (debug (create$ sono il socio e gioco un piccolo carico per confondere le idee. (?c toString) ))
     (gioca ?c 70)
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
 
 ( defrule gioca-mano-0-socio-ultimo
     ?w <- (calcola-giocata)
@@ -661,8 +689,7 @@
 =>
     (debug (create$ sono il socio,ultimo, e prendo senza una briscola ))
     (gioca ?c 70)
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
 
 
 
@@ -676,8 +703,7 @@
 =>
     (debug "sono il villano, ho compagni dietro, gioco un carico alto. ")
     (gioca ?c 50)
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
 
 ( defrule gioca-villano-0-sciallo
     ?w <- (calcola-giocata)
@@ -688,8 +714,7 @@
 =>
     (debug "sono il villano, forse ho compagni dietro, gioco un carico basso. ")
     (gioca ?c 50)
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
 
 ( defrule gioca-villano-0-prende
     ?w <- (calcola-giocata)
@@ -702,8 +727,7 @@
 =>
     (debug "sono il villano da ultimo e prendo. ")
     (gioca ?c 50)
-    (retract ?w)
-)
+    (assert (ora-di-giocare)))
     
 
 
