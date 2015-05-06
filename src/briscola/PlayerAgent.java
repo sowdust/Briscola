@@ -246,6 +246,13 @@ public class PlayerAgent extends GeneralAgent {
             Fact s = new Fact("socio", rete);
             s.setSlotValue("player", new Value(justPlayer));
             rete.assertFact(s);
+            for (Player p : players) {
+                if (!p.equals(justPlayer) && !p.equals(this.getPlayer())) {
+                    s = new Fact("villano", rete);
+                    s.setSlotValue("player", new Value(p));
+                    rete.assertFact(s);
+                }
+            }
         }
 
         if (justPlayer.equals(this.getPlayer())) {
