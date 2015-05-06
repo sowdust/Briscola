@@ -139,6 +139,7 @@
 ( deftemplate villano   (slot player) )
 ( deftemplate briscola (slot card) (slot rank) (slot suit) )
 ( deftemplate seme-mano-fact (slot suit) )
+( deftemplate prob-socio (slot player) (slot sal) )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     GLOBAL VARs
@@ -179,6 +180,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;      FUNCTIONS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+( deffunction aumenta-sal-socio (?player ?value)
+    (bind ?it (run-query* get-prob-socio))
+    (?it next)
+    (bind ?old (?it getObject sal))
+    (bind ?new (+ ?old ?value))
+    (retract (prob-socio (player ?player) (sal ?old)))
+    (assert (prob-socio (player ?player) (sal ?new)))
+    (debug (create$ aumentando la prob che (?player toString) sia socio da ?old a ?new ))
+)
+
 
 ( deffunction get-piu-alta-seme (?seme)
     (bind ?it (run-query* briscole-in-mano ?seme))
@@ -387,6 +399,11 @@
 
 ( defquery prendono-in-mano "Ritorna tutte le carte che prendono"
     (posso-prendere (card ?c) (rank ?r) (suit ?s))
+)
+
+( defquery get-prob-socio "Ritorna probabilità che player sia socio"
+    (declare (variables ?p))
+    (prob-socio (player ?p) (sal ?sal))
 )
 
 ( defquery briscole-in-mano    "Ritorna tutte le briscole che ho in mano"
@@ -648,13 +665,24 @@
     (assert (ora-di-giocare))
 )
 
-;( defrule vs-socio-tiene-giaguaro-ultimo
- ;   (socio (player nil))
-  ;  (giaguaro (player ?g))
-   ; (turno (player ?p&:(= ?p ?g)) (posizione ?pos-giaguaro))
-;    (mano-numero ?mano-numero)
- ;   (giocata (mano ?mano-numero))
-;)
+( defrule vs-socio-tiene-giaguaro-ultimo
+    (socio (player nil))
+    (mano-numero ?mano-numero)
+    (giaguaro (player ?g))
+    (turno (player ?p&:(= ?p ?g)) (posizione ?pos-giaguaro))
+    (giocata (player ?soc) (tipo ?t&:( or ( = ?t "taglio") (or (= ?t "strozzino")  (= ?t "strozzo") ) )  ))
+    (turno (player ?pl&:(= ?pl ?soc)) (posizione ?pos-soc&:( = ?pos-soc (% (- ?pos-giaguaro 1) 5) )))
+
+=>
+    (if (> ?mano-numero 3) then
+        (bind ?new-sal 80)
+    else
+        (bind ?new-sal 40)
+    )
+    
+    (aumenta-sal-socio (?soc) (?new-sal) )
+    (debug (create$ aumentiamo sal socio perchè prende e tiene il giaguaro ultimo))
+)
 
 
 
