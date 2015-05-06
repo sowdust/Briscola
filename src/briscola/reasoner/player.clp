@@ -318,7 +318,7 @@
 ( deffunction carta-da-giocarsi ()
     "Tra tutte le carte selezionate, scelgo quella con priorità maggiore"
     (bind ?it (run-query* da-giocarsi))
-    (?it next)
+    (if (?it next) then
     (bind ?card (?it getObject c))
     (bind ?sal (?it getObject n))
     (while (?it next)
@@ -328,6 +328,9 @@
         )
     )
     return ?card
+    )
+
+    return nil
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
