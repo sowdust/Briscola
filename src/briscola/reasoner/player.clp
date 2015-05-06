@@ -142,7 +142,21 @@
 ;; PRINTS DEBUG MESSAGES IF GLOBAL VAR ?*debug* SET TO TRUE
 ( deffunction debug (?list)
     (if ?*debug* then
-        (printout t ((fetch IO) getName) ": " ?list crlf)
+
+        (bind ?it (run-query* get-mano-numero))
+        (?it next)
+        (bind ?mano-numero (?it getObject n))
+
+        (bind ?it (run-query* get-turno-numero))
+        (?it next)
+        (bind ?turno-numero (?it getObject n))
+
+        (bind ?it (run-query* get-mio-ruolo))
+        (?it next)
+        (bind ?ruolo (?it getObject r))
+
+        (printout t "[ " ?mano-numero " # " ?turno-numero " - " ?ruolo " ] " ((fetch IO) getName) ": " ?list crlf)
+
     )
 )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -226,7 +240,7 @@
     (if (instanceof ?c briscola.objects.Card) then
         (assert (da-giocarsi (card ?c) (sal ?int)))
     else
-        (debug "provando a giocare una carta nulla. Si lascia al caso")
+        (debug "ERRR!! ricevuta carta nulla. Si lascia al caso")
     )
 )
 
@@ -319,23 +333,36 @@
     "Tra tutte le carte selezionate, scelgo quella con priorità maggiore"
     (bind ?it (run-query* da-giocarsi))
     (if (?it next) then
-    (bind ?card (?it getObject c))
-    (bind ?sal (?it getObject n))
-    (while (?it next)
-        (if ( > (?it getObject n) ?sal) then
-            (bind ?card (?it getObject c))
-            (bind ?sal (?it getObject n))
+        (bind ?card (?it getObject c))
+        (bind ?sal (?it getObject n))
+        (while (?it next)
+            (if ( > (?it getObject n) ?sal) then
+                (bind ?card (?it getObject c))
+                (bind ?sal (?it getObject n))
+            )
         )
+        return ?card
+    else
+        (debug "query vuota")
+        return nil
     )
-    return ?card
-    )
-
-    return nil
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     QUERIES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+( defquery get-mano-numero "Numero mano"
+    (mano-numero ?n)
+)
+
+( defquery get-turno-numero "Numero turno"
+    (mio-turno-numero ?n)
+)
+
+( defquery get-mio-ruolo "Mio ruolo"
+    (mio-ruolo ?r)
+)
 
 ( defquery da-giocarsi "Ritorna tutte le carte selezionate da giocare"
     (da-giocarsi (card ?c) (sal ?n))
@@ -382,7 +409,6 @@
     (initial-fact)
 =>
     (debug "Reasoner ha inizio")
-    (assert (mano-numero -1))
 )
 
 ( deffunction init-mano (?number)
@@ -418,10 +444,11 @@
 ( defrule al-momento-di-giocare
     (ora-di-giocare)
 =>
+    (bind ?da-giocare (carta-da-giocarsi))
+    (debug (create$ "gioco " (?da-giocare toString)))
+    (store DA-GIOCARE ?da-giocare)
     (remove calcola-giocata)
     (remove ora-di-giocare)
-    (bind ?da-giocare (carta-da-giocarsi))
-    (store DA-GIOCARE ?da-giocare)
 )
 
 
@@ -515,7 +542,7 @@
     (mio-ruolo villano)
     (mano-numero ?m)
     ?w <- (calcola-giocata)
-    (mio-turno-numero 5)
+    (mio-turno-numero 4)
     (briscola (card ?b))
     (posso-prendere (card ?c&:(= ?c (get-piu-alta-seme ?s))) (suit ?s&:(<> ?s ?*briscola*)))
     (punti-in-tavola ?punti&:(> ?punti 0))
@@ -532,7 +559,7 @@
     (mio-ruolo villano)
     (mano-numero ?m)
     ?w <- (calcola-giocata)
-    (mio-turno-numero 5)
+    (mio-turno-numero 4)
     (punti-in-tavola ?punti&:(> ?punti 9))
     (briscola (card ?b))
     (posso-prendere (card ?c&:(= ?c (get-piu-alta-seme ?s))) (suit ?s&:(<> ?s ?*briscola*)))
@@ -544,7 +571,7 @@
 ( defrule se-villano-non-ultimo-dopo-chiamante-non-prendo "Se villano e non ultimo, lascio il giaguaro prima di me"
     ?w <- (calcola-giocata)
     (mio-ruolo villano)
-    (mio-turno-numero ?n&:(<> ?n 5))
+    (mio-turno-numero ?n&:(<> ?n 4))
     (giaguaro (player ?g))
     (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
     (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (- ?n 1))))
@@ -687,7 +714,7 @@
     ?w <- (calcola-giocata)
     (mio-ruolo socio)
     (mano-numero 0)
-    (mio-turno-numero 5)
+    (mio-turno-numero 4)
     (posso-prendere (card ?c) (suit ?s&:(<> ?s ?*briscola*)))
 =>
     (debug (create$ sono il socio,ultimo, e prendo senza una briscola ))
