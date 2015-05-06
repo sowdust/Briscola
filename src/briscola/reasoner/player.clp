@@ -74,6 +74,23 @@
     (slot suit)
 )
 
+( deftemplate giocata "info sulle giocate"
+    (slot player)
+    (slot card)
+    (slot rank)
+    (slot suit)
+    (slot mano)
+    (slot turno)
+    (slot tipo)
+    ;;  tipi di giocata:
+    ;;  -   carichino               J,Q,K   a perdere
+    ;;  -   carico                  3,A     a perdere
+    ;;  -   strozzo                 3,A     del seme che comanda
+    ;;  -   strozzino               carta < 3 del seme che comanda
+    ;;  -   taglio                  taglino: quando taglio di briscola
+    ;;  -   liscio
+)
+
 ( deftemplate lisci-in-mano
     (slot card)
     (slot rank)
@@ -458,9 +475,10 @@
     (prende (player ?prende-player) (card ?prende-card))
     ?y <- (giocata-numero ?counter-giocata)
     (seme-mano-fact (suit ?seme-mano))
+    (mano-numero ?mano-numero)
 =>
-
-    ;(debug (create$ "ricevuta giocata " ?counter-giocata (?p toString) " " (?c toString) ))
+   ;;   default tipo di giocata è liscio
+   (bind ?tipo "liscio") 
 
     ;;  Aggiorniamo chi prende
     (if (= ?counter-giocata -1) then
@@ -471,19 +489,47 @@
         (bind ?seme-mano ?s)
     else
 
-    (if (batte ?c ?prende-card ?seme-mano )  then
-        ;(debug (create$ "non prende più " (?prende-player toString) " con " (?prende-card toString) " bensì " (?p toString) " con " (?c toString) " seme mano: " (?seme-mano toString)))
-        (remove prende)
-        (assert (prende (player ?p) (card ?c) (suit (?c getSuit)) (rank (?c getRank))))
-
-    ))
+        (if (batte ?c ?prende-card ?seme-mano )  then
+            (remove prende)
+            (assert (prende (player ?p) (card ?c) (suit (?c getSuit)) (rank (?c getRank))))
+            (if (= ?seme-mano ?s) then
+                (if (< (?r getValue) 10) then
+                    (bind ?tipo "strozzino")
+                else
+                    (bind ?tipo "strozzo")
+                )
+            else
+                (bind ?tipo "taglio")
+            )
+        else
+            (if ( > (?r getValue) 9) then
+                (bind ?tipo "carico")
+            else
+                (if (> (?r getValue) 0) then
+                    (bind ?tipo "carichino")
+                )
+            )
+        )
+    )
 
     (bind ?new-counter-giocata (+ ?counter-giocata 1))
 
     (retract ?w)
     (retract ?y)
 
+
+
+    ;;  tipi di giocata:
+    ;;  -   carichino               J,Q,K   a perdere
+    ;;  -   carico                  3,A     a perdere
+    ;;  -   strozzo                 3,A     del seme che comanda
+    ;;  -   strozzino               carta < 3 del seme che comanda
+    ;;  -   taglio                  taglino: quando taglio di briscola
+    ;;  -   liscio
+
     (assert (giocata-numero ?new-counter-giocata))
+    (assert (giocata (player ?p) (card ?c) (rank ?r) (suit ?s) (turno ?new-counter-giocata) (mano ?mano-numero) (tipo ?tipo)))
+    ;(debug (create$ la giocata di (?c toString) e considerata come ?tipo  ))
 )
 
 ( defrule tocca-a-me "quando è il mio turno, meglio che giochi!"
@@ -551,7 +597,8 @@
 =>
     (gioca ?c 90)
     (debug (create$ sono ultimo di mano, prendo gratis perchè ci sono punti e non lascio giaguaro ultimo! (?c toString) ?m ))
-    (assert (ora-di-giocare)))
+    (assert (ora-di-giocare))
+)
 
 ( defrule se-posso-prendere-gratis-villano-prendo-senza-avv-giaguaro "Se ho un carico che può prendere tutto"
     ;;  importante!
@@ -566,20 +613,23 @@
 =>
     (gioca ?c 100)
     (debug (create$ sono ultimo di mano, prendo gratis perchè non più di 9 punti! (?c toString) ?m ))
-    (assert (ora-di-giocare)))
+    (assert (ora-di-giocare))
+)
 
 ( defrule se-villano-non-ultimo-dopo-chiamante-non-prendo "Se villano e non ultimo, lascio il giaguaro prima di me"
     ?w <- (calcola-giocata)
     (mio-ruolo villano)
     (mio-turno-numero ?n&:(<> ?n 4))
     (giaguaro (player ?g))
-    (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
+    (mio-turno-numero ?n)
     (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (- ?n 1))))
     (liscio-piu-basso (card ?c))
 =>
     (gioca ?c 80)
     (debug (create$ gioco prima del chiamante, lascio))
-    (assert (ora-di-giocare)))
+    (assert (ora-di-giocare))
+)
+
 
 ( defrule socio-tiene-giaguaro-ultimo "lasciamo il giaguaro ultimo nelle mani finali"
     ?w <- (calcola-giocata)
@@ -588,14 +638,25 @@
     (socio (player ?socio))
     (socio-forte ?forza)
     (giaguaro (player ?g))
-    (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
+    (mio-turno-numero ?n)
     (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (+ ?n 1))))
     (briscola (card ?b))
     (posso-prendere (card ?c&:(or (> ?mano 4) (or (> ?forza 20) (or (<> ?c ?b) (= ?socio (fetch IO)))))))
 =>
     (gioca ?c 50)
     (debug (create$ sono socio -scoperto o forte: ?forza- per lasciare al giaguaro ultimo alla mano gioco (?c toString)))
-    (assert (ora-di-giocare)))
+    (assert (ora-di-giocare))
+)
+
+;( defrule vs-socio-tiene-giaguaro-ultimo
+ ;   (socio (player nil))
+  ;  (giaguaro (player ?g))
+   ; (turno (player ?p&:(= ?p ?g)) (posizione ?pos-giaguaro))
+;    (mano-numero ?mano-numero)
+ ;   (giocata (mano ?mano-numero))
+;)
+
+
 
 ( defrule villano-prende-prima-giaguaro "villano prova a prendere prima del giaguaro"
     ?w <- (calcola-giocata)
@@ -675,9 +736,14 @@
 =>
     (bind ?it (run-query* briscole-in-mano ?*briscola*))
     (bind ?da-giocare  (get-minor-valore ?it))
-    (gioca ?da-giocare 50)
-    (debug (create$ sono villano, giaguaro ultimo, punti in tavola, gioco briscoletta))
-    (assert (ora-di-giocare)))
+    (if (instanceof ?da-giocare briscola.objects.Card) then
+        (gioca ?da-giocare 50)
+        (debug (create$ sono villano, giaguaro ultimo, punti in tavola, gioco briscoletta (?da-giocare toString)))
+    else
+        (debug (create$ volevo giocare una briscoletta, ma non ne ho nessuna!))
+    )
+    (assert (ora-di-giocare))
+)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

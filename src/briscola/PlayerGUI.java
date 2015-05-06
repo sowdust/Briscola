@@ -360,7 +360,10 @@ public class PlayerGUI extends GeneralGUI {
                 listGiocate.ensureIndexIsVisible(lastIndex);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(
+                "Qualcosa è andato storto nel tentare di scorrere in fondo alla lista delle giocate");
+            System.out.println("Tutta colpa di Swing");
+//            e.printStackTrace();
         }
     }
 
