@@ -639,7 +639,7 @@
     (mio-turno-numero ?n&:(<> ?n 4))
     (giaguaro (player ?g))
     (mio-turno-numero ?n)
-    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (- ?n 1))))
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (mod (- ?n 1) 5) )   )  )
     (liscio-piu-basso (card ?c))
 =>
     (gioca ?c 80)
@@ -648,22 +648,53 @@
 )
 
 
+( defrule socio-tiene-giaguaro-ultimo-fine-partita "lasciamo il giaguaro ultimo nelle mani finali"
+    ?w <- (calcola-giocata)
+    (mano-numero ?mano&:(> ?mano 4))
+    (mio-ruolo socio)
+    (giaguaro (player ?g))
+    (mio-turno-numero ?n)
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?n (mod (+ ?pos 1) 5) )     ) )
+    (briscola (card ?b))
+    (posso-prendere (card ?c&:(<> ?c ?b)))
+=>
+    (gioca ?c 150)
+    (debug (create$ sono socio alle ultime mani gioco non la briscola (?c toString)))
+    (assert (ora-di-giocare))
+)
+
+( defrule socio-tiene-giaguaro-ultimo-fine-partita-con-briscola "lasciamo il giaguaro ultimo nelle mani finali"
+    ?w <- (calcola-giocata)
+    (mano-numero ?mano&:(> ?mano 4))
+    (mio-ruolo socio)
+    (giaguaro (player ?g))
+    (mio-turno-numero ?n)
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?n (mod (+ ?pos 1) 5) ) ) )
+    (briscola (card ?b))
+    (posso-prendere (card ?c))
+=>
+    (gioca ?c 120)
+    (debug (create$ sono socio alle ultime mani gioco la briscola (?c toString)))
+    (assert (ora-di-giocare))
+)
+
 ( defrule socio-tiene-giaguaro-ultimo "lasciamo il giaguaro ultimo nelle mani finali"
     ?w <- (calcola-giocata)
     (mano-numero ?mano)
     (mio-ruolo socio)
-    (socio (player ?socio))
-    (socio-forte ?forza)
     (giaguaro (player ?g))
     (mio-turno-numero ?n)
-    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (+ ?n 1))))
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?n (mod (+ ?pos 1) 5) ) ) )
     (briscola (card ?b))
-    (posso-prendere (card ?c&:(or (> ?mano 4) (or (> ?forza 20) (or (<> ?c ?b) (= ?socio (fetch IO)))))))
+    (posso-prendere (card ?c&:(<> ?c ?b)))
 =>
-    (gioca ?c 50)
-    (debug (create$ sono socio -scoperto o forte: ?forza- per lasciare al giaguaro ultimo alla mano gioco (?c toString)))
+    (gioca ?c 100)
+    (debug (create$ sono socio tengo giaguaro ultimo (?c toString)))
     (assert (ora-di-giocare))
 )
+
+
+
 
 ( defrule vs-socio-tiene-giaguaro-ultimo
     (socio (player nil))
@@ -671,7 +702,7 @@
     (giaguaro (player ?g))
     (turno (player ?p&:(= ?p ?g)) (posizione ?pos-giaguaro))
     (giocata (player ?soc) (tipo ?t&:( or ( = ?t "taglio") (or (= ?t "strozzino")  (= ?t "strozzo") ) )  ))
-    (turno (player ?pl&:(= ?pl ?soc)) (posizione ?pos-soc&:( = ?pos-soc (% (- ?pos-giaguaro 1) 5) )))
+    (turno (player ?pl&:(= ?pl ?soc)) (posizione ?pos-soc&:( = ?pos-soc (mod (- ?pos-giaguaro 1) 5) )))
 
 =>
     (if (> ?mano-numero 3) then
@@ -690,14 +721,9 @@
     ?w <- (calcola-giocata)
     (mio-ruolo villano)
     (giaguaro (player ?g))
-    (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
-    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (- ?n 1))))
-    ;(turno (player ?g) (posizione ?pos));&:(= ?pos (- ?n 1))))
-    ;(turno (player ?g) (posizione ?m));&:(= ?m (- 1 ?m))))
-    ;(punti-in-tavola ?x)
-    ;(posso-prendere (card ?c))
+    (mio-turno-numero ?n)
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (mod (- ?n 1) 5 ) )))
     (seme-mano-fact (suit ?seme-mano))
-    ;(posso-prendere (card ?c));&:(= ?c (piu-bassa-che-prende ?seme-mano))) )  
     (piu-bassa-che-prende (card ?c))
 =>
     (debug (create$ gioco la più bassa che prende (?c toString), per tenere giaguaro ultimo))
@@ -708,10 +734,10 @@
 ( defrule villano-carica-se-villano-prende
     ?w <- (calcola-giocata)
     (mio-ruolo villano)
+    (mio-turno-numero ?n)
     (giaguaro (player ?gia))
     (socio (player ?soc))
     (briscola (suit ?briscola))
-    (turno (player ?io&:(= ?io (fetch IO))) (posizione ?n))
     (turno (player ?player&:(= ?player ?gia)) (posizione ?pos&:(< ?pos ?n)))
     (turno (player ?player2&:(= ?player2 ?soc)) (posizione ?pos2&:(< ?pos2 ?n))) 
     (prende (player ?prende&:(and (<> ?prende ?soc) (<> ?prende ?gia) )))
@@ -732,7 +758,7 @@
     (mio-ruolo villano)
     (mio-turno-numero 0)
     (giaguaro (player ?gia))
-    (turno (player ?player&:(= ?player ?gia)) (posizione ?pos&:(= ?pos 1)))
+    (turno (player ?player&:(= ?player ?gia)) (posizione 0))
     ;(in-mano (card ?c&:(( and (> (?c getValue) 0)) (< (?c getValue) 5)) ) (suit ?s&:(<> ?s ?*briscola*)))
     (carico-piu-basso (card ?c))
 =>
@@ -743,12 +769,14 @@
 
 (defrule villano-tra-primi-gioca-carico-se-giag-ultimo
     ?w <- (calcola-giocata)
+    (prende (player ?prende))
+    (socio (player ?p&:(or (<> ?p ?prende) (not (instanceof ?prende briscola.objects.Player)))) )
     (giaguaro (player ?gia))
     (mano-numero ?n&:(< ?n 6))
     (mio-ruolo villano)
-    (mio-turno-numero ?n&:(< ?n 2))
+    (mio-turno-numero ?n&:(< ?n 3))
     (carico-piu-alto (card ?c))
-    (turno (player ?player&:(= ?player ?gia)) (posizione ?pos&:(= ?pos 4)))
+    (turno (player ?player&:(= ?player ?gia)) (posizione 4))
 =>
     (gioca ?c 80)
     (debug (create$ sono tra i primi, giaguaro ultimo, gioco un bel carico))
@@ -759,17 +787,15 @@
     (giaguaro (player ?gia))
     (mano-numero ?n&:(< ?n  6))
     (mio-ruolo villano)
-    (turno (player ?player&:(= ?player ?gia)) (posizione ?pos&:(= ?pos 4)))
+    (turno (player ?player&:(= ?player ?gia)) (posizione 4))
     (punti-in-tavola ?p&:(> ?p 3))
+    (briscola (suit ?briscolas))
+    (in-mano (card ?carta) (suit ?suit&:(= ?suit ?briscolas)))
+    (posso-prendere (card ?posso&:(= ?carta ?posso)))
 =>
-    (bind ?it (run-query* briscole-in-mano ?*briscola*))
-    (bind ?da-giocare  (get-minor-valore ?it))
-    (if (instanceof ?da-giocare briscola.objects.Card) then
-        (gioca ?da-giocare 50)
-        (debug (create$ sono villano, giaguaro ultimo, punti in tavola, gioco briscoletta (?da-giocare toString)))
-    else
-        (debug (create$ volevo giocare una briscoletta, ma non ne ho nessuna!))
-    )
+    (bind ?sal (- 60 (?carta getPosition)))
+    (gioca ?carta ?sal)
+    (debug (create$ sono villano, giaguaro ultimo, punti in tavola, gioco briscoletta (?da-giocare toString)))
     (assert (ora-di-giocare))
 )
 

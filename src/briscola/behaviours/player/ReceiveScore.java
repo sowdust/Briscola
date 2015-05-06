@@ -34,22 +34,26 @@ public class ReceiveScore extends Behaviour {
             MessageTemplate info = MessageTemplate.and(info1, info2);
 
             ACLMessage myScoreMessage = myAgent.receive(info);
-            convID = myScoreMessage.getConversationId();
+            if (myScoreMessage != null) {
+                convID = myScoreMessage.getConversationId();
 
-            try {
-                ScoreMessage h = (ScoreMessage) myScoreMessage.getContentObject();
+                try {
+                    ScoreMessage h = (ScoreMessage) myScoreMessage.getContentObject();
 
-                agent.say("### Punteggi:");
-                for (int i = 0; i < h.players.size(); ++i) {
-                    agent.say(
-                        h.players.get(i).getName() + "\t" + h.points.get(i));
+                    agent.say("### Punteggi:");
+                    for (int i = 0; i < h.players.size(); ++i) {
+                        agent.say(
+                            h.players.get(i).getName() + "\t" + h.points.get(i));
+                    }
+
+                } catch (UnreadableException ex) {
+                    ex.printStackTrace();
                 }
 
-            } catch (UnreadableException ex) {
-                ex.printStackTrace();
+                received = true;
+            } else {
+                block();
             }
-
-            received = true;
 
         } else {
 
