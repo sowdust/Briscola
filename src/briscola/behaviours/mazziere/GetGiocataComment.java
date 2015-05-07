@@ -37,6 +37,11 @@ public class GetGiocataComment extends CyclicBehaviour {
             }
         } else {
             block();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         }
 
     }

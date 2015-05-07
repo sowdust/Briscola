@@ -67,6 +67,12 @@ public class ReceiveScore extends Behaviour {
                 agent.say("Messaggio di fine partita spedito " + convID);
 
                 done = true;
+            } else {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
 

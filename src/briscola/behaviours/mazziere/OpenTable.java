@@ -67,13 +67,6 @@ public class OpenTable extends Behaviour {
             } else {
                 block();
             }
-        } else {
-            /*            mazziere.say(
-             "Siamo già a " + ((MazziereAgent) myAgent).getPlayersAID().size() + " richieste..");
-             for (AID p : ((MazziereAgent) myAgent).getPlayersAID()) {
-             mazziere.say(p.toString());
-             }*/
-            block();
         }
     }
 
@@ -85,6 +78,7 @@ public class OpenTable extends Behaviour {
             mazziere.addBehaviour(new BeginGame(mazziere));
             return true;
         }
+
         return false;
     }
 

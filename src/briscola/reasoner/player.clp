@@ -633,7 +633,7 @@
     (posso-prendere (card ?c&:(= ?c (get-piu-alta-seme ?s))) (suit ?s&:(<> ?s ?*briscola*)))
 =>
     (gioca ?c 100)
-    (debug (create$ sono ultimo di mano, prendo gratis perchè non più di 9 punti! (?c toString) ?m ))
+    (debug (create$ sono ultimo di mano, prendo gratis perchè più di 9 punti! (?c toString) ?m ))
     (assert (ora-di-giocare))
 )
 
@@ -666,6 +666,7 @@
     (assert (ora-di-giocare))
 )
 
+;; uguale a quella prima ma con meno priorità, può giocare anche la carta chiamata
 ( defrule socio-tiene-giaguaro-ultimo-fine-partita-con-briscola "lasciamo il giaguaro ultimo nelle mani finali"
     ?w <- (calcola-giocata)
     (mano-numero ?mano&:(> ?mano 4))
@@ -673,7 +674,6 @@
     (giaguaro (player ?g))
     (mio-turno-numero ?n)
     (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?n (mod (+ ?pos 1) 5) ) ) )
-    (briscola (card ?b))
     (posso-prendere (card ?c))
 =>
     (gioca ?c 120)
@@ -681,7 +681,7 @@
     (assert (ora-di-giocare))
 )
 
-( defrule socio-tiene-giaguaro-ultimo "lasciamo il giaguaro ultimo nelle mani finali"
+( defrule socio-tiene-giaguaro-ultimo "lasciamo il giaguaro ultimo"
     ?w <- (calcola-giocata)
     (mano-numero ?mano)
     (mio-ruolo socio)
@@ -695,8 +695,6 @@
     (debug (create$ sono socio tengo giaguaro ultimo (?c toString)))
     (assert (ora-di-giocare))
 )
-
-
 
 
 ( defrule vs-socio-tiene-giaguaro-ultimo
@@ -729,9 +727,10 @@
     (seme-mano-fact (suit ?seme-mano))
     (piu-bassa-che-prende (card ?c))
 =>
-    (debug (create$ gioco la più bassa che prende se sono prima del giaguaro (?c toString)))
-    (gioca ?c 0)
-    (assert (ora-di-giocare)))
+    (debug (create$ gioco la più bassa che prende perchè sono prima del giaguaro (?c toString)))
+    (gioca ?c 100)
+    (assert (ora-di-giocare))
+)
 
 
 ( defrule villano-carica-se-villano-prende
@@ -750,7 +749,7 @@
 =>
     
     (debug (create$ carico al massimo perchè prende il mio compagno (?prende toString)  (?carico toString)))
-    (gioca ?carico 0)
+    (gioca ?carico 100)
     (assert (ora-di-giocare))    ;(debug (create$ il mio maggior carico e (get-maggior-carico ?briscola)))
 )
 
@@ -761,7 +760,7 @@
     (mio-ruolo villano)
     (mio-turno-numero 0)
     (giaguaro (player ?gia))
-    (turno (player ?player&:(= ?player ?gia)) (posizione 0))
+    (turno (player ?player&:(= ?player ?gia)) (posizione 1))
     ;(in-mano (card ?c&:(( and (> (?c getValue) 0)) (< (?c getValue) 5)) ) (suit ?s&:(<> ?s ?*briscola*)))
     (carico-piu-basso (card ?c))
 =>
@@ -783,12 +782,13 @@
 =>
     (gioca ?c 80)
     (debug (create$ sono tra i primi, giaguaro ultimo, gioco un bel carico))
-    (assert (ora-di-giocare)))
+    (assert (ora-di-giocare))
+)
 
-(defrule villano-giaguaro-ultimo-gioco-briscoletta
+(defrule villano-giaguaro-ultimo-gioco-briscoletta-uno
     ?w <- (calcola-giocata)
     (giaguaro (player ?gia))
-    (mano-numero ?n&:(< ?n  6))
+    (mano-numero ?n&:(< ?n  2))
     (mio-ruolo villano)
     (turno (player ?player&:(= ?player ?gia)) (posizione 4))
     (punti-in-tavola ?p&:(> ?p 3))

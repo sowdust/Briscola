@@ -46,7 +46,8 @@ public class GeneralGUI extends javax.swing.JFrame {
         StyleConstants.setBold(keyWord, true);
 //  Add some text
         try {
-            doc.insertString(doc.getLength(), "" + name + ">\t" + s, keyWord);
+            doc.insertString(doc.getLength(), "" + name + ">\t" + s + "\n",
+                             keyWord);
             // Scroll the text
             final int length = chatPanel.getText().length();
             chatPanel.setCaretPosition(length);

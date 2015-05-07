@@ -49,6 +49,9 @@ public class WaitForBriscola extends Behaviour {
                 player.setBriscola(briscolaCard);
                 player.say(
                     "Il giaguaro è " + giaguaro.getName() + "; ha chiamato " + briscolaRank + " " + briscolaSuit);
+                player.addAction("Il giaguaro è " + giaguaro.getName());
+                player.addAction(
+                    "La carta chiamata è " + briscolaRank + " " + briscolaSuit);
 
                 /*  AGGIORNIAMO MEMORIA REASONER
                  -  fact ruolo giaguaro

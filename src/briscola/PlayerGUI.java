@@ -441,4 +441,8 @@ public class PlayerGUI extends GeneralGUI {
         endGameButton.setVisible(b);
     }
 
+    void addAction(String s) {
+        actionsTextArea.append(s + "\n");
+    }
+
 }

@@ -243,6 +243,7 @@ public class PlayerAgent extends GeneralAgent {
         //  TODO: il seguente codice può essere spostato nel reasoner
         if (justCard.equals(briscolaCard)) {
             say("Ta-dah! Il socio è venuto fuori! Il vecchio " + justPlayer.getName() + " sociello");
+            addAction("Il socio!! " + justPlayer.getName());
             Fact s = new Fact("socio", rete);
             s.setSlotValue("player", new Value(justPlayer));
             rete.assertFact(s);
@@ -377,6 +378,7 @@ public class PlayerAgent extends GeneralAgent {
                 break;
             case MANUAL:
                 ((PlayerGUI) gui).beginGiocata();
+                say("Aspettando la giocata manuale...");
                 while (cartaDaGiocare == null) {
                     Thread.sleep(1000);
                 }
@@ -453,6 +455,10 @@ public class PlayerAgent extends GeneralAgent {
         if (visible) {
             ((PlayerGUI) gui).toggleEndGameButton();
         }
+    }
+
+    public void addAction(String s) {
+        ((PlayerGUI) gui).addAction(s);
     }
 
 }
