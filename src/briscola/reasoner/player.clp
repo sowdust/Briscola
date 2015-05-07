@@ -204,12 +204,16 @@
 
 ( deffunction aumenta-sal-socio (?player ?value)
     (bind ?it (run-query* get-prob-socio ?player))
-    (?it next)
-    (bind ?old (?it getObject sal))
-    (bind ?new (+ ?old ?value))
-    (retract (prob-socio (player ?player) (sal ?old)))
-    (assert (prob-socio (player ?player) (sal ?new)))
-    (debug (create$ aumentando la prob che (?player toString) sia socio da ?old a ?new ))
+    (if (?it next) then
+        (bind ?old (?it getObject sal))
+        (bind ?new (+ ?old ?value))
+        (retract (prob-socio (player ?player) (sal ?old)))
+        (assert (prob-socio (player ?player) (sal ?new)))
+        (debug (create$ aumentando la prob che (?player toString) sia socio da ?old a ?new ))
+    else
+        (assert (prob-socio (player ?player) (sal ?value)))
+        (debug (create$ impostando la prob che (?player toString) sia socio a ?value))
+    )
 )
 
 
@@ -793,7 +797,7 @@
     (giaguaro (player ?g))
     (turno (player ?p&:(= ?p ?g)) (posizione ?pos-giaguaro))
     (giocata (player ?soc) (tipo ?t&:( or ( = ?t "taglio") (or (= ?t "strozzino")  (= ?t "strozzo") ) )  ))
-    (turno (player ?pl&:(= ?pl ?soc)) (posizione ?pos-soc&:( = ?pos-soc (mod (- ?pos-giaguaro 1) 5) )))
+    (turno (player ?pl&:(= ?pl ?soc)) (posizione ?pos-soc&:( = ?pos-soc (mod (+ ?pos-giaguaro 1) 5) )))
 
 =>
     (if (> ?mano-numero 3) then

@@ -36,7 +36,12 @@ public class Player implements Serializable, Comparable {
         if (!(p instanceof briscola.Player)) {
             return false;
         }
-        return this.equals(p);
+        try {
+            return this.equals(p);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 
     @Override
