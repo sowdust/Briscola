@@ -1,5 +1,8 @@
 (import briscola.objects.*)
 
+(set-strategy breadth)
+
+
 (defclass Deck briscola.objects.Deck)
 (defclass Suit briscola.objects.Suit)
 (defclass Card briscola.objects.Card)
@@ -24,7 +27,7 @@
 ;   (mio-turno-numero n)
 ;   (mio-ruolo ruolo)
 ;   (giocabile card)
-
+;   (numero-briscole n)
 
 
 (deftemplate io "chi sono io"
@@ -184,6 +187,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;      FUNCTIONS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+( deffunction conta-briscole-in-mano (?seme)
+
+    (bind ?it (run-query* briscole-in-mano ?seme))
+    (bind ?n 0)
+    (while (?it next)
+        (bind ?n (+ ?n 1))
+    )
+    return ?n
+)
 
 ( deffunction aumenta-sal-socio (?player ?value)
     (bind ?it (run-query* get-prob-socio))
@@ -457,6 +470,7 @@
     (remove giocata-numero)
     (remove seme-mano-fact)
     (remove punti-in-tavola)
+    (remove briscole-numero)
     (remove posso-prendere)
     (remove analizza-giocate)
     (remove calcola-giocata)
@@ -468,6 +482,7 @@
     (remove lisci-in-mano)
     (remove liscio-piu-basso)
     (remove piu-bassa-che-prende)
+    (remove giocata)
     
     (assert (seme-mano-fact (suit nil)))
     (assert (mano-numero ?number))
@@ -580,6 +595,12 @@
     (bind ?punti-in-tavola (get-punti-in-tavola))
     (assert (punti-in-tavola ?punti-in-tavola))
 
+
+    ;;  quante briscole ho in mano
+    ;;  (briscole-in-mano n)
+    (bind ?briscole-in-mano (conta-briscole-in-mano ?*briscola*))
+    (assert (briscole-in-mano ?briscole-in-mano))
+
     ;;  ho dei carichi?
     ;;  (carichi-in-mano (card) (rank) (suit) (points)
     (analizza-carichi-in-mano)
@@ -589,11 +610,10 @@
     (if (> ?counter-giocata -1) then
         (analizza-possibili-prese ?prende-card ?seme-mano)
     )
-
+    (retract ?w)
 
     ;(debug (create$ in tavola ci sono ?punti-in-tavola))
     (assert (calcola-giocata))
-    (retract ?w)
 
 )
 
@@ -696,9 +716,8 @@
     (assert (ora-di-giocare))
 )
 
-
 ( defrule vs-socio-tiene-giaguaro-ultimo
-    (socio (player nil))
+    (not(exists(socio (player ?player))))
     (mano-numero ?mano-numero)
     (giaguaro (player ?g))
     (turno (player ?p&:(= ?p ?g)) (posizione ?pos-giaguaro))
@@ -712,7 +731,7 @@
         (bind ?new-sal 40)
     )
     
-    (aumenta-sal-socio (?soc) (?new-sal) )
+    (aumenta-sal-socio ?soc ?new-sal)
     (debug (create$ aumentiamo sal socio perchè prende e tiene il giaguaro ultimo))
 )
 

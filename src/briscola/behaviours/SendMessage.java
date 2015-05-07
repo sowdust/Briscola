@@ -12,6 +12,8 @@ import java.util.List;
 
 public class SendMessage extends Behaviour {
 
+    private static final long serialVersionUID = 1L;
+
     protected final List<Player> rcp;
     protected final int type;
     protected String content = null;

@@ -136,7 +136,12 @@ public class ManageBid extends Behaviour {
                 AUCTION_CONV_ID + status.getCounter() + "a" + mazziere.getChatID().substring(
                     0, 5));
             mazziere.addBehaviour(b);
-
+            Bid bid = status.getBestBid();
+            if (bid == null) {
+                mazziere.say("A monte!!");
+                mazziere.addBehaviour(new EndGame(mazziere));
+                return true;
+            }
             mazziere.addBehaviour(new AskBriscola(mazziere,
                                                   status.getBestBidder(),
                                                   status.getBestBid().rank()));
