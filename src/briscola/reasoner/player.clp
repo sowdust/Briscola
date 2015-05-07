@@ -94,6 +94,10 @@
     ;;  -   liscio
 )
 
+( deftemplate briscola-minore
+    (slot card)
+)
+
 ( deftemplate lisci-in-mano
     (slot card)
     (slot rank)
@@ -199,7 +203,7 @@
 )
 
 ( deffunction aumenta-sal-socio (?player ?value)
-    (bind ?it (run-query* get-prob-socio))
+    (bind ?it (run-query* get-prob-socio ?player))
     (?it next)
     (bind ?old (?it getObject sal))
     (bind ?new (+ ?old ?value))
@@ -358,6 +362,23 @@
     )
 )
 
+( deffunction briscola-piu-bassa (?seme)
+    "Data una carta, dico se fra quelle in mano è la più bassa che prende"
+    (bind ?it (run-query* briscole-in-mano ?seme))
+    (if (?it next) then
+        (bind ?card (?it getObject c))
+        (while (?it next)
+            (bind ?temp (?it getObject c))
+            (if (< (?temp getPosition) (?card getPosition)) then
+                (bind ?card ?temp)
+            )
+        )
+        return ?card
+    else
+        return nil
+    )
+)
+
 
 ;;;;; TODO:
 ( deffunction piu-bassa-che-prende (?seme-mano)
@@ -463,6 +484,7 @@
 )
 
 ( deffunction init-mano (?number)
+    (remove briscola-minore)
     (remove in-tavolo)
     (remove turno)
     (remove mano-numero)
@@ -605,6 +627,11 @@
     ;;  (carichi-in-mano (card) (rank) (suit) (points)
     (analizza-carichi-in-mano)
 
+    (bind ?briscola-minore (briscola-piu-bassa ?*briscola*))
+    (if (instanceof ?briscola-minore briscola.objects.Card) then
+        (assert (briscola-minore (card ?briscola-minore)))
+    )
+
     ;;  posso prendere?
     ;;  (posso-prendere (card) (rank) (suit))
     (if (> ?counter-giocata -1) then
@@ -622,6 +649,50 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;   REGOLE GENERALI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+( defrule giaguaro-tante-briscole-prende
+    " Se ho più briscole del numero di mani, allora ne butto una fortissimo"
+    (mio-ruolo giaguaro)
+    (mano-numero ?m)
+    (numero-briscole ?n&:(?n > (- 6 ?m)) )
+    (punti-in-tavola ?p&:(> ?p 0))
+    (briscola-minore (card ?c))
+    (not(exists(socio (player ?player))))
+=>
+    (gioca ?c 120)
+    (debug (create$ gioco una briscola perchè ne ho un sacco! socio scoperto (?c toString)))
+)
+
+( defrule giaguaro-tante-briscole-prende
+    " Se ho più briscole del numero di mani, allora ne butto una fortissimo"
+    (mio-ruolo giaguaro)
+    (briscola (card ?b))
+    (in-mazzo (card ?k&:(= ?b ?k)))
+    (mano-numero ?m)
+    (numero-briscole ?n&:(?n > (- 6 ?m)) )
+    (punti-in-tavola ?p&:(> ?p 0))
+    (briscola-minore (card ?c))
+    (exists(socio (player ?player)))
+=>
+    (gioca ?c 110)
+    (debug (create$ gioco una briscola perchè ne ho un sacco! socio scoperto, chiamata in mazzo (?c toString)))
+)
+    
+
+( defrule giaguaro-tante-briscole-prende
+    " Se ho più briscole del numero di mani, allora ne butto una fortissimo"
+    (mio-ruolo giaguaro)
+    (mano-numero ?m)
+    (numero-briscole ?n&:(?n > (- 7 ?m)) )
+    (punti-in-tavola ?p&:(> ?p 0))
+    (briscola-minore (card ?c))
+    (exists(socio (player ?player)))
+=>
+    (gioca ?c 100)
+    (debug (create$ gioco una briscola perchè ne ho un sacco! socio scoperto (?c toString)))
+)
+    
 
 ( defrule se-posso-prendere-punti-gratis-villano-prendo "Se ho un carico che può prendere tutto"
     ;;  importante!
