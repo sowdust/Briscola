@@ -173,7 +173,11 @@
         (?it next)
         (bind ?ruolo (?it getObject r))
 
+        (bind ?string (implode$ (create$ [ ?mano-numero  # ?turno-numero ]* ?list ) ))
+
         (printout t "[ " ?mano-numero " # " ?turno-numero " - " ?ruolo " ] " ((fetch IO) getName) ": " ?list crlf)
+
+        ((fetch AGENT) say ?string)
 
     )
 )
@@ -638,12 +642,11 @@
     (mio-ruolo villano)
     (mio-turno-numero ?n&:(<> ?n 4))
     (giaguaro (player ?g))
-    (mio-turno-numero ?n)
-    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (mod (- ?n 1) 5) )   )  )
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (- ?n 1)  )   )  )
     (liscio-piu-basso (card ?c))
 =>
-    (gioca ?c 80)
-    (debug (create$ gioco prima del chiamante, lascio))
+    (gioca ?c 110)
+    (debug (create$ gioco prima del chiamante ma non sono ultimo, liscio))
     (assert (ora-di-giocare))
 )
 
@@ -722,11 +725,11 @@
     (mio-ruolo villano)
     (giaguaro (player ?g))
     (mio-turno-numero ?n)
-    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (mod (- ?n 1) 5 ) )))
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(> ?pos ?n )))
     (seme-mano-fact (suit ?seme-mano))
     (piu-bassa-che-prende (card ?c))
 =>
-    (debug (create$ gioco la più bassa che prende (?c toString), per tenere giaguaro ultimo))
+    (debug (create$ gioco la più bassa che prende se sono prima del giaguaro (?c toString)))
     (gioca ?c 0)
     (assert (ora-di-giocare)))
 
@@ -770,7 +773,7 @@
 (defrule villano-tra-primi-gioca-carico-se-giag-ultimo
     ?w <- (calcola-giocata)
     (prende (player ?prende))
-    (socio (player ?p&:(or (<> ?p ?prende) (not (instanceof ?prende briscola.objects.Player)))) )
+    (socio (player ?p&:(or (<> ?p ?prende) (not (instanceof ?prende briscola.Player)))) )
     (giaguaro (player ?gia))
     (mano-numero ?n&:(< ?n 6))
     (mio-ruolo villano)
