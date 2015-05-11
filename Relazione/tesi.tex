@@ -1,0 +1,301 @@
+\documentclass[runningheads,a4paper]{llncs}
+\usepackage{amssymb}
+\usepackage{makeidx}
+
+\setcounter{tocdepth}{3}
+\usepackage{graphicx}
+\usepackage{url}
+\makeindex
+\urldef{\mailsa}\path|st116761@di.unito.it|
+\newcommand{\keywords}[1]{\par\addvspace\baselineskip
+\noindent\keywordname\enspace\ignorespaces#1}
+\begin{document}
+\mainmatter
+
+
+\title{Briscola in 5: un sistema esperto per una strategia a regole}
+\titlerunning{AI per la Briscola in 5}
+\author{Mattia Vinci}
+\authorrunning{Mattia V.}
+\institute{Universit\`a di Torino corso Svizzera 185, 10149 Torino\\
+\mailsa}
+
+
+\maketitle
+
+\begin{abstract}
+
+Se necessario.
+
+\keywords{Briscola a 5, expert system, jade, jess}
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+
+
+%%% 
+\section{Introduzione}
+\subsection{Il problema particolare della briscola a 5}
+
+Il gioco della Briscola a 5 presenta una peculiarità rispetto a tutti gli altri giochi di carte e gran parte dei giochi in generale: la composizione delle squadre che si affrontano per la vittoria rimane ignota per gran parte della partita. \\
+Si tratta infatti di un gioco in cui le alleanze vengono decise tramite una fase iniziale - la fase dell'asta - e sono note ad un solo giocatore fin dall'inizio; quest'ultimo ha nel proprio interesse il cercare di mantenere nascosto il proprio ruolo più a lungo possibile. \\
+Si tratta quindi di un contesto in cui i giocatori non possono fare conto nè sulla ricerca del profitto esclusivamente personale, in quanto la vittoria in queste condizioni si fa rarissima, nè possono affidarsi in alcun modo ad altri giocatori, in quanto le operazioni di \emph{bluff} per mascherare il proprio ruolo sono frequentissime. \\
+Per questo motivo è impensabile poter simulare la situazione tramite l'uso di agenti guidati dal\emph{self-interest}, così come legati da un rapporto di \emph{trust}.
+Volendo simulare il gioco nell'ambito dell'Intelligenza Artificiale è immediato notare come l'ambiente erediti da tutti gli altri giochi di carte le caratteristiche di essere \emph{parzialmente osservabile}, \emph{stocastico}, \emph{sequenziale}, \emph{statico}, \emph{conosciuto} e \emph{discreto}. \\
+Per la peculiarità sopra accennatta non è però possibile definire l'ambiente nè come \emph{competitivo}, nè come \emph{cooperativo}.\\
+Considerando questa caratteristica un aspetto interessante da essere indagato, e non avendo trovato riferimenti a una simile condizione in letteratura, si è provato con il lavoro qui presentato a cercare un possibile approccio a tale situazione, che presenta due fasi distinte seppur interconnesse:
+\begin{itemize}
+  \item una prima fase di \emph{analisi}, durante la quale, osservando le giocate che si avvicendano al tavolo, si cerca di capire il ruolo dei singoli giocatori e quindi la composizione delle squadre
+  \item una fase di gioco vera e propria, nella quale si decide quale carta giocare tenendo conto dell'incertezza associata alle conoscenze sviluppate durante la fase di \emph{analisi}.
+\end{itemize}.\\
+Viste le innumerevoli difficoltà in cui un approccio tradizionalmente algoritmico s'imbatte in questa situazione, si è scelto di provare a simulare un giocatore umano tramite lo sviluppo di un \emph{sistema esperto} che mettesse a disposizione delle strategie \emph{a regole} facilmente estendibili e modificabili.
+
+
+\subsection{Possibili applicazioni}
+\subsection{Struttura della tesi}
+\subsection{Contributi originali}
+I contributi originali presentati in questa tesi sono costituiti principalmente da software.
+\subsubsection{Piattaforma per il gioco della briscola}
+Per poter simulare efficacemente una partita di Briscola in 5 per prima cosa si è visto necessario disporre di una piattaforma software che permetta l'interazione di più agenti di varia natura e fosse in grado di regolare una partita rispettandone i tempi e le regole.\\
+Volendo permettere anche a giocatori umani di prendere parte al gioco, si è reso auspicabile lo sviluppo di una piattaforma multiagente che funzioni anche in rete e sia il più possibile indipendente dal sistema sottostante.\\
+Per queste motivazioni si è deciso di usare \emph{Jade - JAVA Agent DEvelopment Framework}, una piattaforma open source per applicazioni di agenti \emph{peer 2 peer} facilmente estendibile con codice \emph{Java}.
+Maggiori informazioni su \emph{Jade} possono essere reperite nell'appendice X.\\
+Il risultato è una piattaforma che mette a disposizione dei tavoli da gioco virtuali con degli agenti "mazziere" che gestiscono le partite, degli agenti virtuali capaci di giocare seguendo diverse strategie facilmente estendibili e un'interfaccia grafica per gli agenti umani.
+
+\subsubsection{Expert system}
+
+Si sono raccolti e catalogati strategie, informazioni e suggerimenti da conoscenti, libri e manuali, siti internet e forum dedicati alla Briscola in 5.\\
+Successivamente si è formalizzata questa conoscenza e tradotta in un sistema a regole scritto in \emph{Jess -  the Rule Engine for the Java Platform} (maggiori informazioni su \emph{Jess} sono reperibili nell'appendice Y).\\
+Queste regole sono state poi implementate all'interno di un framework sviluppato sempre in \emph{Jess} che fornisse un ambiente adatto alla loro applicazione.
+Tale framework mette a disposizione le regole del gioco insieme a strutture adatta all'analisi della situazione e un sistema che, tramite l'uso di valori di priorità (\emph{salience}) associati a ciascuna regola implementata, fornisca un valido supporto per la \emph{risoluzione dei conflitti} di strategie candidate all'uso, così come la possibilità di variare facilmente priorità ai singoli componenti del ragionamento, in modo da permettere una fase di \emph{"tuning"} dell'insieme di regole.\\
+Le regole implementate tentano contemporaneamente di 
+\begin{itemize}
+  \item analizzare le giocate altrui per farsi un'idea sul ruolo dei singoli giocatori
+  \item ad ogni mano scegliere la carta da giocare, tenendo presente quando possibile dei risultati conseguiti nella fase di analisi 
+\end{itemize}
+
+\subsubsection{La piattaforma orientata all'expert system}
+In questo lavoro ci si è orientati maggiormente allo sviluppo di un framework che permettesse la raccolta e l'implementazione di strategie piuttosto che alla redazione delle strategie stesse.\\
+Per questo motivo nell'interfaccia grafica per i giocatori umani si è introdotta la possibilità di inserire commenti associandoli alle singole giocate effettuate: tali commenti vengono a fine partita salvati insieme al contesto in cui sono stati scritti in un file di log CSV, il quale può successivamente essere analizzato per la traduzione, da perte di un programmatore, dei consigli del giocatore umano in strategie comprensibili ed utilizzabili dall'agente virtuale.
+
+\subsubsection{Il server su cui gira la piattaforma(?)}
+
+%%% 
+\section{Stato dell'arte}
+\subsection{Approcci alla Briscola in 5}
+Il gioco della Briscola in 5, seppure largamente diffuso in Italia, è stato raramente trattato dal punto di vista computazionale.\\
+I rari lavori reperibili in letteratura trattano esclusivamente la fase del gioco successiva al palesamento delle squadre.\\
+Questi lavori, seppur molto interessanti e utili per l'implementazione di agenti capaci di trattare al meglio la parte finale del gioco, non affrontano il problema più caratteristico ed ostico del gioco della Briscola in 5, ovvero l'incertezza sulla composizione delle squadre e quindi sul comportamento da tenere: di volta in volta cooperante, competitivo o tale da ridurre al minimo le perdite in caso di grande incertezza.
+
+
+\subsection{Altro?}
+Non saprei bene cosa mettere.
+AI per i giochi di carte in generale?
+Sistemi esperti in generale?
+
+
+%%% 
+\section{La briscola a 5}
+\subsection{Introduzione al gioco}
+
+La \emph{briscola a 5}, detta anche \emph{briscola a chiamata}, \emph{la matta}, \emph{bugiarda} e in molti altri modi fantasiosi, è una delle varianti più popolari e divertenti della classica versione del gioco a due o quattro giocatori della briscola.
+Oltre al nome, la \emph{briscola a 5} eredita dalla sua più nota parente anche il meccanismo delle prese: prende la carta più alta del seme che "domina" la mano (ovvero che è stato giocato per primo) a meno che non vi siano briscole; in quest'ultimo caso, sarà la briscola più alta a prevalere.
+
+La peculiarità di questa versione del gioco è che a differenza della versione classica, la composizione delle squadre non è nota fin dall'inizio della mano, ma viene stabilita durante il gioco stesso, in particolare nella sua prima fase: l'asta.
+
+Esistono moltissime varianti di questo gioco; ci limiteremo ad illustrare le regole della versione che è stata presa in considerazione in questo lavoro.
+
+
+\subsection{L'asta}
+Dopo che tutte le quaranta carte sono state distribuite ai giocatori, che ne avranno quindi otto ciascuno, comincia la fase dell'asta, durante la quale verranno stabiliti i ruoli di ogni giocatore.
+A turno, in base alle carte che si posseggono, si può decidere di "chiamare" una carta, dicendone ad alta voce il valore (ma non il seme!), che si pensa sarebbe utile fosse in mano del proprio compagno (ancora ignoto).
+Ogni giocatore può chiamare una carta di valore più basso di quella chiamata dal giocatore che lo precede - oppure passare, rinunciando così alla possibilità di partecipare all'asta al turno successivo.
+L'asta, nella versione delle regole presa qui in considerazione, termina quando la carta più bassa è stata chiamata (il due) oppure quando tutti i giocatori tranne uno hanno passato.
+Il vincitore dell'asta dichiara ad alta voce il seme della carta chiamata: chi fra gli altri giocatori possiede tale carta diventa il suo compagno, ma fa attenzione a non darlo a vedere.
+Il vincitore dell'asta viene generalmente detto \emph{il chiamante} o \emph{il giaguaro};
+la persona con la carta chiamata viene detta \emph{il chiamato} o \emph{il socio};
+Gli altri tre giocatori, formando una squadra che si oppone al sodalizio uscito dalla fase dell'asta, vengono detti \emph{i compari} o \emph{i villani}.
+
+
+\subsection{La fase di gioco}
+
+Le regole del gioco sono le stesse nella versione classica della briscola.
+La carta più potente della partita è l'asso di briscola.
+Le carte del seme di briscola vincono su tutti gli altri semi.
+Se in tavola non è presente la briscola la prima carta giocata è la carta che comanda, e solo le carte dello stesso seme più alte di valore possono prendere la mano in tavola.
+Parte il primo giocatore a destra e tutti i cinque giocatori devono giocare una carta.
+Colui che effettua la presa avrà diritto ad iniziare il gioco nella mano successiva.
+Si continua fin ad esaurimento delle otto carte. Esaurite le carte in mano, si contano i punti, e la squadra che totalizza più della metà dei punti (> 60) vince la partita.
+Con 60 a punti si termina con un pareggio.
+Generalmente si punta a vincere 2 partite su 3 o 3 su 5.
+
+\subsection{Punteggi e ordine delle carte}
+L'ordine o potenza delle carte, ovvero la capacità di presa a parità di seme è data dal seguente ordine:
+
+\begin {table}
+\begin{center}
+  \begin{tabular*}{1\textwidth}{@{\extracolsep{\fill}} | l || c | c | c | c | c | c | c | c | c | c | c | }
+    \hline
+    carta & A & 3 & K & Q & J & 7 & 6 & 5 & 4 & 3 & 2 \\ \hline
+    punteggio & 11 & 10 & 4 & 3 & 2 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+    ordine & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\ \hline 
+  \end{tabular*}
+  \caption {Carte e loro punteggi} \label{tab:title} 
+\end{center}
+\end {table}
+
+
+%%% 
+\section{Agenti e loro interazioni}
+\subsection{Tipi di agenti}
+\subsubsection{L'agente mazziere}
+Per simulare al meglio lo svolgersi della partita senza caricare eccessivamente il lavoro del singolo agente giocatore, si è scelto di introdurre un agente di tipo \emph{mazziere}.
+Questo agente ha il compito di "aprire un tavolo", ovvero rendersi disponibile per condurre una partita verso un massimo di cinque giocatori.
+Dopo aver raggiunto un tavolo "completo" (con cinque iscritti) l'agente \emph{mazziere}, pur comunicando le informazioni sui giocatori seduti al tavolo a tutti gli agenti iscritti, si fa carico di gestire la comunicazione fra di essi: ogni messaggio passa prima dal mazziere che decide se e a chi dev'essere ri-spedito.\\
+Unica eccezione a tale modalità di comunicazione avviene con la chat: in questo caso i messaggi spediti da un agente vengono immediatamente ricevuti da tutti gli altri presenti al tavolo (compreso il mazziere).\\
+L'agente ha anche il compito di tenere un file di log che viene compilato al termine di ogni partita e contiene, in formato CSV, lo storico delle giocate effettuate dai singoli giocatori, gli eventuali commenti allegati da un giocatore umano alle singole giocate, i punteggi ottenuti e i ruoli dei giocatori.\\
+È ovviamente possibile avere più agenti mazziere in esecuzione in contemporanea sulla stessa piattaforma per permettere più partite simultaneamente.\\
+
+\subsubsection{L'agente giocatore}
+L'agente giocatore è quello che prende parte alla partita e s'impegna a fare una mossa legale quando gli è richiesta.
+Esso può essere inizializzato in tre principali modalità:
+\begin{itemize}
+   \item Manuale
+   \item Random
+   \item Strategia da file 
+\end{itemize}
+Nel primo caso sarà un giocatore umano che di volta in volta deciderà e comunicherà tramite un'interfaccia grafica le mosse da effettuare.\\
+Nel caso in cui l'agente sia di tipo \emph{Random}, al momento di compiere un'azione ne selezionerà casualmente una all'interno di un sottoinsieme di azioni disponibili e legali.\\
+Caricando una strategia da file invece, l'agente deciderà la mossa da compiere dopo una fase di \emph{ragionamento} che avverrà sulle regole implementate nel file.\\
+
+\subsection{Comunicazione fra gli agenti}
+
+Gli agenti comunicano fra di loro tramite scambi di messaggi.
+Fatta eccezione per i messaggi della chat, che vengono recapitati contemporaneamente a tutti gli agenti iscrcitti ad uno stesso tavolo (mazziere compreso), tutti gli altri messaggi passano tramite il mazziere prima di essere consegnati al - o ai - destinatari effettivi.
+Questa struttura pur presentando un collo di bottiglia costituito dal passaggio di tutti i messaggi attraverso il mazziere, permette di assicurarsi che la partita venga svolta secondo le regole anche quando un agente giocatore dovesse provare a compiere una mossa illegale.\\
+L' approccio centralizzato permette inoltre di redigere facilmente un unico file di log.\\
+Infine, nell'ottica di una piattaforma di gioco online, la presenza di agenti mazzieri residenti su un server in attesa di giocatori da remoto facilita il coordinamento degli agenti e rende possibile l'organizzazione di campionati e classifiche a punteggi.\\
+I messaggi scambiati possono essere di due tipi, \emph{bloccanti} e \emph{non bloccanti}.\\
+\subsubsection{Messaggi bloccanti e non bloccanti}
+Nel caso di messaggi ad effetto bloccante, l'agente, dopo la spedizione di un messaggio, rimane in attesa del messaggio di conferma della ricezione da parte del destinatario, interrompendo il proprio flusso di esecuzione.\\
+L'invio di messaggi non bloccanti invece non influisce direttamente sul flusso di esecuzione del mittente.
+Questa divisione si è rivelata utile per distinguere fra messaggi la cui mancata ricezione può compromettere il flusso regolare della partita e messaggi la cui eventuale perdita non ha gravi effetti sullo svolgersi del gioco.\\
+Ispirati dall'uso dei diversi protocolli TCP e UDP nello scambio di informazioni nelle comunicazioni HTTP, la piattaforma cerca di applicare gli stessi principi alle proprie comunicazioni interne.\\
+\subsubsection{Formato dei messaggi}
+Dal punto di vista del livello dell'applicazione, i messaggi hanno formati variabili in base al loro utilizzo; restando fermi i campi \emph{Oggetto} e \emph{Destinatari/o} (un singolo agente o una lista di agenti), possono avere un \emph{Identificatore della conversazione}, usato per esempio nei messaggi bloccanti, ed un \emph{Contenuto} che può essere meramente testuale (es. chat) come anche un formato complesso (es. messaggi di offerta durante la fase dell'asta).
+
+
+\subsection{Svolgimento della partita}
+\subsubsection{Apertura del tavolo e registrazione}
+Perchè degli agenti giocatori possano iniziare una partita è necessario che vi sia almeno un mazziere disponibile.\\
+All'avvio, l'agente mazziere "apre un tavolo", ovvero si iscrive ad un \emph{registro pubblico} offrendo i propri servigi di coordinatore.\\
+L'agente giocatore che voglia iniziare una nuova partita, analizza il succitato registro pubblico memorizzando gli indirizzi dei mazzieri disponibili e spedendo loro una richiesta d'iscrizione.\\
+I mazzieri risponderanno con un'offerta a validità temporanea limitata; l'agente giocatore risponderà ad una sola delle offerte fattegli, legandosi a quel punto un mazziere e rimanendo in attesa dell'inizio della partità, che avverrà quando cinque giocatori avranno confermato la propria partecipazione al tavolo.\\
+\subsubsection{La fase dell'asta}
+Appena cinque giocatori si ritrovano seduti contemporaneamente ad uno stesso tavolo, il mazziere partiziona l'insieme di carte di un mazzo da 40 in 5 sottoinsiemi da 8, inviando a ogni giocatore un messaggio contenente le carte di uno di questi sottoinsiemi.\\
+Distribuite le carte, il mazziere dà inizio alla prima fase del gioco: la fase dell'\emph{asta}.\\
+Il mazziere gestisce le offerte dei vari giocatori tramite messaggi dal formato specializzato. 
+Un messaggio usato durante la fase dell'asta ha il seguente formato:
+\begin{itemize}
+   \item \texttt{bestBid:}  la carta che sta aggiudicandosi l'asta (la più bassa fin'ora chiamata)
+   \item \texttt{bestBidder:} l'agente giocatore che sta aggiudicandosi l'asta
+   \item \texttt{justBid:}  l'ultima chiamata effettuata: può essere la carta più bassa oppure una carta nulla (\emph{passo})
+   \item \texttt{justBidder:} l'agente giocatore autore dell'ultima chiamata
+   \item \texttt{next:}  l'agente da cui si attende la prossima giocata
+   \item \texttt{counter:}  il numero di chiamate fin'ora effettuate
+   \item \texttt{done:}  valore booleano che indica se l'asta è terminata (aggiudicata da \texttt{bestBidder}) o meno
+\end{itemize}
+L'agente giocatore che si veda indicato nel campo \texttt{next} sa di dover spedire la propria offerta legale, che può essere una carta inferiore a \texttt{bestBid} o un \emph{passo} - abbandonando in quest'ultimo caso l'asta senza possibilità di rientrare al turno successivo.\\
+L'ordine seguito dal mazziere per raccogliere le offerte riflette quello che si usa ad un tavolo circolare; l'ordine al tavolo ricalca l'ordine d'iscrizione degli agenti giocatori al tavolo del mazziere.\\
+L'asta termina dopo che un giocatore chiama il 2 (la carta più bassa) o dopo che tutti hanno passato un turno.\\
+A questo punto il mazziere chiede al vincitore dell'asta il seme della carta chiamata per poi comunicarlo a tutti e cinque i giocatori.
+Questi, ricevute le informazioni sul vincitore dell'asta e sulla carta chiamata, analizzeranno le proprie carte in mano per scoprire il proprio ruolo.
+
+\subsubsection{La fase di gioco}
+La fase di gioco è suddivisa in 8 \emph{mani} da 5 \emph{giocate}.\\
+Il mazziere gestisce questa fase in maniera simile alla fase dell'asta: prima di ogni giocata, spedisce a tutti i giocatori un messaggio specializzato formato dai seguenti campi:
+\begin{itemize}
+   \item \texttt{counter:} contatore della giocata
+   \item \texttt{mano:} contatore della mano
+   \item \texttt{justPlayer:} ultimo agente ad aver effettuato una giocata
+   \item \texttt{justCard:}   carta giocata da \texttt{justPlayer}
+   \item \texttt{next:}   prossimo agente a dover giocare
+\end{itemize}
+I primi due campi sono usati per identificare univocamente la giocata aiutando i processi di sincronizzazione; i campi \texttt{justPlayer} e \texttt{justCard} servono a tenere tutti i giocatori al corrente di quanto accade al tavolo; il campo \texttt{next} serve a identificare l'agente al quale si richiede la prossima giocata.\\
+Al termine di ogni mano il mazziere calcola quale giocatore si è aggiudicato la \emph{presa} - che sarà lo stesso agente a dover giocare la mano successiva - e comunica a tutti i giocatori tale informazione, così come il punteggio contenuto nella mano.\\
+In base al tipo di agente giocatore - manuale, casuale, a strategia da file - la selezione della carta da giocare al proprio turno avverrà in maniera differente: rispettivamente, tramite selezione manuale dell'utente nell'interfaccia grafica, in maniera pseudocasuale o in seguito ad un ragionamento sulle strategie implementate.
+Una volta terminata la fase di gioco il mazziere comunica a tutti i giocatori i singoli punteggi ottenuti da ciascuno.
+\subsubsection{La raccolta di strategie}
+Durante la fase di gioco, l'agente giocatore di tipo \emph{manuale}, offre un'interfaccia grafica che permette di selezionare singolarmente le giocate effettuate dai giocatori da uno storico della partita e di scrivere un commento da associarvi.
+Questo commento viene immediatamente spedito al mazziere, che ne memorizza contenuto, mittente, e associazione con la giocata.\\
+Il giocatore manuale può associare commenti alle mosse anche dopo il termine della fase di gioco; nel caso di presenza di giocatori manuali (o in generale, con interfaccia grafica), infatti, il mazziere non considererà la partita terminata finchè non verrà premuto l'apposito bottone da parte di tutti i giocatori con interfaccia grafica.\\
+Questo permette al mazziere di sapere quando chiudere il file di log, liberare la propria memoria dalle informazioni sulla partita appena conclusasi, disallocare le relative strutture ed iscriversi nuovamente al registro dei tavoli.
+
+
+
+
+
+%%% 
+\section{Strategie degli agenti}
+\subsection{Gestione dell'asta}
+La fase dell'asta è una fase discriminante nel gioco della Briscola in 5, in quanto è proprio durante questa fase che vengono decise le composizioni delle squadre.\\
+Obiettivo di ogni giocatore in questa fase in cui i ruoli non sono ancora assegnati è quello di ottenere la vittoria con la carta più alta possibile se si hanno buone carte in mano e viceversa di non lasciare una carta troppo alta al vincitore se non si hanno carte abbastanza buone da cercare di giocare nel ruolo del chiamante.\\
+Nonostante l'importanza di questa fase di gioco sia innegabile, i suoi meccanismi sono decisamente più deterministici e meno interessanti della fase di gioco vera e propria per questo lavoro.\\
+Per questa ragione abbiamo deciso di semplificare l'implementazione di tale fase seguendo un approccio già intrapreso nel lavoro di Andrea Villa.\\
+Per prima cosa si è eliminata la \emph{Chiamata in mano}, ovvero la possibilità da parte di un giocatore con ottime carte di chiamare una carta in proprio possesso, trovandosi quindi, in caso di vittoria dell'asta, a giocare da solo contro gli altri quattro.\\
+Abbiamo inoltre eliminato la possibilità di continuare l'asta dopo la chiamata del 2: mentre in molte versioni della briscola è possibile rilanciare scommettendo (questa volta al rialzo) sul punteggio ottenibile al termine della partita, in questo lavoro si è deciso di far sì che il primo giocatore a chiamare il 2 si aggiudichi l'asta.\\
+La fase dell'asta è l'unica a essere gestita nello stesso modo da tutti e tre i tipi di agenti giocatori.\\
+La gestione è deterministica e si basta sulla combinazione di due elementi che riguardano le carte in mano:
+\begin{itemize}
+   \item La distribuzione dei semi
+   \item Il punteggio totale della mano
+\end{itemize}
+La combinazione di queste due informazioni forma una tabella che ha al suo interno due ulteriori informazioni:
+\begin{itemize}
+   \item Delle carte che è necessario possedere per poter chiamare
+   \item Il limite inferiore di punteggio della carta da chiamare 
+\end{itemize}
+
+
+
+\begin {table}
+\begin{center}
+  \begin{tabular*}{1\textwidth}{@{\extracolsep{\fill}} | l || c | c | c | c | c | c | c | c | }
+    \hline
+    distrib/punti & 15-20 & 21-25 & 26-30 & 31-35 & 36-40 & 41-45 & 46-50 & \textgreater 50  \\ \hline
+  \end{tabular*}
+  \caption {Tabella punteggi} \label{tab:title} 
+\end{center}
+\end {table}
+
+
+
+
+\subsection{Strategie di gioco}
+
+
+
+%%% 
+\section{Implementazione degli agenti}
+
+%%% 
+\section{Risultati sperimentali}
+
+%%% 
+\section{Conclusioni}
+
+%%% 
+\section{Appendice}
+\subsection{Jade}
+\subsection{Jess}
+
+%\bibliographystyle{splncs}
+%\bibliography{bibfile}
+\begin{thebibliography}{1}
+\bibitem{wolfram} Stephen Wolfram \emph{A New Kind of Science
+}, Wolfram Media, 2002.
+\end{thebibliography}
+
+\end{document}
