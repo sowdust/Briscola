@@ -1,6 +1,7 @@
 \documentclass[runningheads,a4paper]{llncs}
 \usepackage{amssymb}
 \usepackage{makeidx}
+\usepackage[utf8]{inputenc}
 
 \setcounter{tocdepth}{3}
 \usepackage{graphicx}
@@ -78,7 +79,7 @@ Le regole implementate tentano contemporaneamente di
 
 \subsubsection{La piattaforma orientata all'expert system}
 In questo lavoro ci si è orientati maggiormente allo sviluppo di un framework che permettesse la raccolta e l'implementazione di strategie piuttosto che alla redazione delle strategie stesse.\\
-Per questo motivo nell'interfaccia grafica per i giocatori umani si è introdotta la possibilità di inserire commenti associandoli alle singole giocate effettuate: tali commenti vengono a fine partita salvati insieme al contesto in cui sono stati scritti in un file di log CSV, il quale può successivamente essere analizzato per la traduzione, da perte di un programmatore, dei consigli del giocatore umano in strategie comprensibili ed utilizzabili dall'agente virtuale.
+Per questo motivo nell'interfaccia grafica per i giocatori umani si è introdotta la possibilità di inserire commenti associandoli alle singole giocate effettuate: tali commenti vengono a fine partita salvati insieme al contesto in cui sono stati scritti in un file di log CSV, il quale può successivamente essere analizzato per la traduzione, da parte di un programmatore, dei consigli del giocatore umano in strategie comprensibili ed utilizzabili dall'agente virtuale.
 
 \subsubsection{Il server su cui gira la piattaforma(?)}
 
@@ -86,7 +87,7 @@ Per questo motivo nell'interfaccia grafica per i giocatori umani si è introdott
 \section{Stato dell'arte}
 \subsection{Approcci alla Briscola in 5}
 Il gioco della Briscola in 5, seppure largamente diffuso in Italia, è stato raramente trattato dal punto di vista computazionale.\\
-I rari lavori reperibili in letteratura trattano esclusivamente la fase del gioco successiva al palesamento delle squadre.\\
+Gli sparuti lavori reperibili in letteratura trattano esclusivamente la fase del gioco successiva al palesamento delle squadre.\\
 Questi lavori, seppur molto interessanti e utili per l'implementazione di agenti capaci di trattare al meglio la parte finale del gioco, non affrontano il problema più caratteristico ed ostico del gioco della Briscola in 5, ovvero l'incertezza sulla composizione delle squadre e quindi sul comportamento da tenere: di volta in volta cooperante, competitivo o tale da ridurre al minimo le perdite in caso di grande incertezza.
 
 
@@ -447,6 +448,16 @@ simile a MazziereAgent
 
 %%% 
 \section{Conclusioni}
+
+
+%%% 
+\section{Sviluppi futuri}
+\begin{itemize}
+   \item Grafica
+   \item Migliori strategie
+   \item Randomizzazione delle strategie per essere imprevedibili
+   \item Integrazione di un metodo algoritmico (min-max, montecarlo..) per il post-rivelazione del socio
+\end{itemize}
 
 %%% 
 \section{Appendice}
