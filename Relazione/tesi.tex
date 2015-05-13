@@ -280,6 +280,168 @@ La combinazione di queste due informazioni forma una tabella che ha al suo inter
 %%% 
 \section{Implementazione degli agenti}
 
+Per l'implementazione degli agenti si è scelto di creare una classe \texttt{GeneralAgent} che estende la classe \texttt{Agent} fornita dal framework \emph{Jade}.\\
+Questa classe è a sua volta estesa dalle classi \texttt{PlayerAgent} e \texttt{MazziereAgent} che implementano rispettivamente l'agente giocatore e l'agente mazziere.\\
+In relazione a queste tre classi ne esistono altre tre che ne gestiscono l'interfaccia grafica. 
+
+
+\subsection{I Behaviours}
+Come in ogni sistema multi agente, il cuore dell'interazione fra gli attori del sistema è definito nei \emph{task} assegnati agli agenti.\\
+\emph{Jade} mette a disposizione la classe \texttt{Behaviour} per implementare i \emph{task}, così come alcune sue estensioni per tipi particolari di compiti (maggiori informazioni sono reperibili nell'appendice X).\\
+Seguendo questa impostazione, nello sviluppo della nostra piattaforma si sono estese queste classi fornite da \emph{Jade} per implementare i comportamenti specifici che gli agenti giocatore e mazziere dovessero tenere per interagire in modo da condurre una regolare partita di Briscola in 5.\\
+Di seguito indichiamo i principali \emph{Behaviours} implementati per i vari tipi di agente.
+
+Classi usate da entrambi i tipi di agente:
+\begin{itemize}
+   \item GetChatMessage
+   \item GetErrorMessage
+   \item SendAndWait
+   \item SendMessage
+\end{itemize}
+
+Behaviour specifici per l'agente mazziere:
+
+\begin{itemize}
+   \item AskBriscola
+   \item BeginGame
+   \item DistributeHands
+   \item EndGame
+   \item GetGiocataComment
+   \item ManageBid
+   \item OfferAChair
+   \item OpenTable
+   \item PlayGame
+   \item WaitForSubscriptionConfirmation
+\end{itemize}
+
+Behaviour specifici per l'agente giocatore:
+
+\begin{itemize}
+   \item BeginGame
+   \item DeclareBriscola
+   \item PlayAuction
+   \item PlayGame
+   \item ReceiveHand
+   \item ReceiveScore
+   \item Subscribe
+   \item WaitForBriscola
+\end{itemize}
+
+
+\subsection{GeneralAgent}
+Questa classe fornisce i metodi di base degli agenti coinvolti nella piattaforma.\\
+In concerto con la classe \texttt{GeneralGUI} che implementa i metodi base dell'interfaccia grafica degli agenti, \texttt{GeneralAgent} definisce i metodi per stampare il log delle attività, i messaggi di chat e altre informazioni utili quali l'elenco dei giocatori, dei punteggi ecc.\\
+Dispone anche di diversi metodi per l'invio diretto di messaggi. Per una maggiore libertà nelle modalità di invio di messaggi, si è fatto largo ricorso all'\emph{overloading} di questi metodi.\\
+Oltre ad altri metodi di varia utilità comuni a tutti gli agenti, \texttt{GeneralAgent} fornisce anche un sistema per l'organizzazione dei \emph{Behaviours}, ovvero dei \emph{task} al livello di framework.\\
+Purtroppo \emph{Jade} non fornisce metodi per gestire i \emph{Behaviours} ad alto livello; questo significa che anche solo per ottenere la lista dei \emph{Behaviours} associati ad un agente è necessario agire a livello del sistema operativo.\\
+Per evitare questa faticosa e poco elegante soluzione, si è deciso di estendere il metodo \texttt{addBehaviour} della classe \texttt{Agent} di Jade nella classe \texttt{GeneralAgent}: in questo modo, aggiungendo un \emph{Behaviour} a partire da un agente mazziere o giocatore, il \emph{Behaviour} viene aggiunto ad una lista all'interno dell'istanza da cui è stato chiamato.
+\begin{verbatim}
+    protected List<Behaviour> behaviours;
+    
+    ...
+   
+    @Override
+    public void addBehaviour(Behaviour b) {
+        super.addBehaviour(b);
+        this.behaviours.add(b);
+    }
+\end{verbatim}
+
+
+\subsection{MazziereAgent}
+
+La classe \texttt{MazziereAgent} implementa evidentemente l'agente mazziere; come già detto, fa questo estendendo la classe \texttt{GeneralAgent}, dalla quale eredita i metodi base di un agente.\\
+
+\subsubsection{Avvio dell'agente: il metodo setup}
+La classe \texttt{Agent} di \emph{Jade} fornisce un metodo \texttt{setup()} che viene chiamato quando la piattaforma avvia un nuovo agente.
+\texttt{MazziereAgent} estende questo metodo per adattarlo alle proprie esigenze.\\
+In questa fase l'agente mazziere analizza innanzitutto gli argomenti con cui è stato avviato:
+\begin{enumerate}
+   \item nome dell'agente
+   \item scelta fra modalità grafica e testuale
+   \item indirizzo del file di log
+\end{enumerate}
+inizializza le proprie strutture dati e il proprio reasoner (usato per codificare le regole del gioco)
+\begin{verbatim}
+        private static final String rulesFile = "briscola/reasoner/mazziere.clp";
+        
+        ...
+        
+        //  SETTING UP THE RETE INSTANCE FOR JESS RULE PROCESSING
+        rete = new Rete();
+        try {
+            rete.batch(rulesFile);
+            rete.reset();
+        } catch (JessException ex) {
+            System.out.println("Impossibile aprire il file " + rulesFile);
+            ex.printStackTrace();
+            takeDown();
+        }
+\end{verbatim}
+
+
+L'agente mazziere si registra al registro pubblico fornito da \emph{Jade} per segnalare agli altri agenti della piattaforma la propria disponibilità a gestire una partita
+
+\begin{verbatim}
+        private DFAgentDescription dfd;
+        private ServiceDescription sd;
+        
+        ...
+        
+        //  REGISTER TO YELLOW PAGES
+        dfd = new DFAgentDescription();
+        dfd.setName(getAID());
+        sd = new ServiceDescription();
+        sd.setType(MAZZIERE);
+        sd.setName(name);
+        dfd.addServices(sd);
+        try {
+            DFService.register(this, dfd);
+        } catch (FIPAException fe) {
+            say("Errore durante la registrazione alle pagine gialle");
+            fe.printStackTrace();
+            takeDown();
+        }
+\end{verbatim}
+
+Infine, richiama il proprio metodo \texttt{startNewGame()} per dare inizio alla partita, avviando i \emph{Behaviours} che si occupano dell'apertura del tavolo e della ricezione degli eventuali commenti alle giocate.
+Inizializza inoltre un nuovo "registro della partita" che costituisce un vero e proprio log delle attività svoltesi, che è implementato nella classe \texttt{GameMemory}.
+
+
+
+Un altro metodo della classe \texttt{Agent} di \emph{Jade} che viene qui esteso è il metodo chiamato alla chiusura dell'agente, ovvero \texttt{takeDown()}.
+In questa fase l'agente mazziere si preoccupa di disallocare le proprie strutture e rimuovere il proprio nome dal registro pubblico.
+\begin{verbatim}
+    @Override
+    protected void takeDown() {
+
+        say("Felice di aver giocato con voi. Addio!");
+        dfd.removeServices(sd);
+
+        if (graphic) {
+            gui.dispose();
+        }
+        if (writeCSV) {
+            try {
+                csvWriter.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+\end{verbatim}
+
+Gli altri metodo implementati in questa classe sono principalmente metodi di utilità o metodi per interagire con il registro in memoria della partita.
+
+
+\subsection{PlayerAgent}
+
+simile a MazziereAgent
+
+
+
+
+
 %%% 
 \section{Risultati sperimentali}
 

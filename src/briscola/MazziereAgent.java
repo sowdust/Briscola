@@ -80,6 +80,7 @@ public class MazziereAgent extends GeneralAgent {
         } catch (JessException ex) {
             System.out.println("Impossibile aprire il file " + rulesFile);
             ex.printStackTrace();
+            takeDown();
         }
 
         if (args != null && args.length > 0) {
@@ -124,6 +125,7 @@ public class MazziereAgent extends GeneralAgent {
         } catch (FIPAException fe) {
             say("Errore durante la registrazione alle pagine gialle");
             fe.printStackTrace();
+            takeDown();
         }
 
         startNewGame();
