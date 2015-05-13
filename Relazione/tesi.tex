@@ -277,6 +277,161 @@ La combinazione di queste due informazioni forma una tabella che ha al suo inter
 \subsection{Strategie di gioco}
 
 
+Le strategie di gioco sono implementate tramite funzioni e regole definite all'interno di un file \emph{Jess}.\\
+Alcune regole principali definiscono il framework all'interno del quale le regole che implementano le strategie di gioco vere e proprie possono essere inserite.\\
+Il \emph{reasoning}, come si è già detto, è diviso in due momenti: il primo è un momento di \emph{analisi} delle giocate altrui, il secondo è un momento di \emph{decisione} in cui si sceglie la carta più conveniente da giocare.
+\subsubsection{L'analisi} 
+La fase di analisi viene attivata ogni volta che il giocatore riceve dall'agente mazziere la comunicazione di una nuova giocata; l'agente giocatore richiamerà il proprio metodo \texttt{addGiocata()} che non solo asserisce i fatti relativi alla carta appena giocata, ma inizia anche un primo lavoro di analisi cofrontando la carta uscita con quella chiamata e, se necessario, asserendo i fatti relativi nella memoria del reasoner.
+
+\begin{verbatim}
+   public void addGiocata(int mano, int counter, Player justPlayer,
+                           Card justCard) throws JessException {
+
+        Fact z = new Fact("nuova-giocata", rete);
+        z.setSlotValue("player", new Value(justPlayer));
+        z.setSlotValue("card", new Value(justCard));
+        z.setSlotValue("rank", new Value(justCard.getRank()));
+        z.setSlotValue("suit", new Value(justCard.getSuit()));
+        rete.assertFact(z);
+
+        if (justCard.equals(briscolaCard)) {
+            Fact s = new Fact("socio", rete);
+            s.setSlotValue("player", new Value(justPlayer));
+            rete.assertFact(s);
+            for (Player p : players) {
+                if (!p.equals(justPlayer) && !p.equals(this.getPlayer())) {
+                    s = new Fact("villano", rete);
+                    s.setSlotValue("player", new Value(p));
+                    rete.assertFact(s);
+                }
+            }
+        }
+        if (justPlayer.equals(this.getPlayer())) {
+            //  non viene fatto dal reasoner perchè a volte se il reasoner non riesce
+            //  a computare una carta, ne gioca una a caso
+            Fact f = new Fact("in-mano", rete);
+            f.setSlotValue("card", new Value(justCard));
+            f.setSlotValue("rank", new Value(justCard.getRank()));
+            f.setSlotValue("suit", new Value(justCard.getSuit()));
+            rete.retract(f);
+        } else {
+            Fact f = new Fact("in-mazzo", rete);
+            f.setSlotValue("card", new Value(justCard));
+            f.setSlotValue("rank", new Value(justCard.getRank()));
+            f.setSlotValue("suit", new Value(justCard.getSuit()));
+            rete.retract(f);
+        }
+
+        Fact q = new Fact("in-tavolo", rete);
+        q.setSlotValue("card", new Value(justCard));
+        q.setSlotValue("player", new Value(justPlayer));
+        q.setSlotValue("rank", new Value(justCard.getRank()));
+        q.setSlotValue("suit", new Value(justCard.getSuit()));
+        rete.assertFact(q);
+
+        rete.run();
+        
+\end{verbatim}
+
+
+L'asserzione di questi fatti fa sì che il reasoner attivi la regola di analisi.
+Questa regola aggiorna alcuni fatti in memoria, come l'identità del giocatore che attualmente si aggiudica la presa, la carta da battere, il punteggio in tavolo, i contatori della giocata.
+Inoltre, in questa fase si categorizza il tipo di giocata (carico, carichino, strozzo, strozzino, liscio, taglio); questa informazione verrà utilizzata dalle regole di analisi più specifiche che hanno come obiettivo l'identificazione del socio in base proprio alle sue giocate.
+
+\begin{verbatim}
+   ( defrule nuova-giocata "Ricevo una giocata: aggiorno la situa"
+    ?w <- (nuova-giocata (player ?p) (card ?c) (rank ?r) (suit ?s))
+    (prende (player ?prende-player) (card ?prende-card))
+    ?y <- (giocata-numero ?counter-giocata)
+    (seme-mano-fact (suit ?seme-mano))
+    (mano-numero ?mano-numero)
+=>
+   ;;   default tipo di giocata è liscio
+   (bind ?tipo "liscio") 
+
+    ;;  Aggiorniamo chi prende
+    (if (= ?counter-giocata -1) then
+        (remove prende)
+        (assert (prende (player ?p) (card ?c) (suit (?c getSuit)) (rank (?c getRank))))
+        (remove seme-mano-fact)
+        (assert (seme-mano-fact (suit ?s)))
+        (bind ?seme-mano ?s)
+    else
+
+        (if (batte ?c ?prende-card ?seme-mano )  then
+            (remove prende)
+            (assert (prende (player ?p) (card ?c) (suit (?c getSuit)) (rank (?c getRank))))
+            (if (= ?seme-mano ?s) then
+                (if (< (?r getValue) 10) then
+                    (bind ?tipo "strozzino")
+                else
+                    (bind ?tipo "strozzo")
+                )
+            else
+                (bind ?tipo "taglio")
+            )
+        else
+            (if ( > (?r getValue) 9) then
+                (bind ?tipo "carico")
+            else
+                (if (> (?r getValue) 0) then
+                    (bind ?tipo "carichino")
+                )
+            )
+        )
+    )
+
+    (bind ?new-counter-giocata (+ ?counter-giocata 1))
+
+    (retract ?w)
+    (retract ?y)
+
+
+
+    ;;  tipi di giocata:
+    ;;  -   carichino               J,Q,K   a perdere
+    ;;  -   carico                  3,A     a perdere
+    ;;  -   strozzo                 3,A     del seme che comanda
+    ;;  -   strozzino               carta < 3 del seme che comanda
+    ;;  -   taglio                  taglino: quando taglio di briscola
+    ;;  -   liscio
+
+    (assert (giocata-numero ?new-counter-giocata))
+    (assert (giocata (player ?p) (card ?c) (rank ?r) (suit ?s) (turno ?new-counter-giocata) (mano ?mano-numero) (tipo ?tipo)))
+    ;(debug (create$ la giocata di (?c toString) e considerata come ?tipo  ))
+)
+
+\end{verbatim}
+
+
+... la descrizione di alcune delle regole principali ...
+
+
+
+\subsubsection{La decisione}
+
+
+ ha inizio nel momento in cui l'agente giocatore riceve dall'agente mazziere un messaggio relativo ad una giocata effettuata che lo indica come il prossimo a dover giocare; in queste condizioni l'agente giocatore, tramite le api Java di \emph{Jess}, asserisce un nuovo fatto che darà via al susseguirsi di esecuzioni di regole.
+\begin{verbatim}
+   Fact f = new Fact("mio-turno", agent.getRete());
+   agent.getRete().assertFact(f);
+   agent.getRete().run();
+\end{verbatim}
+
+
+La prima regola che viene attivata è quindi quella che ha come antecedente il fatto \texttt{mio-turno}; questa semplicissima regola si prende in carico semplicemente di dare l'avvio al reasoning, richiamando la fase di analisi delle giocate altrui:
+
+\begin{verbatim}
+( defrule tocca-a-me "quando è il mio turno, meglio che giochi!"
+   ?mio-turno <- (mio-turno)
+=>
+   (assert (analizza-giocate))
+   (retract ?mio-turno)
+)
+\end{verbatim}
+
+
+... la descrizione di alcune delle regole principali e della funzione che sceglie la carta da giocare in base alla priorità della regola che l'ha proposta ...
 
 %%% 
 \section{Implementazione degli agenti}
