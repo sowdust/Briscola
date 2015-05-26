@@ -1,0 +1,127 @@
+% \pagebreak[4]
+% \hspace*{1cm}
+% \pagebreak[4]
+% \hspace*{1cm}
+% \pagebreak[4]
+
+\chapter*{La briscola in cinque}
+\stepcounter{chapter}
+\addcontentsline{toc}{chapter}{La briscola in cinque}
+
+
+\ifpdf
+    \graphicspath{{Chapter1/Chapter1Figs/PNG/}{Chapter1/Chapter1Figs/PDF/}{Chapter1/Chapter1Figs/}}
+\else
+    \graphicspath{{Chapter1/Chapter1Figs/EPS/}{Chapter1/Chapter1Figs/}}
+\fi
+
+
+Prima di spiegare in dettaglio le regole della Briscola in 5, verranno introdotte quelle della Briscola classica, da cui la versione a cinque è derivata.
+
+
+\section{La briscola classica}
+
+
+Briscola è un popolare gioco di carte. Avente radici nei Paesi Bassi di fine Cinquecento, arrivato nella penisola grazie ai francesi, ha nel frattempo subito variazioni così profonde da poter essere considerato un gioco di origine puramente italiana. \cite{giochidicarte}
+Briscola si gioca con un mazzo di 40 carte con i valori A, 2, 3, 4, 5, 6, 7, donna, cavallo, re, di semi italiani (un esempio nella figura \ref{MazzoBriscola}) o francesi. Si può giocare in due, in quattro a coppie di due, in tre eliminando un 2 qualsiasi  \cite{giochidicarte} oppure in sei, tre contro tre, eliminando tutti e quattro i 2. \cite{giochidicarte}
+I punti disponibili per ogni gioco sono in totale 120, vince chi ne realizza almeno 61; se i punti sono 60 per entrambi i giocatori o coppie la partita è pareggiata. I valori di presa sono nell'ordine decrescente: Asso, 3, Re, Cavallo, Donna o Fante, 7, 6, 5, 4 e 2 (Vedi tabella \ref{punteggiCarte}).
+
+
+\begin{figure}[!htbp]
+  \begin{center}
+    \leavevmode
+      \includegraphics[width=\textwidth]{mazzo}
+    \caption{Mazzo da briscola}
+    \label{MazzoBriscola}
+  \end{center}
+\end{figure}
+
+
+\subsection{Svolgimento della partita}
+
+Disposti i giocatori, il mazziere distribuisce 3 carte ciascuno e lascia una carta sul tavolo coprendola per metà con il mazzo posto trasversalmente ad essa, in modo che rimanga visibile a tutti per l'intero gioco: questa carta segnerà il seme di briscola e sarà l'ultima carta ad essere pescata.
+
+Partendo dal giocatore a destra del mazziere \cite{giochidicarte} e continuando in senso antiorario \cite{giochidicarte2}, ogni giocatore calerà la carta che riterrà più opportuna, con lo scopo di aggiudicarsi la mano o di totalizzare il maggior numero di punti da solo o nel gioco di coppia o di gruppo. Da parte dei giocatori non esiste alcun obbligo di giocare un particolare tipo di seme, come invece avviene in altri giochi basati sull'atout.
+
+L'aggiudicazione della mano avviene secondo regole molto semplici:
+
+\begin{itemize}
+   \item il primo giocatore di mano determina il seme di mano calando la sua carta, detta dominante, diventando temporaneamente il vincitore della mano
+   \item la mano può essere temporaneamente aggiudicata ad un altro giocatore se questi posa una carta del seme di mano con valore di presa maggiore (si dice che il giocatore ha "strozzato" la dominante), oppure giocando una qualsiasi carta del seme di briscola, anche con valore di presa inferiore rispetto alla carta dominante. Bisogna sottolineare che non vi è obbligo di risposta al seme della dominante.
+\end{itemize}    
+    
+Alla fine la mano è vinta dal giocatore che ha calato la carta di briscola col valore di presa maggiore o, in mancanza di questa, dal giocatore che ha calato la carta del seme di mano con il valore di presa maggiore. Se nessuno ha strozzato la dominante e se nessuno ha giocato una briscola, la mano è vinta dal primo giocatore di mano. Si tenga presente che il seme di mano, essendo determinato di volta in volta dalla prima carta giocata nella mano, può anche incidentalmente coincidere col seme di briscola; in questo caso la mano se la aggiudica o il primo di mano o colui che strozza giocando la briscola maggiore.
+
+Il giocatore che vince la mano prende tutte le carte poste sul tavolo e le ripone coperte davanti a sé; in seguito sarà il primo a prendere la prima carta dal tallone, seguìto da tutti gli altri sempre in senso antiorario \cite{giochidicarte2} e sarà il primo ad aprire la mano successiva e quindi a decidere il nuovo seme di mano.
+
+\subsection{Punteggi e ordine delle carte}
+L'ordine o potenza delle carte, ovvero la capacità di presa a parità di seme è data dal seguente ordine:
+
+\begin {table}
+\begin{center}
+  \begin{tabular*}{1\textwidth}{@{\extracolsep{\fill}} | l || c | c | c | c | c | c | c | c | c | c | c | }
+    \hline
+    carta & A & 3 & K & Q & J & 7 & 6 & 5 & 4 & 3 & 2 \\ \hline
+    punteggio & 11 & 10 & 4 & 3 & 2 & 0 & 0 & 0 & 0 & 0 & 0 \\ \hline
+    ordine & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\ \hline 
+  \end{tabular*}
+  \caption {Carte e loro punteggi} \label{punteggiCarte} 
+\end{center}
+\end {table}
+
+
+\subsection{La variante a 4 giocatori}
+
+Nelle partite a 4, i giocatori si dividono in due squadre e ognuno si siede
+di fronte al proprio compagno. Le regole rimangono le stesse della Briscola a 2.
+Il primo a iniziare è il giocatore alla destra di chi ha distribuito le carte.
+Ad ogni turno successivo il primo a giocare è chi si è aggiudicato la mano precedente.
+Ad eccezione della prima mano, è permesso parlare e segnalare al compagno con gesti convenzionali le carte possedute o quella da giocare.
+Una volta che sono state pescate le ultime 4 carte, i compagni si mostrano le carte passandosele prima di giocare l'ultima mano.
+Al termine della partita i punteggi dei compagni vengono sommati.
+Come nella briscola a 2 vince la coppia che ha fatto più punti.
+
+\section{La briscola in cinque}
+
+La \emph{briscola a 5}, detta anche \emph{briscola a chiamata}, \emph{la matta}, \emph{bugiarda} e in molti altri modi fantasiosi, è una delle varianti più popolari e divertenti della classica versione del gioco a due o quattro giocatori della briscola.
+Oltre al nome, la \emph{briscola a 5} eredita dalla sua più nota parente anche il meccanismo delle prese: prende la carta più alta del seme che "domina" la mano (ovvero che è stato giocato per primo) a meno che non vi siano briscole; in quest'ultimo caso, sarà la briscola più alta a prevalere.
+
+La peculiarità di questa versione del gioco è che a differenza della versione classica, la composizione delle squadre non è nota fin dall'inizio della mano, ma viene stabilita durante il gioco stesso, in particolare nella sua prima fase: l'asta.
+
+Esistono moltissime varianti di questo gioco; ci limiteremo ad illustrare le regole della versione che è stata presa in considerazione in questo lavoro.
+
+
+\subsection{L'asta}
+Dopo che tutte le 40 carte sono state distribuite ai giocatori, che ne avranno quindi 8 ciascuno, comincia la fase dell'asta.
+È al termine di tale fase cruciale che verranno stabiliti i ruoli di ogni giocatore.
+A turno, in base alle carte che si posseggono, si può decidere di "chiamare" una carta, dicendone ad alta voce il valore (ma non il seme!), che si pensa sarebbe utile fosse in mano del proprio compagno (ancora ignoto).
+Ogni giocatore può chiamare una carta di valore più basso di quella chiamata dal giocatore che lo precede - oppure passare, rinunciando così alla possibilità di partecipare all'asta al turno successivo.
+L'asta, nella versione delle regole presa qui in considerazione, termina quando la carta più bassa è stata chiamata (il 2) oppure quando tutti i giocatori tranne uno hanno passato.
+Il vincitore dell'asta dichiara ad alta voce il seme della carta chiamata: chi fra gli altri giocatori possiede tale carta diventa il suo compagno, facendo attenzione a non darlo a vedere.
+Il vincitore dell'asta viene generalmente detto \emph{il chiamante} o \emph{il giaguaro};
+la persona con la carta chiamata viene detta \emph{il chiamato} o \emph{il socio};
+Gli altri tre giocatori, formando una squadra che si oppone al sodalizio uscito dalla fase dell'asta, vengono detti \emph{i compari} o \emph{i villani}.
+
+\subsection{La fase di gioco}
+
+Le regole del gioco sono le stesse nella versione classica della briscola.
+La carta più potente della partita è l'asso di briscola.
+Le carte del seme di briscola vincono su tutti gli altri semi.
+Se in tavola non è presente la briscola la prima carta giocata è la carta che comanda, e solo le carte dello stesso seme più alte di valore possono prendere la mano in tavola.
+A partire dal primo giocatore a destra del \emph{chiamante}, tutti i cinque giocatori devono giocare una carta.
+Colui che effettua la presa avrà diritto ad iniziare il gioco nella mano successiva.
+Si continua fino all'esaurimento delle otto carte. Esaurite le carte in mano, si contano i punti, e la squadra che totalizza più della metà dei punti ($ > $ 60) vince la partita.
+Con 60 punti si termina con un pareggio.
+Generalmente si punta a vincere 2 partite su 3 o 3 su 5.
+
+La particolarità del gioco è che solo il chiamato conosce la composizione delle squadre e si scoprirà solamente giocando la carta chiamata. A differenza della Briscola classica è proibito qualsiasi tipo di segnale \cite{enciclopediacarte}. Finche il chiamato non si svela, gli altri giocatori possono solo intuire le composizioni delle squadre in base ai comportamenti di gioco altrui.
+
+
+
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End: 

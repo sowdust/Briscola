@@ -1,0 +1,35 @@
+%%% Thesis Introduction --------------------------------------------------
+\chapter*{Introduzione}
+\stepcounter{chapter}
+\addcontentsline{toc}{chapter}{Introduzione}
+
+\ifpdf
+    \graphicspath{{Introduction/IntroductionFigs/PNG/}{Introduction/IntroductionFigs/PDF/}{Introduction/IntroductionFigs/}}
+\else
+    \graphicspath{{Introduction/IntroductionFigs/EPS/}{Introduction/IntroductionFigs/}}
+\fi
+
+L'ambito di questa tesi è quello dei giochi da tavolo, in particolare dei giochi di carte.
+L'ambito dei giochi costituisce per l'Intelligenza Artificiale un contesto di ricerca molto interessante fin dagli albori di questa disciplina.
+In esso, infatti, vi si ritrovano non solo dei problemi avvincenti, ma spesso anche modelli di situazioni che possono essere sviluppati ed applicati nel mondo reale.
+
+
+Numerosissimi sono gli approcci esplorati nel tentativo di affrontare i problemi sorgenti nella modellazione di un'intelligenza artificiale per i giochi; in questo lavoro vengono presi in considerazione alcuni fra i più largamente utilizzati, in particolare la \emph{ricerca nello spazio degli stati}, la \emph{teoria dei giochi} e i \emph{sistemi esperti}.
+
+L'obiettivo è quello di valutare e infine applicare uno dei suddetti approcci al popolare quanto singolare gioco della \emph{Briscola in cinque}, con l'obiettivo di creare una piattaforma che permetta lo svolgersi di partite fra giocatori di natura indifferentemente umana o virtuale.
+
+Tale gioco, complice il fatto di essere diffuso quasi esclusivamente in Italia, è stato raramente preso in considerazione dai ricercatori di Intelligenza Artificiale; quando anche si siano condutti studi sulla \emph{Briscola in cinque}, lo si è fatto solo parzialmente, limitandosi alla sola fase più "classica" del gioco, che non presenta grandi difficoltà rispetto agli altri giochi di carte.
+
+Qui ci siamo invece dedicati proprio alla fase più peculiare di questo gioco, ovvero quella in cui ci si trova ad affrontare giocatori dei quali non si conosce il ruolo (compagni o avversari), che dev'essere invece desunto dalle loro mosse, tenendo presenti i possibili tentativi di \emph{bluff} e depistaggio.
+
+A seguito delle dovute valutazioni, si è deciso di porre le basi per un sistema esperto che permetta l'implementazione di strategie che rendano competitivo anche un giocatore virtuale.
+
+
+
+%%% ----------------------------------------------------------------------
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../thesis"
+%%% End: 
