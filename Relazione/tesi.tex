@@ -5,12 +5,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage{fixltx2e}
-
-
-
-%% Per rimuovere la dicitura "Chapter"
-%\renewcommand{\thechapter}{}
-%\renewcommand{\chaptername}{}
+\usepackage{amsmath}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage[italian]{babel}
 
 
 \ifpdf
@@ -26,12 +24,10 @@
                   /OpenAction (fitbh)  }
 \fi
 
+
+%--------------------------------------------------------------------------------------
 \title{Briscola in 5: un sistema esperto per una strategia a regole}
-
-
-
-
-
+%--------------------------------------------------------------------------------------
 
 
 
@@ -48,13 +44,15 @@
 % insert below the file name that contains the crest in-place of 'UnivShield'
   \crest{\includegraphics[bb = 0 0 292 336, width=35mm]{logo}}
 \fi
-%
+
 % insert below the file name that contains the crest in-place of 'UnivShield'
 % \crest{\IncludeGraphicsW{UnivShield}{40mm}{14 14 73 81}}
-%
+
+
+%--------------------------------------------------------------------------------------
 \renewcommand{\submittedtext}{Relazione di stage}
 \degree{Relatore: prof. R. Micalizio}
-\degreedate{Yet to be decided}
+\degreedate{altra riga}
 
 % turn of those nasty overfull and underfull hboxes
 \hbadness=10000
@@ -68,7 +66,7 @@
 
 %% per rimuovere il nome del capitolo
 \pagestyle{plain}
-
+%--------------------------------------------------------------------------------------
 
 
 \begin{document}
@@ -111,14 +109,19 @@
 
 \mainmatter % book mode only
 
+%---------------------------------
 \include{Introduction/introduction}
 \include{Introduction/contributi}
 \include{Introduction/struttura}
-
+%---------------------------------
 \include{Chapter1/chapter1}
-\include{Chapter2/chapter2}
+%---------------------------------
+\include{Chapter2/stato-arte}
+\include{Chapter2/ricerca}
+\include{Chapter2/giochi}
+%---------------------------------
 %\include{Chapter3/chapter3}
-\include{Chapter6/chapter6}
+%\include{Chapter6/chapter6}
 
 %\include{Conclusions/conclusions}
 
@@ -126,7 +129,6 @@
 \appendix
 %\include{Appendix1/appendix1}
 %\include{Appendix2/appendix2}
-
 
 \listoffigures
 
