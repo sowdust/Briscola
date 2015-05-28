@@ -33,15 +33,17 @@ Giocando il 2 $\clubsuit$ si è certi che, qualsiasi sia lo svolgersi della mano
 Giocando il 2 $\heartsuit$, invece, i 16 punti della mano potrebbero essere a favore della propria squadra come di quella avversaria, in base all'affiliazione del giocatore che si aggiudica la presa.\\
 
 
+\begin{figure}[!htbp]
+
 \Tree[.{$P$ ha in mano \\ $2  \heartsuit$ e $ 2  \clubsuit$}
          [.{$P$ gioca $2 \heartsuit$} [ .{...} [.{termine partita} [ .{Il socio è A} [ {- 16} ] ] [ .{Il socio è B}  [ {+ 16} ]] [ .{Il socio è C}  [ {+ 16} ]] ]]]
          [.{$P$ gioca $2 \clubsuit$} [ .{...} [.{termine partita} [ .{Il socio è A}  [ {+ 16} ]] [ .{Il socio è B}  [ {+ 16} ]] [ .{Il socio è C}  [ {+ 16} ]] ]]]
-%           [.{$2 \clubsuit$} [.I \textsc{3sg.Pres} ]
-%                 [.VP [.V\1 [.V \textit{is} ]
-%                            [.AP [.Deg \textit{really} ]
-%                                 [.A\1 [.A \textit{simple} ]
-%                                       \qroof{\textit{to use}}.CP ]]]]]
 ]
 
+    \caption{Valori indefiniti per la utility function}
+    \label{alberoutility}
 
+\end{figure}
 
+\subsection{Soluzione adottata}
+Per i motivi di cui sopra si è deciso di tentare di scartare un approccio puramente algoritmico per la soluzione e di optare invece per un sistema che simulasse le strategie umane tramite un expert system a regole.

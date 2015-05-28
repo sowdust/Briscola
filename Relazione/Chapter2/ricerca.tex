@@ -155,14 +155,9 @@ L'algoritmo \textsc{Minimax} eseguito da un agente giocatore assegna ad ogni sta
 
 
 
-\lstloadlanguages{Matlab} %use listings with Matlab for Pseudocode
-\lstnewenvironment{PseudoCode}[1][]
-{\lstset{language=Matlab,basicstyle=\scriptsize, keywordstyle=\color{darkblue},numbers=left,xleftmargin=.04\textwidth,#1}}
-{}
-\definecolor{darkblue}{rgb}{0,0,.75}
+
 
 \begin{algorithm}
-\caption{L'algoritmo minimax. La funzione \textsc{minimax-decision} applicata ad uno stato \emph{s} restituisce la mossa ottimale applicabile in \emph{s}. \cite{randw}}
 \label{alg:minimax}
 \begin{PseudoCode}[mathescape,escapechar=~]
 function minimax-decision (s : state) : action
@@ -182,7 +177,7 @@ function minvalue(s : state) : utility value
       v $ \leftarrow $ min(v, maxvalue(~\textsc{result}~(s, a)))
    return v
 \end{PseudoCode}
-
+\caption{L'algoritmo minimax. La funzione \textsc{minimax-decision} applicata ad uno stato \emph{s} restituisce la mossa ottimale applicabile in \emph{s}. \cite{randw}}
 \end{algorithm}
 
 L'algoritmo \ref{alg:minimax} può facilmente essere esteso ad una situazione a più di due giocatori modificando la funzione \textsc{Utility} in modo che restituisca un vettore di valori invece che uno solo.

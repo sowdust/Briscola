@@ -11,6 +11,13 @@
 \usepackage[italian]{babel}
 
 
+\lstloadlanguages{Matlab} %use listings with Matlab for Pseudocode
+\lstnewenvironment{PseudoCode}[1][]
+{\lstset{language=Matlab,basicstyle=\scriptsize, keywordstyle=\color{darkblue},numbers=left,xleftmargin=.04\textwidth,#1}}
+{}
+\definecolor{darkblue}{rgb}{0,0,.75}
+
+
 \ifpdf
     \pdfinfo { /Title  (Briscola in 5: un sistema esperto per una strategia a regole)
                /Creator (TeX)
@@ -105,8 +112,7 @@
 
 \tableofcontents
 
-\printnomenclature  %% Print the nomenclature
-\addcontentsline{toc}{chapter}{Nomenclature}
+
 
 \mainmatter % book mode only
 
@@ -120,6 +126,7 @@
 \include{Chapter2/stato-arte}
 \include{Chapter2/ricerca}
 \include{Chapter2/giochi}
+\include{Chapter2/expert}
 \include{Chapter2/briscola5}
 %---------------------------------
 %\include{Chapter3/chapter3}
@@ -134,11 +141,14 @@
 
 \listoffigures
 
+\printnomenclature  %% Print the nomenclature
+\addcontentsline{toc}{chapter}{Nomenclature}
+
 \bibliographystyle{plainnat}
 %\bibliographystyle{Classes/CUEDbiblio}
 %\bibliographystyle{Classes/jmb}
 %\bibliographystyle{Classes/jmb} % bibliography style
-\renewcommand{\bibname}{References} % changes default name Bibliography to References
+%\renewcommand{\bibname}{References} % changes default name Bibliography to References
 \bibliography{References/references} % References file
 
 \end{document}
