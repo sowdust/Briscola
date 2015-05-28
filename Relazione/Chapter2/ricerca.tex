@@ -12,7 +12,7 @@
 \emph{Osservabile} si dice di un ambiente le cui caratteristiche salienti (in questo caso le pedine e relative posizioni) sono note all'agente che deve effettuare una scelta.
 L'ambiente degli scacchi è \emph{conosciuto} nel senso che le sue "leggi fisiche", ovvero le norme che regolano le possibili mosse delle pedine, sono risapute.
 Inoltre è \emph{discreto} perchè può trovarsi in un numero finito di stati distinti gli uni dagli altri; infine è \emph{deterministico} in quanto ogni stato è determinato esclusivamente dallo stato precedente e dall'azione svolta dall'agente.
-Inoltre, sempre secondo la definizione di \cite{randw}, gli scacchi sono un ambiente \emph{competitivo}, in quanto un agente (o giocatore), tentando di massimizzare il proprio punteggio, cerca allo stesso tempo di minimizzare quello dell'avversario.\\
+Inoltre, sempre secondo la definizione di \cite{randw}, gli scacchi sono un ambiente \emph{competitivo}, in quanto un agente (o giocatore), tentando di massimizzare il proprio punteggio, cerca allo stesso tempo di minimizzare quello dell'avversario.
 Tralasciando quest'ultima caratteristica, in generale un agente che si trovi a dover raggiungere un \emph{obiettivo} all'interno di un ambiente osservabile, conosciuto, discreto e deterministico, può farlo tramite una \emph{ricerca}.
 Per fare ciò è però altresì necessario che il problema sia ben posto.
 
@@ -114,6 +114,9 @@ Chiamiamo i due giocatori \textsc{Min} e \textsc{Max} e, seguendo \cite{randw}, 
    \item una \emph{funzione di utilità} \textsc{Utility(\emph{s},\emph{p})} che assegna un valore numerico allo stato finale \emph{s} per il giocatore \emph{p} (per esempio negli scacchi potrebbe essere 1 per la vittoria, -1 per la sconfitta e 0 per il pareggio)
 \end{itemize}
 
+\textbf{Nota} L'algoritmo richiede che il gioco sia classificabile come un \emph{zero-sum game}: ovvero un gioco in cui i valori della funzione di utilità in uno stato finale del gioco sono sempre uguali ed opposti.
+Questo vincolo vale per la maggior parte dei giochi trattati in AI, compreso quello degli scacchi.\\
+
 Nei giochi non è possibile definire in anticipo il percorso che giunge ad uno stato di goal (uno stato terminale in cui l'agente si aggiudichi la partita) dato che il percorso che seguirà la partita è deciso anche dal (o dai) giocatore avversario.
 Per risolvere questa difficoltà si assume quindi che l'avversario giochi una partita ottimale; è dimostrabile come questo garantisca una decisione vincente (anche se non necessariamente la migliore) anche in situazioni in cui l'avversario non dovesse giocare ottimamente.\\
 Prima di presentare un algoritmo che permetta di scegliere, ad ogni nodo, la stratagia ottimale, è necessario definire il valore \emph{minimax} associato ad un nodo.
@@ -214,4 +217,3 @@ Si considera un campione casuale di $N$ mondi possibili tale che la probabilità
 $argmax_a \frac{1}{N} \sum_{i=1}^{N}  \textsc{minimax(result}(s_i,a)) $ \cite{randw}\\
 
 e a tale albero si applica l'algoritmo \emph{minmax} o una sua derivazione.
-
