@@ -1,1 +1,135 @@
 \section{La fase di gioco}
+
+
+\lstset{numbers=left, numberstyle=\tiny, stepnumber=1,firstnumber=1,
+  numbersep=5pt,language=Java,
+stringstyle=\ttfamily,
+basicstyle=\footnotesize, 
+showstringspaces=false,
+breaklines=true
+}
+
+\begin{lstlisting}
+   public void addGiocata(int mano, int counter, Player justPlayer,
+                           Card justCard) throws JessException {
+
+        Fact z = new Fact("nuova-giocata", rete);
+        z.setSlotValue("player", new Value(justPlayer));
+        z.setSlotValue("card", new Value(justCard));
+        z.setSlotValue("rank", new Value(justCard.getRank()));
+        z.setSlotValue("suit", new Value(justCard.getSuit()));
+        rete.assertFact(z);
+
+        if (justCard.equals(briscolaCard)) {
+            Fact s = new Fact("socio", rete);
+            s.setSlotValue("player", new Value(justPlayer));
+            rete.assertFact(s);
+            for (Player p : players) {
+                if (!p.equals(justPlayer) && !p.equals(this.getPlayer())) {
+                    s = new Fact("villano", rete);
+                    s.setSlotValue("player", new Value(p));
+                    rete.assertFact(s);
+                }
+            }
+        }
+        if (justPlayer.equals(this.getPlayer())) {
+        
+            Fact f = new Fact("in-mano", rete);
+            f.setSlotValue("card", new Value(justCard));
+            f.setSlotValue("rank", new Value(justCard.getRank()));
+            f.setSlotValue("suit", new Value(justCard.getSuit()));
+            rete.retract(f);
+        } else {
+            Fact f = new Fact("in-mazzo", rete);
+            f.setSlotValue("card", new Value(justCard));
+            f.setSlotValue("rank", new Value(justCard.getRank()));
+            f.setSlotValue("suit", new Value(justCard.getSuit()));
+            rete.retract(f);
+        }
+
+        Fact q = new Fact("in-tavolo", rete);
+        q.setSlotValue("card", new Value(justCard));
+        q.setSlotValue("player", new Value(justPlayer));
+        q.setSlotValue("rank", new Value(justCard.getRank()));
+        q.setSlotValue("suit", new Value(justCard.getSuit()));
+        rete.assertFact(q);
+
+        rete.run();
+
+\end{lstlisting}
+
+
+
+\lstset{numbers=left, numberstyle=\tiny, stepnumber=1,firstnumber=1,
+  numbersep=5pt,language=Lisp,
+stringstyle=\ttfamily,
+basicstyle=\footnotesize, 
+showstringspaces=false,
+breaklines=true
+}
+
+
+\begin{lstlisting}
+   ( defrule nuova-giocata "Ricevo una giocata: aggiorno la situa"
+    ?w <- (nuova-giocata (player ?p) (card ?c) (rank ?r) (suit ?s))
+    (prende (player ?prende-player) (card ?prende-card))
+    ?y <- (giocata-numero ?counter-giocata)
+    (seme-mano-fact (suit ?seme-mano))
+    (mano-numero ?mano-numero)
+=>
+
+   (bind ?tipo "liscio") 
+
+    ;;  Aggiorniamo chi prende
+    (if (= ?counter-giocata -1) then
+        (remove prende)
+        (assert (prende (player ?p) (card ?c) (suit (?c getSuit)) (rank (?c getRank))))
+        (remove seme-mano-fact)
+        (assert (seme-mano-fact (suit ?s)))
+        (bind ?seme-mano ?s)
+    else
+
+        (if (batte ?c ?prende-card ?seme-mano )  then
+            (remove prende)
+            (assert (prende (player ?p) (card ?c) (suit (?c getSuit)) (rank (?c getRank))))
+            (if (= ?seme-mano ?s) then
+                (if (< (?r getValue) 10) then
+                    (bind ?tipo "strozzino")
+                else
+                    (bind ?tipo "strozzo")
+                )
+            else
+                (bind ?tipo "taglio")
+            )
+        else
+            (if ( > (?r getValue) 9) then
+                (bind ?tipo "carico")
+            else
+                (if (> (?r getValue) 0) then
+                    (bind ?tipo "carichino")
+                )
+            )
+        )
+    )
+
+    (bind ?new-counter-giocata (+ ?counter-giocata 1))
+
+    (retract ?w)
+    (retract ?y)
+
+
+
+    ;;  tipi di giocata:
+    ;;  -   carichino               J,Q,K   a perdere
+    ;;  -   carico                  3,A     a perdere
+    ;;  -   strozzo                 3,A     del seme che comanda
+    ;;  -   strozzino               carta < 3 del seme che comanda
+    ;;  -   taglio                  taglino: quando taglio di briscola
+    ;;  -   liscio
+
+    (assert (giocata-numero ?new-counter-giocata))
+    (assert (giocata (player ?p) (card ?c) (rank ?r) (suit ?s) (turno ?new-counter-giocata) (mano ?mano-numero) (tipo ?tipo)))
+    ;(debug (create$ la giocata di (?c toString) e considerata come ?tipo  ))
+)
+
+\end{lstlisting} 
