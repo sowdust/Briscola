@@ -1,0 +1,48 @@
+\section{Svolgimento della partita}
+
+\subsection{Apertura del tavolo e registrazione}
+Perchè degli agenti giocatori possano iniziare una partita è necessario che vi sia almeno un mazziere disponibile.\\
+All'avvio, l'agente mazziere "apre un tavolo", ovvero si iscrive ad un \emph{registro pubblico} offrendo i propri servigi di coordinatore.\\
+L'agente giocatore che voglia iniziare una nuova partita, analizza il succitato registro pubblico memorizzando gli indirizzi dei mazzieri disponibili e spedendo loro una richiesta d'iscrizione.\\
+I mazzieri risponderanno con un'offerta a validità temporanea limitata; l'agente giocatore risponderà ad una sola delle offerte fattegli, legandosi a quel punto ad un mazziere e rimanendo in attesa dell'inizio della partità, che avverrà quando cinque giocatori avranno confermato la propria partecipazione al tavolo.\\
+
+\subsection{La fase dell'asta}
+Appena cinque giocatori si ritrovano seduti contemporaneamente ad uno stesso tavolo, il mazziere partiziona l'insieme di carte di un mazzo da 40 in 5 sottoinsiemi da 8, inviando a ogni giocatore un messaggio contenente le carte di uno di questi sottoinsiemi.\\
+Distribuite le carte, il mazziere dà inizio alla prima fase del gioco: la fase dell'\emph{asta}.\\
+Il mazziere gestisce le offerte dei vari giocatori tramite messaggi dal formato specializzato. 
+Un messaggio usato durante la fase dell'asta ha il seguente formato:
+\begin{itemize}
+   \item \texttt{bestBid:}  la carta che sta aggiudicandosi l'asta (la più bassa finora chiamata)
+   \item \texttt{bestBidder:} l'agente giocatore che sta aggiudicandosi l'asta
+   \item \texttt{justBid:}  l'ultima chiamata effettuata: può essere la carta più bassa oppure una carta nulla (\emph{passo})
+   \item \texttt{justBidder:} l'agente giocatore autore dell'ultima chiamata
+   \item \texttt{next:}  l'agente da cui si attende la prossima giocata
+   \item \texttt{counter:}  il numero di chiamate fin'ora effettuate
+   \item \texttt{done:}  valore booleano che indica se l'asta è terminata (aggiudicata da \texttt{bestBidder}) o meno
+\end{itemize}
+L'agente giocatore che si veda indicato nel campo \texttt{next} sa di dover spedire la propria offerta legale, che può essere una carta inferiore a \texttt{bestBid} o un \emph{passo} - abbandonando in quest'ultimo caso l'asta senza possibilità di rientrare al turno successivo.\\
+L'ordine seguito dal mazziere per raccogliere le offerte riflette quello che si usa ad un tavolo circolare; l'ordine al tavolo ricalca l'ordine d'iscrizione degli agenti giocatori al tavolo del mazziere.\\
+L'asta termina dopo che un giocatore chiama il 2 (la carta più bassa) o dopo che tutti hanno passato un turno.\\
+A questo punto il mazziere chiede al vincitore dell'asta il seme della carta chiamata per poi comunicarlo a tutti e cinque i giocatori.
+Questi, ricevute le informazioni sul vincitore dell'asta e sulla carta chiamata, analizzeranno le proprie carte in mano per scoprire il proprio ruolo.
+
+\subsection{La fase di gioco}
+La fase di gioco è suddivisa in 8 \emph{mani} da 5 \emph{giocate}.\\
+Il mazziere gestisce questa fase in maniera simile alla fase dell'asta: prima di ogni giocata, spedisce a tutti i giocatori un messaggio specializzato formato dai seguenti campi:
+\begin{itemize}
+   \item \texttt{counter:} contatore della giocata
+   \item \texttt{mano:} contatore della mano
+   \item \texttt{justPlayer:} ultimo agente ad aver effettuato una giocata
+   \item \texttt{justCard:}   carta giocata da \texttt{justPlayer}
+   \item \texttt{next:}   prossimo agente a dover giocare
+\end{itemize}
+I primi due campi sono usati per identificare univocamente la giocata aiutando i processi di sincronizzazione; i campi \texttt{justPlayer} e \texttt{justCard} servono a tenere tutti i giocatori al corrente di quanto accade al tavolo; il campo \texttt{next} serve a identificare l'agente al quale si richiede la prossima giocata.\\
+Al termine di ogni mano il mazziere calcola quale giocatore si è aggiudicato la \emph{presa} - che sarà lo stesso agente a dover giocare la mano successiva - e comunica a tutti i giocatori tale informazione, così come il punteggio contenuto nella mano.\\
+In base al tipo di agente giocatore - manuale, casuale, a strategia da file - la selezione della carta da giocare al proprio turno avverrà in maniera differente: rispettivamente, tramite selezione manuale dell'utente nell'interfaccia grafica, in maniera pseudocasuale o in seguito ad un ragionamento sulle strategie implementate.
+Una volta terminata la fase di gioco il mazziere comunica a tutti i giocatori i singoli punteggi ottenuti da ciascuno.
+
+\subsection{La raccolta di strategie}
+Durante la fase di gioco, l'agente giocatore di tipo \emph{manuale}, offre un'interfaccia grafica che permette di selezionare singolarmente le giocate effettuate dai giocatori da uno storico della partita e di scrivere un commento da associarvi.
+Questo commento viene immediatamente spedito al mazziere, che ne memorizza contenuto, mittente, e associazione con la giocata.\\
+Il giocatore manuale può associare commenti alle mosse anche dopo il termine della fase di gioco; nel caso di presenza di giocatori manuali (o in generale, con interfaccia grafica), infatti, il mazziere non considererà la partita terminata finchè non verrà premuto l'apposito bottone da parte di tutti i giocatori con interfaccia grafica.\\
+Questo permette al mazziere di sapere quando chiudere il file di log, liberare la propria memoria dalle informazioni sulla partita appena conclusasi, disallocare le relative strutture ed iscriversi nuovamente al registro dei tavoli.

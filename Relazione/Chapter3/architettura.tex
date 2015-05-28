@@ -1,0 +1,26 @@
+\chapter*{Architettura e interazioni degli agenti}
+\stepcounter{chapter}
+\addcontentsline{toc}{chapter}{Architettura e interazioni degli agenti}
+\graphicspath{{Chapter3/Chapter3Figs/PNG/}{Chapter3/Chapter3Figs/PDF/}{Chapter3/Chapter3Figs/}}
+
+In questo capitolo viene presentata l'architettura generale del sistema e si descrivono le interazioni che i singoli componenti hanno fra di loro.
+L'architettura è distribuita su diversi agenti indipendenti e progettata in maniera tale da poter funzionare anche in rete.
+È costituita da due tipi di agenti: l'agente \textbf{mazziere} e l'agente \textbf{giocatore}.
+Questi due tipi di agenti comunicano fra di loro direttamente ed esclusivamente tramite scambi di messaggi.
+La regolamentazione della partita è affidata interamente all'agente \textbf{mazziere}; questa centralizzazione presenta alcuni vantaggi, tra cui:
+\begin{itemize}
+   \item l'assicurazione che la partita venga svolta secondo le regole, qualsiasi sia il comportamento dei singoli agenti giocatori;
+   \item una più semplice gestione di piattaforme in cui si vogliano mantenere aperti dei "tavoli virtuali" per un numero imprecisato di giocatori;
+   \item l'opportunità, da parte di un agente onniscente, di redigere un file di log di ogni partita, utile per future analisi.
+\end{itemize}
+
+I singoli agenti possono comunque comunicare tra di loro direttamente tramite un servizio di chat.
+
+\begin{figure}[!htbp]
+  \begin{center}
+    \leavevmode
+%      \includegraphics[width=2in]{architettura}
+    \caption{Architettura degli agenti e loro interazioni}
+    \label{architettura}
+  \end{center}
+\end{figure}
