@@ -98,13 +98,13 @@
     (slot card)
 )
 
-( deftemplate lisci-in-mano
+( deftemplate lisci-in-mano "Le carte di tipo liscio che posso giocare"
     (slot card)
     (slot rank)
     (slot suit)
 )
 
-( deftemplate liscio-piu-basso
+( deftemplate liscio-piu-basso "La minor carta di tipo liscio che posso giocare"
     (slot card)
     (slot rank)
     (slot suit)
@@ -117,14 +117,14 @@
     (slot points)
 )
 
-( deftemplate carico-piu-basso 
+( deftemplate carico-piu-basso "La minor carta di tipo carico che ho in mano"
     (slot card)
     (slot rank)
     (slot suit)
     (slot points)
 )
 
-( deftemplate carico-piu-alto 
+( deftemplate carico-piu-alto "La maggior carta di tipo carico che ho in mano"
     (slot card)
     (slot rank)
     (slot suit)
@@ -137,7 +137,7 @@
     (slot suit)
 )
 
-( deftemplate piu-bassa-che-prende "La meno potente che prende in mano"
+( deftemplate piu-bassa-che-prende "La carta meno potente che prende in mano"
     (slot card)
 )
 
@@ -145,8 +145,8 @@
 ( deftemplate socio (slot player) )
 ( deftemplate villano   (slot player) )
 ( deftemplate briscola (slot card) (slot rank) (slot suit) )
-( deftemplate seme-mano-fact (slot suit) )
-( deftemplate prob-socio (slot player) (slot sal) )
+( deftemplate seme-mano-fact (slot suit) "Il seme che guida la mano")
+( deftemplate prob-socio (slot player) (slot sal) "La probabilità che un dato giocatore sia il socio")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     GLOBAL VARs

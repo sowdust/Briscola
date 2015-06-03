@@ -1,6 +1,53 @@
 \section{La fase di gioco}
 
 
+
+Durante tutta la partita l'agente giocatore tenta di mantenere una conoscenza il più possibile completa della situazione al fine di selezionare la carta più vantaggiosa da giocare.
+
+Fa questo utilizzando il già accennato metodo dell'expert system: data una \emph{KB} nella quale sono di volta in volta memorizzate ed aggiornate le conoscenze formalizzate riguardo la situazione corrente, ad essa vengono applicate al momento giusto delle strategie, codificate come insiemi di regole, che a loro volta aggiornano la \emph{KB} o eseguono azioni vere e proprie (come quella di giocare una carta).
+
+
+
+\subsection{La rappresentazione della conoscenza}
+
+La conoscenza formalizzata nella \emph{KB} è suddivisa in \emph{fatti}.
+Questi fatti possono essere semplici stringhe oppure, più comunemente, informazioni strutturate.
+In questo secondo caso va definita la loro struttura, detta \emph{template} (\cite{jessbook}).
+Un template è formato da
+\begin{itemize}
+   \item un nome dato all'informazione strutturata
+   \item degli \emph{slot} nominati, assimilabili ai nomi delle colonne di un database relazionale
+\end{itemize}
+
+
+\subsubsection*{Esempio di un template}
+Volendo rappresentare le informazioni sugli studenti di una scuola, si potrebbe definire un template del genere:
+\begin{verbatim}
+   ( deftemplate studente 
+      (slot nome)
+      (slot cognome)
+      (slot matricola)
+   )
+\end{verbatim}
+
+Per inserire nella \emph{KB} le informazioni riguardo allo studente Errico Malatesta con matricola 147865 bisognerebbe asserire il fatto
+\begin{verbatim}
+   (studente (nome Errico) (cognome Malatesta) (matricola 147865))
+\end{verbatim}
+
+
+\subsubsection*{Alcuni esempi di fatti}
+
+
+I fatti definiti e utilizzati nella \emph{KB} sono di due tipi se considerati in base alla loro durata temporale:
+\begin{itemize}
+   \item Fatti perduranti l'intera partita
+   \item Fatti che vengono cancellati ad ogni inizio di mano
+\end{itemize}
+
+I fatti che vengono mantenuti per l'intera durata della partita rappresentano condizioni generali (seppur mutevoli); alcuni esempi: \ref{fattiPermanenti}.
+
+
 \lstset{numbers=left, numberstyle=\tiny, stepnumber=1,firstnumber=1,
   numbersep=5pt,language=Java,
 stringstyle=\ttfamily,
@@ -9,56 +56,160 @@ showstringspaces=false,
 breaklines=true
 }
 
-\begin{lstlisting}
-   public void addGiocata(int mano, int counter, Player justPlayer,
-                           Card justCard) throws JessException {
+\begin{lstlisting}[caption={Alcuni template di fatti che rimangono nella \emph{KB} per l'intera partita. Il contenuto di questi fatti viene aggiornato mano a mano che nuove informazioni si rendono disponibili all'agente giocatore}, label=fattiPermanenti]
+( deftemplate in-mano "carte che posso ancora giocare"
+    (slot card)
+    (slot rank)
+    (slot suit)
+)
 
-        Fact z = new Fact("nuova-giocata", rete);
-        z.setSlotValue("player", new Value(justPlayer));
-        z.setSlotValue("card", new Value(justCard));
-        z.setSlotValue("rank", new Value(justCard.getRank()));
-        z.setSlotValue("suit", new Value(justCard.getSuit()));
-        rete.assertFact(z);
+( deftemplate in-mazzo "carte ancora da scoprire"
+    (slot card)
+    (slot rank)
+    (slot suit)
+)
 
-        if (justCard.equals(briscolaCard)) {
-            Fact s = new Fact("socio", rete);
-            s.setSlotValue("player", new Value(justPlayer));
-            rete.assertFact(s);
-            for (Player p : players) {
-                if (!p.equals(justPlayer) && !p.equals(this.getPlayer())) {
-                    s = new Fact("villano", rete);
-                    s.setSlotValue("player", new Value(p));
-                    rete.assertFact(s);
-                }
-            }
-        }
-        if (justPlayer.equals(this.getPlayer())) {
-        
-            Fact f = new Fact("in-mano", rete);
-            f.setSlotValue("card", new Value(justCard));
-            f.setSlotValue("rank", new Value(justCard.getRank()));
-            f.setSlotValue("suit", new Value(justCard.getSuit()));
-            rete.retract(f);
-        } else {
-            Fact f = new Fact("in-mazzo", rete);
-            f.setSlotValue("card", new Value(justCard));
-            f.setSlotValue("rank", new Value(justCard.getRank()));
-            f.setSlotValue("suit", new Value(justCard.getSuit()));
-            rete.retract(f);
-        }
+( deftemplate lisci-in-mano "Le carte di tipo liscio che posso giocare"
+    (slot card)
+    (slot rank)
+    (slot suit)
+)
 
-        Fact q = new Fact("in-tavolo", rete);
-        q.setSlotValue("card", new Value(justCard));
-        q.setSlotValue("player", new Value(justPlayer));
-        q.setSlotValue("rank", new Value(justCard.getRank()));
-        q.setSlotValue("suit", new Value(justCard.getSuit()));
-        rete.assertFact(q);
+( deftemplate carico-piu-basso "La minor carta di tipo carico che ho in mano"
+    (slot card)
+    (slot rank)
+    (slot suit)
+    (slot points)
+)
 
-        rete.run();
-
+( deftemplate giaguaro  (slot player) )
+( deftemplate socio (slot player) )
+( deftemplate villano   (slot player) )
+( deftemplate briscola (slot card) (slot rank) (slot suit) )
 \end{lstlisting}
 
 
+
+
+Altri tipi di fatti (\ref{fattidiMano}), invece, si riferiscono esclusivamente alla mano in corso e vengono quindi rimossi ogni volta che tutti e cinque i giocatori hanno effettuato la loro giocata e che il mazziere ha dato inizio ad una nuova mano.
+
+\begin{lstlisting}[caption={Alcuni template di fatti la cui validità è limitata alla giocata corrente}, label=fattidiMano]
+( deftemplate in-tavolo "carte sul tavolo"
+    (slot card)
+    (slot player)
+    (slot rank)
+    (slot suit)
+)
+
+( deftemplate da-giocarsi "carte attivate per il gioco e loro -salience-"
+    (slot card)
+    (slot sal)
+)
+
+( deftemplate turno "ordine in cui si gioca la mano"
+    (slot player)
+    (slot posizione)
+)
+
+( deftemplate prende "chi, per ora, prende"
+    (slot player)
+    (slot card)
+    (slot rank)
+    (slot suit)
+)
+
+( deftemplate giocata "info sulle giocate"
+    (slot player)    (slot card)    (slot rank)    (slot suit)    (slot mano)    (slot turno)    (slot tipo)
+    ;;  tipi di giocata:
+    ;;  -   carichino               J,Q,K   a perdere
+    ;;  -   carico                  3,A     a perdere
+    ;;  -   strozzo                 3,A     del seme che comanda
+    ;;  -   strozzino               carta < 3 del seme che comanda
+    ;;  -   taglio                  taglino: quando taglio di briscola
+    ;;  -   liscio
+)
+\end{lstlisting}
+
+
+
+
+\subsection{La modifica della \emph{KB}}
+
+I fatti all'interno della \emph{KB} possono essere fatti "primitivi", cioè riguardanti eventi che sono stati direttamente comunicati all'agente, come le carte possedute in mano o la giocata effettuata da un altro giocatore; oppure possono essere fatti "derivati": questo accade quando il \emph{reasoning} applica le strategie al contenuto della \emph{KB} e ne deduce informazioni che sono a loro volta asserite all'interno della \emph{KB}.
+I fatti primitivi sono quindi adatti ad essere asseriti dall'agente giocatore stesso all'infuori del meccanismo di reasoning.
+
+\subsubsection*{Esempio: l'asserimento di fatti primitivi riguardanti una giocata appena effettuata}
+
+Quanto un agente giocatore riceve dal mazziere la comunicazione di una nuova giocata avvenuta, sia essa la propria o di un altro giocatore, deve aggiornare la conoscenza del mondo circostante all'interno della \emph{KB}.
+Sono infatti disponibili nuove informazioni riguardo le giocate effettuate finora e le carte in tavola (e di conseguenza le carte che non sono più nascoste nel "mazzo", ovvero nelle mani altrui); è inoltre possibile che sia stata giocata la carta chiamata: in questo caso si rendono noti i ruoli di tutti i giocatori, che quindi vanno aggiornati definitivamente.
+
+
+
+\lstset{numbers=left, numberstyle=\tiny, stepnumber=1,firstnumber=1,
+  numbersep=5pt,language=Java,
+stringstyle=\ttfamily,
+basicstyle=\footnotesize, 
+showstringspaces=false,
+breaklines=true
+}
+
+\begin{lstlisting}[caption={Funzione che viene richiamata ogni volta che si riceve la comunicazione di una nuova giocata (quindi anche la propria). Vengono aggiornati i fatti riguardanti la giocata stessa, la situazione in tavola e nel mazzo (ovvero nelle mani altrui) ed eventualmente i ruoli}, label=addGiocata]
+public void addGiocata(int mano, int counter, Player justPlayer,
+                       Card justCard) throws JessException {
+
+    Fact z = new Fact("nuova-giocata", rete);
+    z.setSlotValue("player", new Value(justPlayer));
+    z.setSlotValue("card", new Value(justCard));
+    z.setSlotValue("rank", new Value(justCard.getRank()));
+    z.setSlotValue("suit", new Value(justCard.getSuit()));
+    rete.assertFact(z);
+
+    if (justCard.equals(briscolaCard)) {
+        Fact s = new Fact("socio", rete);
+        s.setSlotValue("player", new Value(justPlayer));
+        rete.assertFact(s);
+        for (Player p : players) {
+            if (!p.equals(justPlayer) && !p.equals(this.getPlayer())) {
+                s = new Fact("villano", rete);
+                s.setSlotValue("player", new Value(p));
+                rete.assertFact(s);
+            }
+        }
+    }
+    if (justPlayer.equals(this.getPlayer())) {
+        Fact f = new Fact("in-mano", rete);
+        f.setSlotValue("card", new Value(justCard));
+        f.setSlotValue("rank", new Value(justCard.getRank()));
+        f.setSlotValue("suit", new Value(justCard.getSuit()));
+        rete.retract(f);
+    } else {
+        Fact f = new Fact("in-mazzo", rete);
+        f.setSlotValue("card", new Value(justCard));
+        f.setSlotValue("rank", new Value(justCard.getRank()));
+        f.setSlotValue("suit", new Value(justCard.getSuit()));
+        rete.retract(f);
+    }
+
+    Fact q = new Fact("in-tavolo", rete);
+    q.setSlotValue("card", new Value(justCard));
+    q.setSlotValue("player", new Value(justPlayer));
+    q.setSlotValue("rank", new Value(justCard.getRank()));
+    q.setSlotValue("suit", new Value(justCard.getSuit()));
+    rete.assertFact(q);
+    
+    rete.run();
+\end{lstlisting}
+
+
+
+I fatti "derivati", invece, sono invece asseriti dopo un processi di \emph{reasoning} applicato ai fatti già contenuti nella \emph{KB}.
+Il reasoning, come si può vedere dall'ultima linea del listato \ref{addGiocata}, viene attivato ad ogni nuova giocata ricevuta, così che sia possibile ottimizzare i tempi portandosi avanti sull'analisi della situazione prima che arrivi il proprio turno.\\
+
+\subsubsection*{Esempio: fatti derivati asseriti applicando le strategie alle informazioni relative a una nuova giocata appena memorizzate nella KB}
+
+La regola \texttt{nuova-giocata} \ref{nuovagiocata} viene eseguita dal reasoner successivamente all'esecuzione della funzione \texttt{addGiocata} \ref{addGiocata} che ne asserisce i fatti contenuti nell'antecedente.
+Questa regola permette nello specifico di analizzare una giocata appena ricevuta e di classificarla in uno dei modi previsti dal sistema (liscio, taglio, strozzo...).
+Vengono inoltre modificati i fatti \texttt{seme-mano} e \texttt{prende} per aggiornare, rispettivamente, quale sia il nuovo seme regnante e chi si stia aggiudicando la mano.
 
 \lstset{numbers=left, numberstyle=\tiny, stepnumber=1,firstnumber=1,
   numbersep=5pt,language=Lisp,
@@ -69,7 +220,8 @@ breaklines=true
 }
 
 
-\begin{lstlisting}
+
+\begin{lstlisting}[caption={Regola che analizza una nuova giocata ricevuta, la classifica e aggiorna alcuni fatti temporanei},label=nuovagiocata]
    ( defrule nuova-giocata "Ricevo una giocata: aggiorno la situa"
     ?w <- (nuova-giocata (player ?p) (card ?c) (rank ?r) (suit ?s))
     (prende (player ?prende-player) (card ?prende-card))
@@ -77,9 +229,7 @@ breaklines=true
     (seme-mano-fact (suit ?seme-mano))
     (mano-numero ?mano-numero)
 =>
-
    (bind ?tipo "liscio") 
-
     ;;  Aggiorniamo chi prende
     (if (= ?counter-giocata -1) then
         (remove prende)
@@ -88,7 +238,6 @@ breaklines=true
         (assert (seme-mano-fact (suit ?s)))
         (bind ?seme-mano ?s)
     else
-
         (if (batte ?c ?prende-card ?seme-mano )  then
             (remove prende)
             (assert (prende (player ?p) (card ?c) (suit (?c getSuit)) (rank (?c getRank))))
@@ -111,14 +260,9 @@ breaklines=true
             )
         )
     )
-
     (bind ?new-counter-giocata (+ ?counter-giocata 1))
-
     (retract ?w)
     (retract ?y)
-
-
-
     ;;  tipi di giocata:
     ;;  -   carichino               J,Q,K   a perdere
     ;;  -   carico                  3,A     a perdere
@@ -126,10 +270,99 @@ breaklines=true
     ;;  -   strozzino               carta < 3 del seme che comanda
     ;;  -   taglio                  taglino: quando taglio di briscola
     ;;  -   liscio
-
     (assert (giocata-numero ?new-counter-giocata))
     (assert (giocata (player ?p) (card ?c) (rank ?r) (suit ?s) (turno ?new-counter-giocata) (mano ?mano-numero) (tipo ?tipo)))
-    ;(debug (create$ la giocata di (?c toString) e considerata come ?tipo  ))
 )
-
 \end{lstlisting} 
+
+
+\subsection{Le regole per le strategie di gioco}
+
+Le regole fin qui indicate, insieme ad altre dalla natura simile, permettono di creare un ambiente intuitivamente descrivibile tramite fatti e, di conseguenze, la semplice implementazione di svariate strategie di gioco anche da parte di non esperti di programmazione, complicata solo da alcune caratteristiche proprie del linguaggio Jess nel quale le regole vanno scritte come la notazione prefissa degli operatori e il non molto intuitivo metodo di selezionare fatti in base alle caratteristiche del contenuto degli slot.\\
+Anche le strategie di gioco si dividono in due principali categorie:
+\begin{itemize}
+   \item le strategie di \emph{analisi};
+   \item le strategie di \emph{decisione}.
+\end{itemize}
+
+Le prime sono quelle volte all'assegnamento, con un grado di certezza puramente euristico, di ogni giocatore al suo ruolo.
+Servono quindi, a tentare di capire chi sia il socio in base alle giocate.\\
+Le strategie di decisione, invece, sono quelle che permettono di selezionare una carta tra quelle in mano per essere giocata.\\
+Sebbene il framework costruito non vincoli in alcun modo i due tipi di strategie, nelle regole implementate durante la sperimentazione  è parso ragionevole collegare le une alle altre.\\
+È immediatamente evidente come una strategia di decisione possa basarsi sul risultato ottenuto da una di analisi: per esempio, se quest'ultima avesse assegnato, con un'incertezza molto bassa, un dato giocatore al ruolo di socio, la strategia di decisione eviterebbe di farmi giocare un carico quando tal giocatore si trovi ultimo di mano dopo di me.\\
+Un approccio forse meno ovvio è quello contrario, nel quale si tenta di creare un modello mentale altrui basato sul nostro: si assume quindi che le strategie seguite dagli altri giocatori siano le stesse seguite dal nostro.\\
+Tale approccio permetterebbe di decidere con certezza il ruolo degli altri giocatori solo nelle condizioni in cui essi seguissero effettivamente le nostre stesse strategie e noi fossimo a conoscenza delle informazioni loro riservate, ovvero le carte che posseggono in mano.
+Questo ovviamente non è possibile ma ci è parso che un tentativo in questa direzione potesse costituire una buona approssimazione in mancanza di migliori strategie.\\
+L'idea è stata quindi di "rovesciare" le regole di decisione, ovvero scambiarne antecedente e conseguente, eliminando le informazioni riguardo le carte possedute in mano e agendo sul grando di incertezza tramite un valore numerico arbitrario assegnato euristicamente.
+
+\subsubsection*{Esempio: il socio tiene il giaguaro ultimo; se tiene il giaguaro ultimo è il socio}
+Un esempio dell'approccio appena accennato è l'implementazione delle regole \ref{socio1} e \ref{socio2}.
+Nel primo caso, del quale esistono diverse versioni in base alla precisa situazione ma di cui è qui presentata solo la più semplice, è formalizzata una regola piuttosto ovvia:
+\emph{Ruolo del socio è quello di favorire il chiamante (per esempio prendendo subito dopo di lui) e di tenerlo il più possibile ultimo, specialmente nelle mani finali}
+
+\begin{lstlisting}[caption={Se sono il socio e gioco subito dopo di lui, prendo per lasciarlo ultimo la mano successiva},label=socio1]
+( defrule socio-tiene-giaguaro-ultimo
+    ?w <- (calcola-giocata)
+    (mano-numero ?mano)
+    (mio-ruolo socio)
+    (giaguaro (player ?g))
+    (mio-turno-numero ?n)
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?n (mod (+ ?pos 1) 5) ) ) )
+    (briscola (card ?b))
+    (posso-prendere (card ?c&:(<> ?c ?b)))
+=>
+    (gioca ?c 100)
+    (assert (ora-di-giocare))
+)
+\end{lstlisting}
+
+Applicando il metodo dell'inversione delle regole, risulta la seguente \ref{socio2}.\\
+Si noti che, come anticipato, la precedente regola \ref{socio1} esiste in diverse versioni, di modo che nelle mani finali la sua applicazione sia più probabile. Questo giustifica il diverso valore di incertezza che viene assegnato alla validità dell'analisi effettuata dalla regola \ref{socio2}: se si è nelle fasi finali della partita, sarà più probabile che il giudizio sia corretto.
+
+
+
+\begin{lstlisting}[caption={Se qualcuno prende lasciando il giaguaro ultimo nella mano successiva, probabilmente è il socio, soprattutto se siamo durante la fase finale della partita},label=socio2]
+( defrule vs-socio-tiene-giaguaro-ultimo
+    (not(exists(socio (player ?player))))
+    (mano-numero ?mano-numero)
+    (giaguaro (player ?g))
+    (turno (player ?p&:(= ?p ?g)) (posizione ?pos-giaguaro))
+    (giocata (player ?soc) (tipo ?t&:( or ( = ?t "taglio") (or (= ?t "strozzino")  (= ?t "strozzo") ) )  ))
+    (turno (player ?pl&:(= ?pl ?soc)) (posizione ?pos-soc&:( = ?pos-soc (mod (+ ?pos-giaguaro 1) 5) )))
+=>
+    (if (> ?mano-numero 3) then
+        (bind ?new-sal 80)
+    else
+        (bind ?new-sal 40)
+    )
+    (aumenta-sal-socio ?soc ?new-sal)
+)
+\end{lstlisting}
+
+\subsection{La decisione finale}
+
+In base alla situazione rappresentata nella \emph{KB}, un diverso numero di regole può essere attivato contemporaneamente.\\
+Questo può portare a una situazione in cui il reasoner si trovi ad avere dei fatti di tipo \texttt{da-giocarsi} (quelli che contengono le carte selezionate per la giocata) in conflitto fra loro.\\
+Per risolvere questo tipo di conflitti si è preso ad esempio il sistema di \emph{conflict resolution} adottato da \textsc{Jess} (\cite{jessbook}): ogni fatto \texttt{da-giocarsi} non contiene solo l'indicazione della carta che una regola ha ritenuto opportuno giocare, bensì anche un valore euristico che indica la validità di tale carta.
+La funzione \ref{dagiocarsi}, al momento di giocare, sceglie fra le carte selezionate quella con migliore priorità per essere effettivamente giocata.
+In questo modo una regola "di difesa" che venga attivata quasi sempre e scelga una carta da giocarsi in modo da limitare al minimo le perdite, viene surclassata da una regola "di attacco" che permetta di prendere un numero decisivo di punti in tavola.\\
+Tale metodo permette inoltre un immediato "tuning" delle regole che può avvenire non solo con l'aggiunta e le modifiche di queste, ma anche con l'aggiornamento dei loro valori di priorità, a volti detti \emph{salience}.
+
+\begin{lstlisting}[caption={funzione che sceglie fra tutte quelle selezionate la carta da giocarsi},label=dagiocarsi]
+( deffunction carta-da-giocarsi ()
+    (bind ?it (run-query* da-giocarsi))
+    (if (?it next) then
+        (bind ?card (?it getObject c))
+        (bind ?sal (?it getObject n))
+        (while (?it next)
+            (if ( > (?it getObject n) ?sal) then
+                (bind ?card (?it getObject c))
+                (bind ?sal (?it getObject n))
+            )
+        )
+        return ?card
+    else
+        return "ciaooo"
+    )
+)
+\end{lstlisting}

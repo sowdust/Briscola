@@ -3,3 +3,11 @@
 \addcontentsline{toc}{chapter}{Implementazione degli agenti}
 \graphicspath{{Chapter5/Chapter5Figs/PNG/}{Chapter5/Chapter5Figs/PDF/}{Chapter5/Chapter5Figs/}}
 
+
+
+Per l'implementazione degli agenti si è scelto di basarsi direttamente sulla piattaforma \textsc{Jade} sottostante, che fornisce una classe \texttt{Agent}.
+Per questo si è creato la classe \texttt{GeneralAgent}, che estende appunto \texttt{Agent} di \textsc{Jade}.\\
+Questa classe è a sua volta estesa dalle classi \texttt{PlayerAgent} e \texttt{MazziereAgent} che implementano rispettivamente l'agente giocatore e l'agente mazziere.\\
+In relazione a queste tre classi ne esistono altre tre che ne gestiscono l'interfaccia grafica.
+Sono state inoltre ovviamente messe a disposizione degli agenti varie classi che rappresentino il mondo circostante: dalle carte, al tavolo, ai diversi giocatori.\\
+Infine, gli agenti dispongono di classi utilizzate per mantenere la memoria della partita, in modo da poter usare queste informazioni per la fase di \emph{reasoning} nel caso degli agenti giocatori, oppure per redigere il file di log nel caso dell'agente mazziere.
