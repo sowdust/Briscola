@@ -1,0 +1,45 @@
+\section{I \emph{Behaviours}}
+
+Come in ogni sistema multi agente, il cuore dell'interazione fra gli attori del sistema è definito nei \emph{task} assegnati agli agenti.\\
+\textsc{Jade} mette a disposizione la classe \texttt{Behaviour} per implementare i \emph{task}, così come alcune sue estensioni per tipi particolari di compiti (maggiori informazioni sono reperibili nell'appendice X).\\
+Seguendo questa impostazione, nello sviluppo della nostra piattaforma si sono estese queste classi fornite da \textsc{Jade} per implementare i comportamenti specifici che gli agenti giocatore e mazziere dovessero tenere per interagire in modo da condurre una regolare partita di Briscola in 5.\\
+Di seguito indichiamo i principali \emph{Behaviours} implementati per i vari tipi di agente.
+
+Classi usate da entrambi i tipi di agente:
+\begin{itemize}
+   \item \texttt{GetChatMessage} è un behaviour ciclico che recupera e gestisce i messaggi di chat;
+   \item \texttt{GetErrorMessage} come \texttt{GetChatMessage} ma volto ai messaggi di errore;
+   \item \texttt{SendAndWait} spedisce messaggi di tipo bloccanti (estende \texttt{SendMessage});
+   \item \texttt{SendMessage} spedisce messaggi di tipo semplice.
+\end{itemize}
+
+Behaviour specifici per l'agente mazziere:
+
+\begin{itemize}
+   \item \texttt{AskBriscola} richiede la briscola al vincitore dell'asta;
+   \item \texttt{BeginGame} dà inizio alla partita;
+   \item \texttt{DistributeHands} distribuisce le carte;
+   \item \texttt{EndGame} gestisce le operazioni da eseguirsi al termine della partita;
+   \item \texttt{GetGiocataComment} behaviour ciclico che recupera e gestisce i commenti alle giocate da parte dei giocatori umani;
+   \item \texttt{ManageBid} gestisce la fase dell'asta;
+   \item \texttt{OfferAChair} risponde alla richiesta di partecipazione da parte di un giocatore non ancora iscritto;
+   \item \texttt{OpenTable} si iscrive al servizio pagine gialle e offre i propri servigi;
+   \item \texttt{PlayGame} gestisce la fase di gioco;
+   \item \texttt{WaitForSubscriptionConfirmation} richiamato dopo \texttt{OfferAChair}, attende limitatamente la conferma d'iscrizione da parte di un giocatore.
+\end{itemize}
+
+Behaviour specifici per l'agente giocatore:
+
+\begin{itemize}
+   \item \texttt{BeginGame} gestisce la prima fase del gioco;
+   \item \texttt{DeclareBriscola} il vincitore dell'asta risponde al mazziere dichiarando il seme di briscola;
+   \item \texttt{PlayAuction} gestisce la fase d'asta;
+   \item \texttt{PlayGame} gestisce la fase di gioco;
+   \item \texttt{ReceiveHand} attende dal mazziere la propria mano di carte;
+   \item \texttt{ReceiveScore} attende dal mazziere le informazioni sui punteggi;
+   \item \texttt{Subscribe} iscrive il giocatore a un tavolo libero presso un mazziere;
+   \item \texttt{WaitForBriscola} il villano attende dal mazziere la comunicazione del seme di briscola.
+\end{itemize}
+
+
+

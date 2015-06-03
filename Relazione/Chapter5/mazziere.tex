@@ -1,0 +1,89 @@
+\section{MazziereAgent}
+
+La classe \texttt{MazziereAgent} implementa evidentemente l'agente mazziere; come già detto, fa questo estendendo la classe \texttt{GeneralAgent}, dalla quale eredita i metodi base di un agente.\\
+
+\subsection{Avvio dell'agente: il metodo \texttt{setup}}
+La classe \texttt{Agent} di \textsc{Jade} fornisce un metodo \texttt{setup()} che viene chiamato quando la piattaforma avvia un nuovo agente.
+\texttt{MazziereAgent} estende questo metodo per adattarlo alle proprie esigenze.\\
+In questa fase \ref{setup1}l'agente mazziere analizza innanzitutto gli argomenti con cui è stato avviato:
+\begin{enumerate}
+   \item nome dell'agente
+   \item scelta fra modalità grafica e testuale
+   \item indirizzo del file di log
+\end{enumerate}
+inizializza le proprie strutture dati e il proprio reasoner (usato per codificare le regole del gioco).
+\begin{lstlisting}[caption={stralcio del metodo setup() di MazziereAgent: inizializzazione strutture e reasoner},label=setup1]
+        private static final String rulesFile = "briscola/reasoner/mazziere.clp";
+        
+        ...
+        
+        //  SETTING UP THE RETE INSTANCE FOR JESS RULE PROCESSING
+        rete = new Rete();
+        try {
+            rete.batch(rulesFile);
+            rete.reset();
+        } catch (JessException ex) {
+            System.out.println("Impossibile aprire il file " + rulesFile);
+            ex.printStackTrace();
+            takeDown();
+        }
+\end{lstlisting}
+
+
+L'agente mazziere si registra al registro pubblico fornito da \textsc{Jade} per segnalare agli altri agenti della piattaforma la propria disponibilità a gestire una partita (\ref{setup2}). 
+
+\begin{lstlisting}[caption={stralcio del metodo setup() di MazziereAgent: registrazione al servizio pagine gialle},label=setup2]
+        private DFAgentDescription dfd;
+        private ServiceDescription sd;
+        
+        ...
+        
+        //  REGISTER TO YELLOW PAGES
+        dfd = new DFAgentDescription();
+        dfd.setName(getAID());
+        sd = new ServiceDescription();
+        sd.setType(MAZZIERE);
+        sd.setName(name);
+        dfd.addServices(sd);
+        try {
+            DFService.register(this, dfd);
+        } catch (FIPAException fe) {
+            say("Errore durante la registrazione alle pagine gialle");
+            fe.printStackTrace();
+            takeDown();
+        }
+\end{lstlisting}
+
+Infine, richiama il proprio metodo \texttt{startNewGame()} per dare inizio alla partita, avviando i \emph{Behaviours} che si occupano dell'apertura del tavolo e della ricezione degli eventuali commenti alle giocate.
+Inizializza inoltre un nuovo "registro della partita" che costituisce un vero e proprio log delle attività svoltesi, che è implementato nella classe \texttt{GameMemory}.
+
+
+
+
+
+
+
+\subsection{Chiusura dell'agente: il metodo \texttt{takeDown}}
+Un altro metodo della classe \texttt{Agent} di \textsc{Jade} che viene qui esteso è il metodo chiamato alla chiusura dell'agente, ovvero \texttt{takeDown()}.
+In questa fase (\ref{takedown}) l'agente mazziere si preoccupa di disallocare le proprie strutture e rimuovere il proprio nome dal registro pubblico.
+\begin{lstlisting}[caption={il metodo takeDown di MazziereAgent},label=takedown]
+    @Override
+    protected void takeDown() {
+
+        say("Felice di aver giocato con voi. Addio!");
+        dfd.removeServices(sd);
+
+        if (graphic) {
+            gui.dispose();
+        }
+        if (writeCSV) {
+            try {
+                csvWriter.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+\end{lstlisting}
+
+Gli altri metodo implementati in questa classe sono principalmente metodi di utilità o metodi per interagire con il registro in memoria della partita.

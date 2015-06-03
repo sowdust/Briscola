@@ -1,0 +1,26 @@
+\section{GeneralAgent}
+
+
+Questa classe fornisce i metodi di base degli agenti coinvolti nella piattaforma.\\
+In concerto con la classe \texttt{GeneralGUI} che implementa i metodi base dell'interfaccia grafica degli agenti, \texttt{GeneralAgent} definisce i metodi per stampare il log delle attività, i messaggi di chat e altre informazioni utili quali l'elenco dei giocatori, dei punteggi ecc.\\
+Dispone anche di diversi metodi per l'invio diretto di messaggi. Per una maggiore libertà nelle modalità di invio di messaggi, si è fatto largo ricorso all'\emph{overloading} di questi metodi.\\
+Oltre ad altri metodi di varia utilità comuni a tutti gli agenti, \texttt{GeneralAgent} fornisce anche un sistema per l'organizzazione dei \emph{Behaviours}, ovvero dei \emph{task} al livello di framework.\\
+Purtroppo \emph{Jade} non fornisce metodi per gestire i \emph{Behaviours} ad alto livello; questo significa che anche solo per ottenere la lista dei \emph{Behaviours} associati ad un agente è necessario agire a livello del sistema operativo.\\
+Per evitare questa faticosa e poco elegante soluzione, si è deciso di estendere il metodo \texttt{addBehaviour} \ref{addBehaviour} della classe \texttt{Agent} di Jade nella classe \texttt{GeneralAgent}: in questo modo, aggiungendo un \emph{Behaviour} a partire da un agente mazziere o giocatore, il \emph{Behaviour} viene aggiunto ad una lista all'interno dell'istanza da cui è stato chiamato.
+
+\lstset{numbers=left, numberstyle=\tiny, stepnumber=1,firstnumber=1,
+  numbersep=5pt,language=Java,
+stringstyle=\ttfamily,
+basicstyle=\footnotesize, 
+showstringspaces=false,
+breaklines=true
+}
+\begin{lstlisting}[caption={},label=addBehaviour]
+protected List<Behaviour> behaviours;
+/*    ...      */
+    @Override
+    public void addBehaviour(Behaviour b) {
+        super.addBehaviour(b);
+        this.behaviours.add(b);
+    }
+\end{lstlisting}
