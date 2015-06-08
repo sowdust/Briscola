@@ -278,7 +278,7 @@ breaklines=true
 
 \subsection{Le regole per le strategie di gioco}
 
-Le regole fin qui indicate, insieme ad altre dalla natura simile, permettono di creare un ambiente intuitivamente descrivibile tramite fatti e, di conseguenze, la semplice implementazione di svariate strategie di gioco anche da parte di non esperti di programmazione, complicata solo da alcune caratteristiche proprie del linguaggio Jess nel quale le regole vanno scritte come la notazione prefissa degli operatori e il non molto intuitivo metodo di selezionare fatti in base alle caratteristiche del contenuto degli slot.\\
+Le regole fin qui indicate, insieme ad altre dalla natura simile, permettono di creare un ambiente intuitivamente descrivibile tramite fatti e, di conseguenze, la semplice implementazione di svariate strategie di gioco anche da parte di non esperti di programmazione, complicata solo da alcune caratteristiche proprie del linguaggio \textsc{Jess} nel quale le regole vanno scritte come la notazione prefissa degli operatori e il non molto intuitivo metodo di selezionare fatti in base alle caratteristiche del contenuto degli slot.\\
 Anche le strategie di gioco si dividono in due principali categorie:
 \begin{itemize}
    \item le strategie di \emph{analisi};
@@ -289,11 +289,22 @@ Le prime sono quelle volte all'assegnamento, con un grado di certezza puramente 
 Servono quindi, a tentare di capire chi sia il socio in base alle giocate.\\
 Le strategie di decisione, invece, sono quelle che permettono di selezionare una carta tra quelle in mano per essere giocata.\\
 Sebbene il framework costruito non vincoli in alcun modo i due tipi di strategie, nelle regole implementate durante la sperimentazione  è parso ragionevole collegare le une alle altre.\\
-È immediatamente evidente come una strategia di decisione possa basarsi sul risultato ottenuto da una di analisi: per esempio, se quest'ultima avesse assegnato, con un'incertezza molto bassa, un dato giocatore al ruolo di socio, la strategia di decisione eviterebbe di farmi giocare un carico quando tal giocatore si trovi ultimo di mano dopo di me.\\
-Un approccio forse meno ovvio è quello contrario, nel quale si tenta di creare un modello mentale altrui basato sul nostro: si assume quindi che le strategie seguite dagli altri giocatori siano le stesse seguite dal nostro.\\
-Tale approccio permetterebbe di decidere con certezza il ruolo degli altri giocatori solo nelle condizioni in cui essi seguissero effettivamente le nostre stesse strategie e noi fossimo a conoscenza delle informazioni loro riservate, ovvero le carte che posseggono in mano.
-Questo ovviamente non è possibile ma ci è parso che un tentativo in questa direzione potesse costituire una buona approssimazione in mancanza di migliori strategie.\\
-L'idea è stata quindi di "rovesciare" le regole di decisione, ovvero scambiarne antecedente e conseguente, eliminando le informazioni riguardo le carte possedute in mano e agendo sul grando di incertezza tramite un valore numerico arbitrario assegnato euristicamente.
+È immediatamente evidente come una strategia di decisione possa basarsi sul risultato ottenuto da una di analisi: per esempio, se quest'ultima avesse assegnato, con un'incertezza molto bassa, un dato giocatore al ruolo di socio, la strategia di decisione eviterebbe di far giocare un carico quando tal giocatore si trovi ultimo di mano dopo di sè.\\
+
+Allo stesso modo è possibile basare le strategie di analisi su quelle di decisione, assumendo che l'avversario segua strategie decisionali simili alle proprie.
+L'idea è quella di "rovesciare" le regole di decisione per costruire quelle di analisi, scambiando antecedente e conseguente.\\
+Per chiarire l'intuizione, si assuma che il giocatore \emph{P} abbia fra le sue regole una per cui: se il suo ruolo è \emph{socio}, dopo di lui c'è il \emph{chiamante} ultimo di mano, allora gioca un carico; \emph{P} osservando un giocatore \emph{A} penultimo di mano prima del \emph{chiamante} giocare un carico, assumendo che \emph{A} stia seguendo strategie simili alle proprie, potrà concludere che il ruolo di \emph{A} è quello del \emph{socio}.\\
+Tale approccio è limitato da due fattori: in primis non è detto che l'avversario segua effettivamene le nostre stesse identiche strategie decisionali, per cui l'assunzione non è necessariamente corretta, soprattutto in casi in cui l'obiettivo dell'avversario sia quello di depistare il giocatore con un \emph{bluff}.\\
+Inoltre le strategie decisionali hanno nel proprio antecedente anche delle condizioni che riguardano le carte in mano, quindi un'informazione privata non disponibile a nessun altro giocatore.\\
+Nonostante questi limiti ci è parso che un tentativo in questa direzione potesse costituire una buona approssimazione in mancanza di migliori strategie.\\
+
+
+
+
+%Un approccio forse meno ovvio è quello contrario, nel quale si tenta di creare un modello mentale altrui basato sul nostro: si assume quindi che le strategie seguite dagli altri giocatori siano le stesse seguite dal nostro.\\
+%Tale approccio permetterebbe di decidere con certezza il ruolo degli altri giocatori solo nelle condizioni in cui essi seguissero effettivamente le nostre stesse strategie e noi fossimo a conoscenza delle informazioni loro riservate, ovvero le carte che posseggono in mano.
+%Questo ovviamente non è possibile ma ci è parso che un tentativo in questa direzione potesse costituire una buona approssimazione in mancanza di migliori strategie.\\
+%L'idea è stata quindi di "rovesciare" le regole di decisione, ovvero scambiarne antecedente e conseguente, eliminando le informazioni riguardo le carte possedute in mano e agendo sul grando di incertezza tramite un valore numerico arbitrario assegnato euristicamente.
 
 \subsubsection*{Esempio: il socio tiene il giaguaro ultimo; se tiene il giaguaro ultimo è il socio}
 Un esempio dell'approccio appena accennato è l'implementazione delle regole \ref{socio1} e \ref{socio2}.
@@ -361,8 +372,18 @@ Tale metodo permette inoltre un immediato "tuning" delle regole che può avvenir
             )
         )
         return ?card
-    else
-        return "ciaooo"
     )
 )
 \end{lstlisting}
+
+
+\subsection{Riassumendo}
+
+Un \emph{framework} di basso livello mette a disposizione strutture dati, funzioni e strategie generale che permettono una più semplice scrittura di strategie tramite il linguaggio \textsc{Jess}.\\
+Le strategie implementate, raccolte da varie fonti, riflettono la conoscenza di giocatori esperti ed i loro comportamenti in alcune situazioni di carattere generale.\\
+Gran parte dei comportamenti da seguirsi dipendono strettamente dal ruolo che si ha nella partita. Questa osservazione ha reso possibile lo sviluppo di regole di \emph{analisi}, di supporto a quelle di \emph{decisone}, che permettono di assegnare con un margine di incertezza euristico un giocatore al suo ruolo presunto in base ai suoi comportamenti.\\
+La possibilità di estendere l'insieme di strategie applicabili dal giocatore può dare adito all'attivazione di più regole contrastanti contemporaneamete e di conseguenza a problemi di \emph{conflict resolution}; questi sono stati resi risolubili dando la possibilità di assegnare ad ogni strategia un valore euristico di priorità.
+
+
+
+

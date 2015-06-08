@@ -6,8 +6,7 @@ Per questo è auspicabile considerare le due fasi del gioco separatamente: dappr
 La seconda fase del gioco quindi non si discosta troppo da altri giochi già molto trattati nell'ambito dell'AI, come il \emph{Bridge}.
 Uno studio di \cite{villa} ad esempio, applica questa fase della briscola in 5 il metodo della ricerca nello spazio degli stati con approssimazione Montecarlo, soluzione già indicata come molto comune nella risoluzione di giochi di carte.
 Non siamo invece riusciti a trovare studi che trattino la prima fase della briscola in 5, quella durante la quale non è chiaro a tutti chi siano gli avversari e chi i compagni.
-\textbf{NOTA ---- È DAVVERO ZERO-SUM? I PUNTEGGI SOMMANO A 0 E SONO DI SEGNO OPPOSTO MA NON UGUALI!}
-Pur essendo uno \emph{zero-sum game}, infatti, la briscola in 5 nella sua prima fase non può essere considerato un ambiente nè \emph{competitivo} nè \emph{cooperativo}.
+Infatti, la briscola in 5 nella sua prima fase non può essere considerato un ambiente nè \emph{competitivo} nè \emph{cooperativo}.
 Questo rende impossibile l'applicazione dei metodi indicati nelle precedenti sezioni e chiama un approccio di tipo differente.
 
 \subsection{Inapplicabilità del minimax}
@@ -25,12 +24,13 @@ La presa spetti al giocatore, $A$ del quale ancora non si conosce il ruolo.\\
 $A$ prenda con un Asso di $\heartsuit$.\\
 In tavolo vi siano anche: K $\heartsuit$, J $\diamondsuit$, 2 $\spadesuit$.\\
 Il seme di briscola sia $\clubsuit$.\\
-In mano si abbiano 2 $\clubsuit$ e 2 $\heartsuit$ : una briscola ed un carico.\\
+In mano si abbiano 2 $\clubsuit$ e 2 $\heartsuit$ : una briscola ed un liscio.\\
 Immaginiamo, per facilitare i calcoli, che tutti i punti siano già stati giocati e che rimanga una sola mano da giocarsi.\\
 In una situazione del genere un giocatore umano incerto sui ruoli degli altri giocatori giocherebbe certamente la briscola (quindi il 2$\clubsuit$), aggiudicandosi la mano senza per questo dover rinunciare a dei punti.\\
 Ma la situazione è utile per mostrare come l'inapplicabilità della definizione del \emph{minimax value}: se si decidesse di giocare il 2 $\heartsuit$, infatti, i punti raccolti dal giocatore $A$ che ha giocato A $\heartsuit$, sarebbero a proprio vantaggio o svantaggio?\\
 Giocando il 2 $\clubsuit$ si è certi che, qualsiasi sia lo svolgersi della mano successiva, il punteggio della propria squadra aumenterà di 16 punti.\\
 Giocando il 2 $\heartsuit$, invece, i 16 punti della mano potrebbero essere a favore della propria squadra come di quella avversaria, in base all'affiliazione del giocatore che si aggiudica la presa.\\
+Allo stesso tempo, se il giocatore \emph{P} fosse sicuro di essere in squadra con \emph{A}, dovrebbe certamente "andare liscio" giocando il 2 $\heartsuit$, mantenendo in mano in questo modo una briscola che potrebbe rivelarsi molto utile nella mano successiva.
 
 
 \begin{figure}[!htbp]
