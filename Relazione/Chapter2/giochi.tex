@@ -2,7 +2,7 @@
 
 La \emph{Teoria dei giochi} è una branca della matematica che studia "modelli di conflitto e cooperazione tra agenti razionali capaci di intraprendere decisioni" (tradotto da \cite{gtheory}), ovvero le strategie da seguire per effettuare decisioni in maniera ottimale.\\
 Gli ambiti applicativi delle teoria dei giochi sono svariati: Economia, Politica, Logica, Biologia, Informatica e persino Psicologia.\\
-Sviluppatasi nella prima metà del Novecento, questa disciplina conobbe un forte aumento di interesse da parte dei ricercatori a partire dagli anni '50, dopo la pubblicazione del volume "Theory of Games and Economic Behavior" da parte del matematico John von Neumann insieme all'economista Oskar Morgenstern \cite{tog}. Agli inizi degli anni 2000 la Teoria dei giochi ebbe modo di essere conosciuta anche dal pubblico non specialista grazie alla celebre pellicola holliwoodiana \emph{A Beautiful Mind}, ispirata alla vita e agli studi del famoso matematico John Nash, vincitore del premio Nobel per l'Economia nel 1994 con lavori di Teoria dei giochi (\cite{jnash}).
+Sviluppatasi nella prima metà del Novecento, questa disciplina conobbe un forte aumento di interesse da parte dei ricercatori a partire dagli anni '50, dopo la pubblicazione del volume "Theory of Games and Economic Behavior" da parte del matematico John von Neumann insieme all'economista Oskar Morgenstern (\cite{tog}). Agli inizi degli anni 2000 la Teoria dei giochi ebbe modo di essere conosciuta anche dal pubblico non specialista grazie alla celebre pellicola holliwoodiana \emph{A Beautiful Mind}, ispirata alla vita e agli studi del famoso matematico John Nash, vincitore del premio Nobel per l'Economia nel 1994 con lavori di Teoria dei giochi (\cite{jnash}).
 
 
 \subsection{Rappresentazione dei giochi}
@@ -15,11 +15,12 @@ Un gioco può essere formalmente definito da quattro elementi (\cite{ramusen}):
    \item i \emph{payoff} o le funzioni di utilità per ogni giocatore, per ogni possibile risultato finale.   
 \end{enumerate}
 
-A partire da questa formalizzazione, lo studioso applica al gioco una regola formale che descrive le sue previsioni su come il gioco sarà svolto dai vari giocatori, ovvero quali strategie verranno adottate; tali regole vengono dette \emph{solution concept} (\cite{wikisol}).\\
+A partire da questa formalizzazione, lo studioso applica al gioco una regola formale che descrive le sue previsioni su come il gioco sarà svolto dai vari giocatori, ovvero quali strategie verranno adottate; tali regole vengono dette \emph{solution concept}.\\
 Tramite questo processo si cercano di dedurre delle strategie di \emph{equilibrio} tali che, se adottate, nessun giocatore può guadagnare punti rispetto agli altri deviando da esse.
 
 
-
+I giochi in cui i partecipanti agiscono contemporaneamente, o comunque senza conoscere le azioni degli avversari, vengono generalmente rappresentati in \textbf{forma normale}, ovvero come una matrice che rappresenta i giocatori, le possibili strategie e i relativi \emph{payoff} (un esempio: \ref{prigionierofn}).\\
+Se il gioco è invece di tipo \emph{sequenziale}, allora si usa la \textbf{forma estesa}, che non è altro che un \emph{albero di decisione} che tiene conto delle possibili mosse di tutti i partecipanti e reca nei nodi foglia i vary \emph{payoff}.\\
 
 
 
@@ -41,11 +42,44 @@ Il dilemma è il seguente:
 \end{quote}
 
 
-\subsection{Metodo Risolutivo}
+
+\begin {table}
+\begin{center}
+  \begin{tabular*}{1\textwidth}{@{\extracolsep{\fill}} | l || c | c | }
+    \hline
+                     &  B non tradisce    &  B tradisce     \\ \hline
+    A non tradisce   & A: 1; B: 1         &  A: 3; B: 0     \\ \hline
+    A tradisce       & A: 0; B: 3         &  A: 2; B: 2     \\ \hline 
+  \end{tabular*}
+  \caption {Dilemma del prigioniero in forma normale; per i prigionieri A e B sono indicati come \emph{payoff} (in questo caso negativi) gli anni di carcere cui vanno incontro nelle varie situazioni possibili} \label{prigionierofn} 
+\end{center}
+\end {table}
+
+Si chiamino i due prigionieri $A$ e $B$.
+La situazione è descritta dalla forma normale \ref{prigionierofn}.
+Si può notare che entrambi i prigionieri ottengono un maggior \emph{payoff} tradendo il compagno piuttosto che cooperando con lui rimanendogli fedele.
+Si consideri il prigioniero $B$: può tradire il compagno o cooperare con lui.
+Se $B$ collaborasse, ad $A$ converrebbe tradire, dato che in questo modo uscirebbe di prigione invece che scontare un anno di pena.
+Se invece $B$ tradisse, anche ad $A$ converrebbe farlo, dato che sconterebbe un solo anno invece che 3.
+Si conclude che in ogni caso al giocatore $A$ conviene tradire.
+Lo stesso ragionamento può essere seguito simmetricamente per $B$.
 
 
 
 \subsection{Nei giochi di carte}
 
+Secondo la classificazione della teoria dei giochi, i giochi di carte appartengono alle seguenti categorie di giochi:
+
+\begin{itemize}
+   \item \emph{assimmetrici}: i payoff risultanti da una stessa strategia dipendono da quale giocatore la segue;
+   \item \emph{sequenziali} in quanto si sviluppano nel tempo e i giocatori hanno la possibilità di muovere uno alla volta dopo aver visto le mosse altrui;
+   \item \emph{a informazione imperfetta}  perchè le carte nelle mani altrui non sono visibili.
+\end{itemize}
+
+Nonostante alcuni giochi di carte siano sia \emph{competitivi} che \emph{cooperativi}, come ad esempio il \emph{Bridge} o la \emph{Briscola a 4} in cui due squadre di giocatori fra loro cooperanti si affrontano competitivamente, è generalmente possibile semplificare le dinamiche del gioco considerando i giocatori di una stessa squadra come un unico agente, riconducendo l'ambiente ad uno semplicemente \emph{competitivo} (vedi \cite{pavel}).\\
+
+Per la classificazione cui appartengono i giochi di carte sono quindi adatti ad essere rappresentati in forma estesa, tramite un albero di decisione che ne rappresenti tutte le possibili mosse da parte dei cinque giocatori e comprenda nei nodi foglia, cioè le mosse finali, i relativi \emph{payoff}.\\
+
+Questo albero, molto simile all'albero degli stati presentato nella precedente sezione, continua ad avere un'estensione troppo ampia per essere esplorato agilmente; anche in questo caso quindi, valgono le considerazioni fatte per gli algoritmi di ricerca e la possibilità di utilizzare strategemmi approssimativi come la ricerca Montecarlo unita ad algoritmi di pruning (\cite{pavel}) per rendere l'esplorazione eseguibile in un tempo ragionevole.
 
 

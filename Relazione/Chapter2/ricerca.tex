@@ -119,7 +119,7 @@ Questo vincolo vale per la maggior parte dei giochi trattati in AI, compreso que
 
 Nei giochi non è possibile definire in anticipo il percorso che giunge ad uno stato di goal (uno stato terminale in cui l'agente si aggiudichi la partita) dato che il percorso che seguirà la partita è deciso anche dal (o dai) giocatore avversario.
 Per risolvere questa difficoltà si assume quindi che l'avversario giochi una partita ottimale; è dimostrabile come questo garantisca una decisione vincente (anche se non necessariamente la migliore) anche in situazioni in cui l'avversario non dovesse giocare ottimamente.\\
-Prima di presentare un algoritmo che permetta di scegliere, ad ogni nodo, la stratagia ottimale, è necessario definire il valore \emph{minimax} associato ad un nodo.
+Prima di presentare un algoritmo che permetta di scegliere, ad ogni nodo, la strategia ottimale, è necessario definire il valore \emph{minimax} associato ad un nodo.
 Informalmente, si definisce \textsc{Minimax(\emph{n})} per un giocatore \emph{p }la funzione di utilità che il nodo \emph{n} ha associata per \emph{p}, assumento che entrambi i giocatori seguano una strategia ottimale.
 Segue dalla definizione che il valore \emph{minimax} di uno stato terminale è semplicemente il valore della sua \emph{funzione di utilità}.
 Formalmente:
