@@ -9,7 +9,7 @@ Non siamo invece riusciti a trovare studi che trattino la prima fase della brisc
 Infatti, la briscola in 5 nella sua prima fase non può essere considerato un ambiente nè \emph{competitivo} nè \emph{cooperativo}.
 Questo rende impossibile l'applicazione dei metodi indicati nelle precedenti sezioni e chiama un approccio di tipo differente.
 
-\subsection{Inapplicabilità del minimax}
+\subsection{Inapplicabilità di algoritmi di ricerca e teoria dei giochi}
 Volendo tentare di applicare l'algoritmo \textsc{Minimax} alla risoluzione di una partita di briscola in 5 ci si scontra immediatamente con una difficoltà insormontabile: essendo impossibile definire con certezza una funzione di utilità, è inapplicabile la definizione ricorsiva \ref{minimax-value} del \emph{mini-max value}.
 Questo accade perchè, pur assumendo di aver costruito l'intero albero rappresentante lo spazio degli stati fino alle foglie che contengono gli stati finali della partita, è impossibile assegnare un segno, positivo o negativo, al modulo delle funzioni di utilità: esso sarebbe positivo se il giocatore che si aggiudica la presa fosse un compagno, viceversa, sarebbe negativo.
 Ma essendo sconosciuto il ruolo del giocatore che prende, rimane incerto il valore della funzione di utilità.\\
@@ -34,23 +34,29 @@ Allo stesso tempo, se il giocatore \emph{P} fosse sicuro di essere in squadra co
 
 
 \begin{figure}[!htbp]
+\begin{tikzpicture}
+\tikzset{every tree node/.style={align=center,anchor=north}}
+\tikzset{level 1/.style={level distance=70pt}}
+\tikzset{level 2/.style={level distance=35pt}}
+\tikzset{level 3/.style={level distance=35pt}}
+\tikzset{level 4/.style={level distance=45pt}}
+\tikzset{level 5/.style={level distance=20pt}}
+
 
 \Tree[.{$P$ ha in mano \\ $2  \heartsuit$ e $ 2  \clubsuit$}
-         [.{$P$ gioca $2 \heartsuit$} [ .{...} [.{termine partita} [ .{Il socio è A} [ {- 16} ] ] [ .{Il socio è B}  [ {+ 16} ]] [ .{Il socio è C}  [ {+ 16} ]] ]]]
-         [.{$P$ gioca $2 \clubsuit$} [ .{...} [.{termine partita} [ .{Il socio è A}  [ {+ 16} ]] [ .{Il socio è B}  [ {+ 16} ]] [ .{Il socio è C}  [ {+ 16} ]] ]]]
+         [.{$P$ gioca $2 \heartsuit$} [ .{\ldots} [.{termine partita} [ .{Il socio è A} [ {- 16} ] ] [ .{Il socio è B}  [ {+ 16} ]] [ .{Il socio è C}  [ {+ 16} ]] ]]]
+         [.{$P$ gioca $2 \clubsuit$} [ .{\ldots} [.{termine partita} [ .{Il socio è A}  [ {+ 16} ]] [ .{Il socio è B}  [ {+ 16} ]] [ .{Il socio è C}  [ {+ 16} ]] ]]]
 ]
+\end{tikzpicture}
 
-    \caption{Valori indefiniti per la utility function}
-    \label{alberoutility}
-
+\caption{Valori indefiniti per la utility function}
+\label{alberoutility}
 \end{figure}
 
 
-\subsection{Inapplicabilità della teoria dei giochi}
 
 Come è stato detto, l'applicazione del modello della teoria dei giochi alla Briscola in 5 richiede comunque lo sviluppo di un albero di decisione; oltre ai già trattati (e superabili) problemi di estensione di tale albero, il problema descritto in \ref{alberoutility} si ripresenta nel momento in cui si voglia applicare il modello della teoria dei giochi a un ambiente come quello della Briscola in 5 che non è definitamente nè competitivo nè cooperativo.\\
-Esattamente come i valori della \emph{utility function} usati dall'algoritmo \textsc{Minimax}, anche i \emph{payoff} necessari alla realizzazione della forma estesa del gioco della Briscola in 5 non sarebbero definibili.
-
+Esattamente come i valori della \emph{utility function} usati dall'algoritmo \textsc{Minimax}, anche i \emph{payoff} necessari alla realizzazione della forma estesa del gioco della Briscola in 5 non sarebbero definibili se non conoscendo in anticipo la formazione delle squadre.
 
 
 \subsection{Soluzione adottata}

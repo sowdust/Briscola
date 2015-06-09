@@ -19,9 +19,15 @@ A partire da questa formalizzazione, lo studioso applica al gioco una regola for
 Tramite questo processo si cercano di dedurre delle strategie di \emph{equilibrio} tali che, se adottate, nessun giocatore può guadagnare punti rispetto agli altri deviando da esse.
 
 
-I giochi in cui i partecipanti agiscono contemporaneamente, o comunque senza conoscere le azioni degli avversari, vengono generalmente rappresentati in \textbf{forma normale}, ovvero come una matrice che rappresenta i giocatori, le possibili strategie e i relativi \emph{payoff} (un esempio: \ref{prigionierofn}).\\
-Se il gioco è invece di tipo \emph{sequenziale}, allora si usa la \textbf{forma estesa}, che non è altro che un \emph{albero di decisione} che tiene conto delle possibili mosse di tutti i partecipanti e reca nei nodi foglia i vary \emph{payoff}.\\
 
+\subsection{Forma normale e forma estesa}
+I giochi in cui i partecipanti agiscono contemporaneamente, o comunque senza conoscere le azioni degli avversari, sono detti \emph{simultanei}.
+Il modello di tali giochi viene generalmente rappresentato in \textbf{forma normale}, cioè come una matrice che rappresenti i giocatori, le possibili strategie e i relativi \emph{payoff} (un esempio: \ref{prigionierofn}).\\
+Se il gioco è invece di tipo \emph{sequenziale}, allora si usa la \textbf{forma estesa}: un albero di decisione finito che ha per nodi le possibili mosse (vedi \ref{extensive}).
+Le mosse possono essere \emph{personali} o \emph{casuali}: le prime sono le mosse direttamente riconducibili alla scelta di un giocatore, le seconde invece a un evento ambientale ai cui possibili esiti è associata una precisa probabilità; fanno parte di questo genere di mosse il lancio di un dado o l'estrazione di una carta da un mazzo non ordinato.
+Un nodo posto alla radice, generalmente rappresentato con la forma di un diamante, rappresenta lo stato iniziale $S_0$ del gioco.
+Un "gioco" (o \emph{play}) $\alpha$ viene realizzato a partire dal nodo radice, effettuando una scelta (da parte dei giocatori o del caso) ad ogni ramo e terminando in un nodo foglia.\\
+In questo caso il \emph{payoff} può essere assegnato tramite una \emph{funzione di utilità} del gioco, così che il \emph{payoff} del giocatore $i$ sul gioco $\alpha$ secondo la utility function $K$ è dato dal valore $K_i(\alpha)$. \cite{frank}
 
 
 \subsubsection*{Esempio: il dilemma del prigioniero}
@@ -56,7 +62,7 @@ Il dilemma è il seguente:
 \end {table}
 
 Si chiamino i due prigionieri $A$ e $B$.
-La situazione è descritta dalla forma normale \ref{prigionierofn}.
+La situazione è descritta dalla forma normale \ref{prigionierofn} e dalla forma estesa \ref{extensive}.
 Si può notare che entrambi i prigionieri ottengono un maggior \emph{payoff} tradendo il compagno piuttosto che cooperando con lui rimanendogli fedele.
 Si consideri il prigioniero $B$: può tradire il compagno o cooperare con lui.
 Se $B$ collaborasse, ad $A$ converrebbe tradire, dato che in questo modo uscirebbe di prigione invece che scontare un anno di pena.
@@ -65,8 +71,48 @@ Si conclude che in ogni caso al giocatore $A$ conviene tradire.
 Lo stesso ragionamento può essere seguito simmetricamente per $B$.
 
 
+\begin{center}
+   
+\begin{figure}[!htbp]
 
-\subsection{Nei giochi di carte}
+
+
+\begin{tikzpicture}[every tree node/.style={draw,circle},
+   level distance=1.25cm,sibling distance=.5cm, 
+   edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
+\tikzset{level 1/.style={level distance=75pt}}
+\tikzset{level 2+/.style={level distance=50pt}}
+\Tree [.\node(Root)[diamond] {stato iniziale};
+   [.\node(Root2) {0};  
+   \edge node[auto=right] {$A$ tradisce}; 
+    [.\node (one) {1};
+      \edge node[auto=right] {$B$ tradisce};  
+      [.\node[rectangle,red] {$A$: 2; $B$: 2};  ]
+      \edge node[auto=left] {$B$ non tradisce};  
+      [.\node[rectangle] {$A$: 0; $B$: 3}; ] 
+    ]
+    \edge node[auto=left] {$A$ non tradisce}; 
+    [.\node (two) {2};
+      \edge node[auto=right] {$B$ tradisce};  
+      [.\node[rectangle] {$A$: 3; $B$: 2};  ]
+      \edge node[auto=left] {$B$ non tradisce};  
+      [.\node[rectangle] (leaf) {$A$: 1; $B$: 1}; ] 
+    ] 
+]]
+
+   \begin{scope}[xshift=3in,every tree node/.style={},edge from parent path={}]
+\Tree [.{ } [.{$Sceglie$ A} [.{$Sceglie$ B} ]]]
+\end{scope}
+
+\end{tikzpicture}
+
+    \caption{Il dilemma dei prigionieri in forma estesa; in rosso la situazione di equilibrio}
+    \label{extensive}
+\end{figure}
+\end{center}
+
+
+\subsection{Game theory per i giochi di carte}
 
 Secondo la classificazione della teoria dei giochi, i giochi di carte appartengono alle seguenti categorie di giochi:
 
@@ -78,8 +124,11 @@ Secondo la classificazione della teoria dei giochi, i giochi di carte appartengo
 
 Nonostante alcuni giochi di carte siano sia \emph{competitivi} che \emph{cooperativi}, come ad esempio il \emph{Bridge} o la \emph{Briscola a 4} in cui due squadre di giocatori fra loro cooperanti si affrontano competitivamente, è generalmente possibile semplificare le dinamiche del gioco considerando i giocatori di una stessa squadra come un unico agente, riconducendo l'ambiente ad uno semplicemente \emph{competitivo} (vedi \cite{pavel}).\\
 
-Per la classificazione cui appartengono i giochi di carte sono quindi adatti ad essere rappresentati in forma estesa, tramite un albero di decisione che ne rappresenti tutte le possibili mosse da parte dei cinque giocatori e comprenda nei nodi foglia, cioè le mosse finali, i relativi \emph{payoff}.\\
+Per la classificazione cui appartengono i giochi di carte sono quindi adatti ad essere rappresentati in forma estesa, tramite un albero di decisione che ne rappresenti tutte le possibili mosse da parte di tutti i giocatori e comprenda per i nodi foglia, cioè le mosse finali, i relativi \emph{payoff}.\\
 
-Questo albero, molto simile all'albero degli stati presentato nella precedente sezione, continua ad avere un'estensione troppo ampia per essere esplorato agilmente; anche in questo caso quindi, valgono le considerazioni fatte per gli algoritmi di ricerca e la possibilità di utilizzare strategemmi approssimativi come la ricerca Montecarlo unita ad algoritmi di pruning (\cite{pavel}) per rendere l'esplorazione eseguibile in un tempo ragionevole.
-
+Essendo i giochi di carte ad \emph{informazione imperfetta} sorgono alcune complicazioni nella costruzione della forma estesa del gioco.
+Infatti, alcune scelte possono non essere direttamente disponibili al giocatore; questo può coinvolgere sia le scelte effettuate dal caso, come quando si tratti della distribuzione delle carte in mano all'avversario, sia le scelte dell'avversario stesso, come quando questo giochi una carta mantenendola però coperta.\\
+Questo fa sì che un giocatore possa non sapere dove si trovi all'interno dell'albero della forma estesa.\\
+Nonostante alcune soluzioni per superare queste difficoltà siano già state formulate (si veda \cite{wiley}), per la maggior parte dei giochi di carte l'albero rimarrebbe comunque troppo esteso per poter essere trattato computazionalmente in pratica (\cite{frank}).\\
+Anche in questo caso quindi, valgono le considerazioni fatte per gli algoritmi di ricerca e la possibilità di utilizzare strategemmi approssimativi unite ad algoritmi di pruning (\cite{pavel}) per rendere l'esplorazione eseguibile in un tempo ragionevole.
 
