@@ -3,43 +3,54 @@
 La fase dell'asta è una fase discriminante nel gioco della Briscola in 5, in quanto è proprio durante questa fase che vengono decise le composizioni delle squadre.\\
 Obiettivo di ogni giocatore in questa fase in cui i ruoli non sono ancora assegnati è quello di ottenere la vittoria con la carta più alta possibile se si hanno buone carte in mano e viceversa di non lasciare una carta troppo alta al vincitore se non si hanno carte abbastanza buone da cercare di giocare nel ruolo del chiamante.\\
 Nonostante l'importanza di questa fase di gioco sia innegabile, i suoi meccanismi sono decisamente più deterministici e meno interessanti della fase di gioco vera e propria.\\
-Per questa ragione abbiamo deciso di semplificare l'implementazione di tale fase seguendo un approccio già intrapreso in \cite{villa}.\\
+Per questa ragione abbiamo deciso di semplificare l'implementazione di tale fase seguendo un approccio già intrapreso in \cite{villa}.
 Per prima cosa si è eliminata la \emph{Chiamata in mano}, ovvero la possibilità da parte di un giocatore con ottime carte di chiamare una carta in proprio possesso, trovandosi quindi, in caso di vittoria dell'asta, a giocare da solo contro gli altri quattro.\\
-Abbiamo inoltre eliminato la possibilità di continuare l'asta dopo la chiamata del 2: mentre in molte versioni della briscola è possibile rilanciare scommettendo (questa volta al rialzo) sul punteggio ottenibile al termine della partita, in questo lavoro si è deciso di far sì che il primo giocatore a chiamare il 2 si aggiudichi l'asta.\\
+Abbiamo inoltre eliminato la possibilità di continuare l'asta dopo la chiamata del 2: mentre in molte versioni della briscola è possibile rilanciare scommettendo (questa volta al rialzo) sul punteggio ottenibile al termine della partita, in questo lavoro si è deciso di far sì che il primo giocatore a chiamare il 2 si aggiudichi l'asta.
 La fase dell'asta è l'unica a essere gestita nello stesso modo da tutti e tre i tipi di agenti giocatori.\\
 La gestione è deterministica e si basa sulla combinazione di due elementi che riguardano le carte in mano:
 \begin{itemize}
    \item La distribuzione dei semi
    \item Il punteggio totale della mano
 \end{itemize}
-La combinazione di queste due informazioni forma una tabella che ha al suo interno due ulteriori informazioni:
+La combinazione di queste due informazioni forma una tabella (\ref{tab:title}) che ha al suo interno due ulteriori informazioni:
 \begin{itemize}
    \item Delle carte che è necessario possedere per poter chiamare
    \item Il limite inferiore di punteggio della carta da chiamare 
 \end{itemize}
 
 
-% \begin {table}
-% \begin{center}
-%   \begin{tabular*}{1\textwidth}{@{\extracolsep{\fill}} | l || c | c | c | c | c | c | c | c | }
-%     \hline
-%     distrib/punti & 15-20 & 21-25 & 26-30 & 31-35 & 36-40 & 41-45 & 46-50 & \textgreater 50  \\
-%     \hline
-%     8-0-0-0 & Sempre; 4 & Sempre; 2 & Sempre; 2 & Imp. & Imp. & Imp. & Imp. & Imp. \\
-%     \hline
-%     
-%   \end{tabular*}
-%   \caption {Tabella punteggi} \label{tab:title} 
-% \end{center}
-% \end {table}
+\begin {table}
+\footnotesize
+\begin{center}
+  \begin{tabular*}{1\textwidth}{@{\extracolsep{\fill}} | p{1.1cm} || p{1.2cm} |  p{1.2cm} |  p{1.2cm} |  p{1.2cm} |  p{1.2cm} |  p{1.2cm} |  p{1.2cm} |  p{1.2cm} | }
+    \hline
+     punti \ distrib  & 15-20 & 21-25 & 26-30 & 31-35 & 36-40 & 41-45 & 46-50 & \textgreater 50  \\
+    \hline \hline
+    8-0-0-0 & Sempre; Lim: 4 & Sempre; Lim: 2 & Sempre; Lim: 2 & Imp. & Imp. & Imp. & Imp. & Imp. \\
+    \hline
+    7-1-0-0 & Sempre; Lim: 6 & Sempre; Lim: 5 & Sempre; Lim: 4 & Sempre; Lim: 2 & Sempre; Lim: 2 & Sempre; Lim: 2 & Imp. & Imp. \\
+    \hline
+        6-2-0-0 \ 6-1-1-0 & Sempre; Lim: 7 & Sempre; Lim: 6 & Sempre; Lim: 5 & Sempre; Lim: 4 & Sempre; Lim: 2 & Sempre; Lim: 2 & Sempre; Lim: 2 & Sempre; Lim: 2 \\
+    \hline
+        5-3-0-0 \ 5-2-1-0 \ 5-1-1-1 & A o 3; Lim: J & A o 3; Lim: 7 & A o 3 o K; Lim: 6 & A o 3 o K; Lim: 5 & A o 3 o K; Lim: 4 & A o 3 o K; Lim: 2 & A o 3 o K; Lim: 2 & Sempre; Lim: 2 \\
+    \hline
+        4-4-0-0 \ 4-3-1-0 \ 4-2-2-0 \ 4-2-1-1 & A o 3; Lim: Q & A o 3; Lim: J & A o 3 o K; Lim: 7 & A o 3 o K; Lim: 6 & A o 3 o K; Lim: 5 & A o 3 o K; Lim: 4 & A o 3 o K; Lim: 2 & A o 3 o K; Lim: 2     \\    \hline
+        
+        3-3-2-0 \ 3-3-1-1 \ 3-2-2-1 & A o 3; Lim: K & A o 3; Lim: Q &  A o 3 o K; Lim: J & A o 3 o K; Lim: 7 & A o 3 o K; Lim: 6 & A o 3 o K; Lim: 5 & A o 3 o K; Lim: 4 & A o 3 o K; Lim: 2 \\ \hline
+        2-2-2-2 & PASSO & A e 3; Lim: J & A e 3; Lim: 7 & A e 3; Lim: 6 & A e 3; Lim: 5 & Due tra: A,3,K; Lim: 4 &  Due tra: A,3,K; Lim: 4 &  Due tra: A,3,K; Lim: 2 \\ \hline
+    
+  \end{tabular*}
+  \caption {Tabella per la gestione dell'asta. L'azione è decisa in base al punteggio totale in mano (colonne) e alla distribuzione dei semi (righe). La cella corrispondente indica quali carte sono necessarie per poter effettuare la chiamata e fino a quale carta si può ribassare.} \label{tab:title} 
+\end{center}
+\end {table}
 
-
-\begin{figure}[!htbp]
-  \begin{center}
-    \leavevmode
-      \includegraphics[width=\textwidth]{asta-table}
-    \caption{Tabella per la gestione dell'asta. L'azione è decisa in base al punteggio totale in mano (colonne) e alla distribuzione dei semi (righe). La cella corrispondente indica quali carte sono necessarie per poter effettuare la chiamata e fino a quale carta si può ribassare.}
-    \label{MazzoBriscola}
-  \end{center}
-\end{figure}
-
+%
+% \begin{figure}[!htbp]
+%   \begin{center}
+%     \leavevmode
+%       \includegraphics[width=\textwidth]{asta-table}
+%     \caption{Tabella per la gestione dell'asta. L'azione è decisa in base al punteggio totale in mano (colonne) e alla distribuzione dei semi (righe). La cella corrispondente indica quali carte sono necessarie per poter effettuare la chiamata e fino a quale carta si può ribassare.}
+%     \label{MazzoBriscola}
+%   \end{center}
+% \end{figure}
+%

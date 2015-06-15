@@ -1,3 +1,112 @@
 \section{L'agente PlayerAgent}
 
-Struttura molto simile a quella di MazziereAgent
+Anche la classe \texttt{PlayerAgent} è, come si è anticipato, un'estensione della più generale \texttt{GeneralAgent}; essa implementa l'agente giocatore, ridefinendo i principali metodi della classe \texttt{Agent} fornita da \textsc{Jade} e fornendone ulteriori di varia utilità.
+
+\subsection{Avvio dell'agente: il metodo \texttt{setup}}
+
+All'avvio l'agente giocatore riceve da linea di comando i seguenti parametri:
+\begin{itemize}
+   \item un \emph{nome} che verrà utilizzato all'interno della piattaforma di gioco
+   \item un'indicazione sulla \emph{strategia} da seguire: questa può essere \emph{manuale} nel caso di un giocatore umano, \emph{random} per un gioco pseudo-casuale o il percorso ad un \emph{file} che contenga le regole per il sistema esperto
+   \item un flag \emph{visible} che indichi se avviare o meno l'interfaccia grafica
+\end{itemize}
+
+Una volta impostati i succitati parametri, l'agente giocatore aggiunge alla propria lista di \emph{behaviours} quello per l'iscrizione alla piattaforma e la ricerca di un tavolo, che dà inizio al flusso sequenziale dei \emph{task} che regolano lo svolgimento della partita.
+
+
+\subsection{Alcuni metodi che s'interfacciano con il reasoner}
+
+Come precedentemente detto, l'agente giocatore si interfaccia direttamente con il sistema esperto attraverso i propri metodi; questo è possibile grazie alle \emph{API \textsc{Java}} fornite da \textsc{Jess}, che permettono di asserire e modificare fatti nella \emph{KB} così come eseguire funzioni.
+
+Nel listato \ref{initMano} è possibile vedere come questo avvenga all'inizio di ogni mano: una volta che l'agente mazziere ha comunicato a tutti i giocatori il resoconto della mano precedente e l'imminente inizio di una nuova, questi eseguono il proprio metodo \texttt{initMano} che calcola il nuovo ordine da assegnare ai giocatori e poi asserisce le relative informazioni come fatti nella \emph{KB}.
+
+
+\begin{lstlisting}[caption={il metodo \texttt{initMano} di PlayerAgent},label=initMano]
+    public void initMano(int mano, Player next) throws JessException {
+
+        //  comunichiamo al reasoner l'inizializzazione di una nuova mano
+        Value v = new Funcall("init-mano", rete).arg(
+            new Value(mano, RU.INTEGER)).execute(rete.getGlobalContext());
+
+        //  assegnamento dell'ordine dei turni ai giocatori
+        int firstIndex = -1;
+
+        for (int i = 0; i < players.size(); ++i) {
+            if (players.get(i).equals(next)) {
+                firstIndex = i;
+                break;
+            }
+        }
+
+        for (int i = 0; i < players.size(); ++i) {
+            Fact f = new Fact("turno", rete);
+            Player p = players.get((i + firstIndex) % 5);
+            f.setSlotValue("player", new Value(p));
+            f.setSlotValue("posizione", new Value(i, RU.INTEGER));
+            rete.assertFact(f);
+            if (p.equals(this.getPlayer())) {
+                rete.assertString("(mio-turno-numero " + i + ")");
+            }
+        }
+
+        rete.run();
+        gui().initMano(mano, next);
+    }
+\end{lstlisting}
+
+
+
+La stessa cosa succede in risposta alla ricezione dell'informazione (da parte del mazziere) di una nuova giocata: in questo caso l'agente giocatore dovrà innanzitutto aggiornare le immediate informazioni che descrivono, all'interno della \emph{KB}, le carte in tavolo e quelle ancora coperte; inoltre, se la carta giocata è la \emph{chiamata}, vengono aggiornate anche le informazioni riguardanti i ruoli dei giocatori.\\
+Inoltre viene aggiunto alla \emph{KB} anche un fatto complesso che riassuma la giocata, contenente le informazioni sul giocatore autore della stessa e la carta che è stata giocata; queste informazioni verranno poi integrate all'interno del reasoner dopo che questo avrà attivato le proprie regole di analisi e quindi classificato la giocata come appartenente a uno dei predefiniti gruppi (\emph{taglio}, \emph{carico}, \emph{liscio}...) (Parte del codice della funzione si trova in \ref{addGiocata})
+
+%
+% \begin{lstlisting}[caption={il metodo \texttt{initMano} di PlayerAgent},label=initMano]
+%     /**
+%      * Every time a card is played, we need to update our internal
+%      * representation.
+%      * - add the card onto the table
+%      * - if it was us playing, remove the card from our hand
+%      * - if it was others playing, remove the card from the hidden deck
+%      * - if the cards was the briscola, we now know the teams
+%      *
+%      * @param counter
+%      * @param justPlayer
+%      * @param justCard
+%      * @throws JessException
+%      */
+%     public void addGiocata(int mano, int counter, Player justPlayer,
+%                            Card justCard) throws
+%         JessException {
+%         //  aggiunta nella KB del fatto complesso che descrive la giocata
+%         Fact z = new Fact("nuova-giocata", rete);
+%         z.setSlotValue("player", new Value(justPlayer));
+%         z.setSlotValue("card", new Value(justCard));
+%         z.setSlotValue("rank", new Value(justCard.getRank()));
+%         z.setSlotValue("suit", new Value(justCard.getSuit()));
+%         rete.assertFact(z);
+%         
+%         //  aggiornamento dei ruooli nel caso in cui sia stata giocata la briscola
+%         if (justCard.equals(briscolaCard)) {
+%             Fact s = new Fact("socio", rete);
+%             s.setSlotValue("player", new Value(justPlayer));
+%             rete.assertFact(s);
+%             for (Player p : players) {
+%                 if (!p.equals(justPlayer) && !p.equals(this.getPlayer())) {
+%                     s = new Fact("villano", rete);
+%                     s.setSlotValue("player", new Value(p));
+%                     rete.assertFact(s);
+%                 }
+%             }
+%         }
+%         
+%         /* ... */
+%
+%         rete.run();
+%         ((PlayerGUI) gui).addGiocata(mano, counter, justPlayer, justCard);
+%     }
+% \end{lstlisting}
+%
+
+
+
+Infine, anche l'oggetto \texttt{PlayerAgent} fa largo uso di classi di supporto utili soprattutto a memorizzare gli eventi della partita, sia per quanto riguarda la fase di gioco che per quella di asta.

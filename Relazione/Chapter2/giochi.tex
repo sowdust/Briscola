@@ -31,7 +31,43 @@ In questo caso il \emph{payoff} può essere assegnato tramite una \emph{funzione
 
 \subsection{Il concetto di equilibrio}
 
-...
+\begin{quote}
+Un gioco può essere descritto in termini di strategie, che i giocatori devono seguire nelle loro mosse: l'equilibrio c'è, quando nessuno riesce a migliorare in maniera unilaterale il proprio comportamento. Per cambiare, occorre agire insieme. \emph{John Nash}
+\end{quote}
+
+La precedente citazione introduce in maniera informale il concetto di \emph{equilibrio}, cardine della teoria dei giochi, secondo il quale la migliore strategia è quella che consente il miglior \emph{payoff} a tutti i partecipanti senza offrire a nessuno di essi la possibilità di deviare da tale strategia guadagnandoci.
+
+Più formalmente si può definire (\cite{eponimo}) il concetto come segue, caratterizzando un gioco come:
+\begin{itemize}
+   \item un insieme $G$ di giocatori o agenti, di cardinalità $N$ 
+   \item un insieme $S$ di strategie, costituito a sua volta da un insieme di $N$ vettori $S_i$, ciascuno dei quali contenga l'insieme delle strategie che il giocatore $i$-esimo ha a disposizione; si indichi con $s_i$ la strategia scelta dal giocatore $i$;
+\begin{center}
+   $S_i = (s_{i,1},s_{i,2},...s_{i,j},...s_{i,M_i})$
+\end{center}   
+\item Un insieme $U$ di funzioni
+\begin{center}
+   $u_i=U_i\left(s_1, s_2,...,s_i,...,s_N\right)$
+\end{center}
+che associno ad ogni giocatore $i$ il payoff $u_i$ derivante da una data combinazione di strategie (proprie e degli avversari).
+\end{itemize}
+
+
+Un equilibrio di Nash per un gioco così definito è una combinazione di strategie
+\begin{center}
+   $s_1^*, s_2^*,...,s_N^*$
+\end{center}
+
+tale che
+
+\begin{center}
+    $  \forall i \forall s_i :   U_i\left(s_1^*, s_2^*,...,s_i^*,...,s_N^*\right)\ge U_i\left(s_1^*, s_2^*,...,s_i,...,s_N^*\right)$.
+\end{center}
+
+%per ogni $i$ e per ogni strategia $s_i$ scelta dal giocatore $i$-esimo.
+
+
+Questo significa che se un gioco ammette un equilibrio di Nash, ogni agente ha a disposizione una strategia $s^*$ che massimizza il proprio payoff quando anche tutti gli altri agenti stiano seguendo una strategia scelta con lo stesso criterio.\\
+Da questa definizione è facile comprendere il significato intuitivo di strategia di equilibrio come strategia che non permetta agli altri partecipanti di deviare da essa senza diminuire il proprio payoff: l'unica variabile su cui il giocatore $i$ ha influenza nella formula finale è la scelta della propria strategia; ma $s_i^*$ costituisce già la strategia che consente di massimizzare il proprio payoff.
 
 
 \subsubsection*{Esempio: il dilemma del prigioniero}

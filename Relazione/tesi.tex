@@ -13,11 +13,20 @@
 \usepackage{tikz-qtree}
 \usetikzlibrary{shapes}
 
-
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
 
 \lstloadlanguages{Matlab} %use listings with Matlab for Pseudocode
 \lstnewenvironment{PseudoCode}[1][]
-{\lstset{language=Matlab,basicstyle=\footnotesize, keywordstyle=\textbf,numbers=left,xleftmargin=.04\textwidth,#1}}
+{\lstset{%
+   language=Matlab,
+   basicstyle=\footnotesize,
+   keywordstyle=\textbf,
+   otherkeywords={then,exec},
+   numberstyle=\tiny\color{mygray},
+   commentstyle=\color{mygray},
+   captionpos=b, 
+   numbers=left,
+   xleftmargin=.04\textwidth,#1}}
 {}
 \definecolor{darkblue}{rgb}{0,0,.75}
 
@@ -115,7 +124,7 @@
 \pagenumbering{Roman}
 %\include{Dedication/dedication}
 \include{Acknowledgement/acknowledgement}
-%\include{Abstract/abstract}
+\include{Abstract/abstract}
 
 \tableofcontents
 
@@ -149,27 +158,21 @@
 \include{Chapter5/general}
 \include{Chapter5/mazziere}
 \include{Chapter5/player}
-
-%\include{Chapter3/chapter3}
-%\include{Chapter6/chapter6}
-
-%\include{Conclusions/conclusions}
-
+%---------------------------------
+\include{Conclusions/conclusions}
+%---------------------------------
 \backmatter % book mode only
 \appendix
-%\include{Appendix1/appendix1}
-%\include{Appendix2/appendix2}
-
-\listoffigures
-
-\printnomenclature  %% Print the nomenclature
-\addcontentsline{toc}{chapter}{Nomenclature}
-
+\include{Appendix1/appendix1}
+\include{Appendix2/appendix2}
+%---------------------------------
+%\listoffigures
+%---------------------------------
+%\printnomenclature  %% Print the nomenclature
+%\addcontentsline{toc}{chapter}{Nomenclature}
+%---------------------------------
 \bibliographystyle{plainnat}
-%\bibliographystyle{Classes/CUEDbiblio}
-%\bibliographystyle{Classes/jmb}
-%\bibliographystyle{Classes/jmb} % bibliography style
-%\renewcommand{\bibname}{References} % changes default name Bibliography to References
+\small
 \bibliography{References/references} % References file
-
+%---------------------------------
 \end{document}

@@ -30,9 +30,9 @@ Volendo rappresentare le informazioni sugli studenti di una scuola, si potrebbe 
    )
 \end{verbatim}
 
-Per inserire nella \emph{KB} le informazioni riguardo allo studente Errico Malatesta con matricola 147865 bisognerebbe asserire il fatto
+Per inserire nella \emph{KB} le informazioni riguardo allo studente Henri Malatesta con matricola 147865 bisognerebbe asserire il fatto
 \begin{verbatim}
-   (studente (nome Errico) (cognome Malatesta) (matricola 147865))
+   (studente (nome Henri) (cognome Malatesta) (matricola 147865))
 \end{verbatim}
 
 
@@ -278,7 +278,9 @@ breaklines=true
 
 \subsection{Le regole per le strategie di gioco}
 
-Le regole fin qui indicate, insieme ad altre dalla natura simile, permettono di creare un ambiente intuitivamente descrivibile tramite fatti e, di conseguenze, la semplice implementazione di svariate strategie di gioco anche da parte di non esperti di programmazione, complicata solo da alcune caratteristiche proprie del linguaggio \textsc{Jess} nel quale le regole vanno scritte come la notazione prefissa degli operatori e il non molto intuitivo metodo di selezionare fatti in base alle caratteristiche del contenuto degli slot.\\
+Le regole fin qui indicate, insieme ad altre dalla natura simile, permettono di creare un ambiente intuitivamente descrivibile tramite fatti e, di conseguenze, la semplice implementazione di svariate strategie di gioco anche da parte di non esperti di programmazione, complicata solo da alcune caratteristiche proprie del linguaggio \textsc{Jess}, come ad esempio il fatto che le regole vadano scritte usando la notazione prefissa degli operatori e il non molto intuitivo metodo per selezionare fatti in base alle caratteristiche del contenuto degli slot.\\
+
+
 Anche le strategie di gioco si dividono in due principali categorie:
 \begin{itemize}
    \item le strategie di \emph{analisi};
@@ -293,7 +295,7 @@ Sebbene il framework costruito non vincoli in alcun modo i due tipi di strategie
 
 Allo stesso modo è possibile basare le strategie di analisi su quelle di decisione, assumendo che l'avversario segua strategie decisionali simili alle proprie.
 L'idea è quella di "rovesciare" le regole di decisione per costruire quelle di analisi, scambiando antecedente e conseguente.\\
-Per chiarire l'intuizione, si assuma che il giocatore \emph{P} abbia fra le sue regole una per cui: se il suo ruolo è \emph{socio}, dopo di lui c'è il \emph{chiamante} ultimo di mano, allora gioca un carico; \emph{P} osservando un giocatore \emph{A} penultimo di mano prima del \emph{chiamante} giocare un carico, assumendo che \emph{A} stia seguendo strategie simili alle proprie, potrà concludere che il ruolo di \emph{A} è quello del \emph{socio}.\\
+Per chiarire l'intuizione, si assuma che il giocatore \emph{P} abbia fra le sue regole una per cui: se il suo ruolo è \emph{socio}, dopo di lui c'è il \emph{chiamante} ultimo di mano, allora gioca un carico; \emph{P} osservando un giocatore \emph{A} penultimo di mano prima del \emph{chiamante} giocare un carico, assumendo che \emph{A} stia seguendo strategie simili alle proprie, potrà concludere con un certo grado di incertezza che il ruolo di \emph{A} è quello del \emph{socio}.\\
 Tale approccio è limitato da due fattori: in primis non è detto che l'avversario segua effettivamene le nostre stesse identiche strategie decisionali, per cui l'assunzione non è necessariamente corretta, soprattutto in casi in cui l'obiettivo dell'avversario sia quello di depistare il giocatore con un \emph{bluff}.\\
 Inoltre le strategie decisionali hanno nel proprio antecedente anche delle condizioni che riguardano le carte in mano, quindi un'informazione privata non disponibile a nessun altro giocatore.\\
 Nonostante questi limiti ci è parso che un tentativo in questa direzione potesse costituire una buona approssimazione in mancanza di migliori strategie.\\
@@ -354,7 +356,7 @@ Si noti che, come anticipato, la precedente regola \ref{socio1} esiste in divers
 
 In base alla situazione rappresentata nella \emph{KB}, un diverso numero di regole può essere attivato contemporaneamente.\\
 Questo può portare a una situazione in cui il reasoner si trovi ad avere dei fatti di tipo \texttt{da-giocarsi} (quelli che contengono le carte selezionate per la giocata) in conflitto fra loro.\\
-Per risolvere questo tipo di conflitti si è preso ad esempio il sistema di \emph{conflict resolution} adottato da \textsc{Jess} (\cite{jessbook}): ogni fatto \texttt{da-giocarsi} non contiene solo l'indicazione della carta che una regola ha ritenuto opportuno giocare, bensì anche un valore euristico che indica la validità di tale carta.
+Per risolvere questo tipo di conflitti si è preso ad esempio il sistema di \emph{conflict resolution} interno adottato da \textsc{Jess} (\cite{jessbook}): ogni fatto \texttt{da-giocarsi} non contiene solo l'indicazione della carta che una regola ha ritenuto opportuno giocare, bensì anche un valore euristico che indica la validità di tale carta.
 La funzione \ref{dagiocarsi}, al momento di giocare, sceglie fra le carte selezionate quella con migliore priorità per essere effettivamente giocata.
 In questo modo una regola "di difesa" che venga attivata quasi sempre e scelga una carta da giocarsi in modo da limitare al minimo le perdite, viene surclassata da una regola "di attacco" che permetta di prendere un numero decisivo di punti in tavola.\\
 Tale metodo permette inoltre un immediato "tuning" delle regole che può avvenire non solo con l'aggiunta e le modifiche di queste, ma anche con l'aggiornamento dei loro valori di priorità, a volti detti \emph{salience}.
@@ -379,11 +381,8 @@ Tale metodo permette inoltre un immediato "tuning" delle regole che può avvenir
 
 \subsection{Riassumendo}
 
-Un \emph{framework} di basso livello mette a disposizione strutture dati, funzioni e strategie generale che permettono una più semplice scrittura di strategie tramite il linguaggio \textsc{Jess}.\\
-Le strategie implementate, raccolte da varie fonti, riflettono la conoscenza di giocatori esperti ed i loro comportamenti in alcune situazioni di carattere generale.\\
+Un \emph{framework} di basso livello mette a disposizione strutture dati, funzioni e strategie generali che permettono una più semplice scrittura di nuove strategie, così come l'ampliamento delle esistenti, tramite il linguaggio \textsc{Jess}.\\
+Le strategie attualmente implementate, raccolte da varie fonti, riflettono la conoscenza di giocatori esperti ed i loro comportamenti in alcune situazioni di carattere generale.\\
 Gran parte dei comportamenti da seguirsi dipendono strettamente dal ruolo che si ha nella partita. Questa osservazione ha reso possibile lo sviluppo di regole di \emph{analisi}, di supporto a quelle di \emph{decisone}, che permettono di assegnare con un margine di incertezza euristico un giocatore al suo ruolo presunto in base ai suoi comportamenti.\\
 La possibilità di estendere l'insieme di strategie applicabili dal giocatore può dare adito all'attivazione di più regole contrastanti contemporaneamete e di conseguenza a problemi di \emph{conflict resolution}; questi sono stati resi risolubili dando la possibilità di assegnare ad ogni strategia un valore euristico di priorità.
-
-
-
 
