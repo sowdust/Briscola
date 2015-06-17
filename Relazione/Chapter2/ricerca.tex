@@ -1,85 +1,64 @@
 \section{Ricerca nello spazio degli stati}
 
 
-È importante notare alcune caratteristiche del gioco degli scacchi che lo rendono particolarmente adatto ad essere risolto efficientemente da un Intelligenza Artificiale; esso infatti è, secondo la definizione di \cite{randw}, un ambiente
+È importante notare alcune caratteristiche del gioco degli scacchi che lo rendono particolarmente adatto ad essere risolto efficientemente da un Intelligenza Artificiale; esso infatti è, secondo la definizione di \cite{randw}, un ambiente:
 \begin{itemize}
-   \item osservabile
-   \item conosciuto
-   \item discreto
-   \item deterministico
+   \item osservabile,
+   \item conosciuto,
+   \item discreto,
+   \item deterministico.
 \end{itemize}
-
 \emph{Osservabile} si dice di un ambiente le cui caratteristiche salienti (in questo caso le pedine e relative posizioni) sono note all'agente che deve effettuare una scelta.
-L'ambiente degli scacchi è \emph{conosciuto} nel senso che le sue "leggi fisiche", ovvero le norme che regolano le possibili mosse delle pedine, sono risapute.
-Inoltre è \emph{discreto} perchè può trovarsi in un numero finito di stati distinti gli uni dagli altri; infine è \emph{deterministico} in quanto ogni stato è determinato esclusivamente dallo stato precedente e dall'azione svolta dall'agente.
-Inoltre, sempre secondo la definizione di \cite{randw}, gli scacchi sono un ambiente \emph{competitivo}, in quanto un agente (o giocatore), tentando di massimizzare il proprio punteggio, cerca allo stesso tempo di minimizzare quello dell'avversario.
+L'ambiente degli scacchi è \emph{conosciuto} nel senso che le sue ``leggi fisiche'', ovvero le norme che regolano le possibili mosse delle pedine, sono risapute.\\
+È \emph{discreto} perchè può trovarsi in un numero finito di stati distinti gli uni dagli altri; infine è \emph{deterministico} in quanto ogni stato è determinato esclusivamente dallo stato precedente e dall'azione svolta dall'agente.\\
+Inoltre, sempre secondo la definizione di \cite{randw}, gli scacchi sono un ambiente \emph{competitivo}, in quanto un agente (o giocatore), tentando di massimizzare il proprio punteggio, cerca allo stesso tempo di minimizzare quello dell'avversario.\\
 Tralasciando quest'ultima caratteristica, in generale un agente che si trovi a dover raggiungere un \emph{obiettivo} all'interno di un ambiente osservabile, conosciuto, discreto e deterministico, può farlo tramite una \emph{ricerca}.
 Per fare ciò è però altresì necessario che il problema sia ben posto.
 
 \subsection{Problemi ben posti}
-Un \emph{problema} può essere formalizzato in cinque componenti:
+Un \emph{problema} può essere formalizzato in cinque componenti (\cite{randw}):
 \begin{enumerate}
-   \item Uno \emph{stato iniziale} da cui partire.
-   \item Una serie di \emph{azioni} o, nel caso degli scacchi, di \emph{mosse}: dato un particolare stato della scacchiera \emph{s}, le mosse che posso fare rispettando le regole del gioco vengono dette \emph{azioni applicabili in \emph{s}}. La funzione virtuale \textsc{ACTIONS(\emph{s})} fornisce l'insieme delle azioni legali dallo a partire stato \emph{s}.
+   \item Uno \emph{stato iniziale} $s_0$ da cui partire.
+   \item Una serie di \emph{azioni} o, nel caso degli scacchi, di \emph{mosse}: dato un particolare stato della scacchiera \emph{s}, le mosse che si possono fare rispettando le regole del gioco vengono dette \emph{azioni applicabili in \emph{s}}. La funzione virtuale \textsc{ACTIONS(\emph{s})} fornisce l'insieme delle azioni legali nello stato \emph{s}.
    \item Un \emph{modello di transizione} è una funzione \textsc{RESULT(\emph{s},\emph{a})} che definisce lo stato che si raggiunge applicando l'azione \emph{a} allo stato \emph{s}.
 Un \emph{percorso} nello spazio degli stati è una sequenza di stati connessi da una sequenza di azioni
    \item Un \emph{goal test} è una funzione che, applicata ad uno stato, permette di sapere se esso è uno stato obiettivo oppure no.
-   \item Una \emph{funzione di costo} è una funzione che assegna un valore numerico (detto \emph{costo}) a ciascun percorso nello spazio degli stati.
+   \item Una \emph{funzione di costo} è una funzione che assegna un valore numerico (detto \emph{costo} o \emph{peso}) a ciascun percorso nello spazio degli stati.
 \end{enumerate}
 
 \subsubsection*{Esempio applicato al gioco degli scacchi}
 Per fare un esempio applichiamo la definizione di \emph{problema ben posto} alla chiusura \emph{Hansen vs. Larsen, Odense 1988}.
 L'agente che prendiamo in considerazione è il giocatore nero.
-In questo caso l'obiettivo non è quello di dare scacco matto all'avversario (obiettivo impossibile) ma di raggiungere una situazione di pareggio invece che una di sconfitta.
-
-Lo \emph{stato iniziale} \emph{s\textsubscript{0}} è rappresentato dalla situazione in figura \ref{stato-iniziale}.
-
-Le \emph{azioni} \textsc{ACTIONS(\emph{s\textsubscript{0}})}, ovvero le possibili mosse applicabili allo stato iniziale, equivalgono alle sole mosse effettuabili dal re (unica pedina nera in gioco) che, secondo le regole degli scacchi, può spostarsi di una casella in ogni direzione (fig. \ref{azioni}).
-
-Il \emph{modello di transizione} \textsc{RESULT(\emph{s\textsubscript{0}},\emph{a})} è rappresentato in figura \ref{tmodel} per ogni azione legale \emph{a} descritta in \textsc{ACTIONS(\emph{s\textsubscript{0}})}.
-
+In questo caso l'obiettivo non è quello di dare scacco matto all'avversario (obiettivo impossibile) ma di raggiungere una situazione di pareggio invece che una di sconfitta.\\
+Lo \emph{stato iniziale} \emph{s\textsubscript{0}} è rappresentato dalla situazione in figura \ref{stato-iniziale}.\\
+Le \emph{azioni} \textsc{ACTIONS(\emph{s\textsubscript{0}})}, ovvero le possibili mosse applicabili allo stato iniziale, equivalgono alle sole mosse effettuabili dal re (unica pedina nera in gioco) che, secondo le regole degli scacchi, può spostarsi di una casella in ogni direzione (fig. \ref{azioni}).\\
+Il \emph{modello di transizione} \textsc{RESULT(\emph{s\textsubscript{0}},\emph{a})} è rappresentato in figura \ref{tmodel} per ogni azione legale \emph{a} descritta in \textsc{ACTIONS(\emph{s\textsubscript{0}})}.\\
 Lo stato di \emph{goal} (o \emph{obiettivo}) è rappresentato nella figura \ref{goal}.
 
-\begin{figure}[!htbp]
-  \begin{center}
-    \leavevmode
-      \includegraphics[width=2in]{initial-state}
-    \caption{Stato Iniziale \emph{s\textsubscript{0}}}
-    \label{stato-iniziale}
-  \end{center}
+
+\begin{figure}[t]
+\centering
+\subfigure[Stato Iniziale \emph{s\textsubscript{0}}]{
+\includegraphics[width=.3\textwidth]{initial-state}
+\label{stato-iniziale}
+}
+\subfigure[Azioni \textsc{ACTIONS(\emph{s\textsubscript{0}})}]{
+\includegraphics[width=.3\textwidth]{actions}
+\label{azioni}
+}
+\subfigure[Stato \emph{goal}]{
+\includegraphics[width=.3\textwidth]{goal}
+\label{goal}
+}
+
+\subfigure[Stati del modello di transizione raggiungibili da \emph{s\textsubscript{0}}]{
+\includegraphics[width=0.95\textwidth]{transition-model}
+\label{tmodel}
+}
+
+\caption{Definizione di problema ben posto applicato al gioco degli scacchi}
+\label{fig:scacchi-ben-posti}
 \end{figure}
-
-
-\begin{figure}[!htbp]
-  \begin{center}
-    \leavevmode
-      \includegraphics[width=2in]{actions}
-    \caption{Azioni \textsc{ACTIONS(\emph{s\textsubscript{0}})}}
-    \label{azioni}
-  \end{center}
-\end{figure}
-
-
-
-\begin{figure}[!htbp]
-  \begin{center}
-    \leavevmode
-      \includegraphics[width=\textwidth]{transition-model}
-    \caption{Stati del modello di transizione raggiungibili da \emph{s\textsubscript{0}}}
-    \label{tmodel}
-  \end{center}
-\end{figure}
-
-
-\begin{figure}[!htbp]
-  \begin{center}
-    \leavevmode
-      \includegraphics[width=2in]{goal}
-    \caption{Stato \emph{goal}}
-    \label{goal}
-  \end{center}
-\end{figure}
-
 
 
 \subsection{Lo spazio degli stati}
@@ -90,13 +69,10 @@ Dato un problema ben posto è quindi possibile rappresentarne lo \emph{spazio de
    \item i \emph{rami} sono le \emph{azioni applicabili}
    \item i \emph{nodi} sono gli stati appartenenti allo spazio degli stati del problema
 \end{itemize} 
-
-
 Per costruire tale albero è possibile procedere per successiva \emph{espansione dei nodi}: dato lo stato rappresentato da un nodo, ad esso vengono applicate tutte le azioni possibili e, tramite il modello di transizione, si ricavano gli stati successivi che diventeranno ulteriori nodi figli del precedente.
 L'insieme dei nodi raggiunti ma ancora da espandere viene chiamato \emph{frontiera}.
 Viene detto \emph{branching factor} il numero (esatto o medio) di figli di ogni nodo, ovvero di azioni applicabili ad uno stato.
 È immediato notare come un branching factor elevato renda praticamente impossibile la costruzione ed esplorazione dell'intero spazio degli stati, data la natura esponenziale della crescita dei nodi da un livello al successivo.\\
-
 Questo vale ovviamente anche per il gioco degli scacchi, il cui branching factor - ovvero il numero medio di mosse che un giocatore può effettuare - è stato calcolato essere 35 (\cite{chessbf}).
 Considerando una media di 50 mosse per giocatore come durata di una partita, la cardinalità dello spazio degli stati raggiungerebbe l'intrattabile numero di $ 35^{100} $ \\
 Per questo motivo è necessario che gli algoritmi di ricerca implementino delle strategie utili a espandere solo i nodi considerati più convenienti per raggiungere un nodo goal.
@@ -119,7 +95,7 @@ Questo vincolo vale per la maggior parte dei giochi trattati in AI, compreso que
 
 Nei giochi non è possibile definire in anticipo il percorso che giunge ad uno stato di goal (uno stato terminale in cui l'agente si aggiudichi la partita) dato che il percorso che seguirà la partita è deciso anche dal (o dai) giocatore avversario.
 Per risolvere questa difficoltà si assume quindi che l'avversario giochi una partita ottimale; è dimostrabile come questo garantisca una decisione vincente (anche se non necessariamente la migliore) anche in situazioni in cui l'avversario non dovesse giocare ottimamente.\\
-Prima di presentare un algoritmo che permetta di scegliere, ad ogni nodo, la strategia ottimale, è necessario definire il valore \emph{minimax} associato ad un nodo.
+Prima di presentare un algoritmo che permetta di scegliere, ad ogni nodo, l'azione ottimale, è necessario definire il valore \emph{minimax} associato ad un nodo.
 Informalmente, si definisce \textsc{Minimax(\emph{n})} per un giocatore \emph{p }la funzione di utilità che il nodo \emph{n} ha associata per \emph{p}, assumento che entrambi i giocatori seguano una strategia ottimale.
 Segue dalla definizione che il valore \emph{minimax} di uno stato terminale è semplicemente il valore della sua \emph{funzione di utilità}.
 Formalmente:
@@ -183,8 +159,8 @@ function minvalue(s : state) : utility value
 L'algoritmo \ref{alg:minimax} può facilmente essere esteso ad una situazione a più di due giocatori modificando la funzione \textsc{Utility} in modo che restituisca un vettore di valori invece che uno solo.
 (Si noti che nei giochi \emph{zero sum} a due soli avversari è sufficiente un solo valore per entrambi dato che uno è l'opposto dell'altro, ma la cosa equivale ad utilizzare un vettore a due valori).
 
-Come precedentemente anticipato la generazione dell'intero spazio degli stati, e a maggior ragione la sua visita completa in profondità, sono computazionalmente impossibili per qualsiasi gioco non banale.
-Per ovviare a questo problema esistono vari metodi che permettono di generare solo un sottoinsieme interessante dell'intero spazio degli stati e di farlo mano a mano che lo si esplora. Tali metodi sono applicati all'albero sono detti \emph{pruning}.
+Come precedentemente anticipato la generazione dell'intero spazio degli stati, e a maggior ragione la sua visita completa in profondità, sono computazionalmente intrattabili per qualsiasi gioco non banale.
+Per ovviare a questo problema esistono vari metodi che permettono di generare solo un sottoinsieme interessante dell'intero spazio degli stati e di farlo mano a mano che lo si esplora. Tali metodi applicati all'albero sono detti di \emph{pruning}.
 
 \subsection{La ricerca applicata ai giochi di carte}
 
@@ -194,21 +170,22 @@ Secondo la definizione di \cite{randw} infatti essi sono ambienti
    \item \emph{stocastici} in oppozione a \emph{deterministici} essendo la distribuzione delle carte nel mazzo aleatoria; per questo motivo, a partire da due configurazioni identiche nella loro parte osservabile (scoperta), l'applicazione di una stessa strategia può portare a risultati molto diversi;
    \item solo \emph{parzialmente} osservabili, in quanto le carte nel mazzo e in mano agli avversari possono essere nascoste all'agente gocatore
 \end{itemize}
-
 In questo caso l'informazione posseduta dall'agente giocatore è \emph{incompleta} ma non del tutto \emph{casuale}.
 Si può quindi tentare di applicare il metodo del \textsc{minmax} anche a questa situazione.
 Per farlo, si "sviluppa" l'informazione mancante, generando tutti i possibili stati $s$ ed associando ad ognuno una probabilità $P(s)$.
 A quel punto si risolve ognuno di questi possibili "mondi" come se fossero \emph{completamente osservabili} e infine si sceglie la mossa che abbia la migliore \emph{utility function} pesata su tutti i casi in base alla loro probabilità.
-La mossa da effettuare è quindi:\\
+La mossa da effettuare è quindi:
 
+\begin{center}
 $ argmax_a \sum_{s} P(s) \textsc{minimax(result}(s,a)) $.\\
-
+\end{center}
 Un ulteriore problema è che nella maggior parte dei giochi di carte il numero dei "mondi possibili" è estremamente grande.
 In un gioco come il \emph{bridge}, in cui un giocatore può vedere metà delle carte, vi sono due mani nascoste di 13 carte ciascuna.
 Il numero di mondi possibili è quindi di $ \left(\! \begin{array}{c} 26 \\  13\end{array}\!\right)  = 10 400 600 $ (\cite{randw}).\\
 Per ovviare a questo secondo inconveniente un metodo spesso utilizzato è quello di costruire un'approssimazione \emph{Monte Carlo} dell'intero spazio degli stati.
-Si considera un campione casuale di $N$ mondi possibili tale che la probabilità che uno stato $s$ appartenga al campione è proporzionale a $P(s)$:\\
+Si considera un campione casuale di $N$ mondi possibili tale che la probabilità che uno stato $s$ appartenga al campione è proporzionale a $P(s)$:
 
+\begin{center}
 $argmax_a \frac{1}{N} \sum_{i=1}^{N}  \textsc{minimax(result}(s_i,a)) $ \cite{randw}\\
-
+\end{center}
 e a tale albero si applica l'algoritmo \emph{minmax} o una sua derivazione.

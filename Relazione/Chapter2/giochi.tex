@@ -1,6 +1,6 @@
 \section{Teoria dei giochi}
 
-La \emph{Teoria dei giochi} è una branca della matematica che studia "modelli di conflitto e cooperazione tra agenti razionali capaci di intraprendere decisioni" (tradotto da \cite{gtheory}), ovvero le strategie da seguire per effettuare decisioni in maniera ottimale.\\
+La \emph{Teoria dei giochi} è una branca della matematica che studia ``modelli di conflitto e cooperazione tra agenti razionali capaci di intraprendere decisioni'' (tradotto da \cite{gtheory}), ovvero le strategie da seguire per effettuare decisioni in maniera ottimale.\\
 Gli ambiti applicativi delle teoria dei giochi sono svariati: Economia, Politica, Logica, Biologia, Informatica e persino Psicologia.\\
 Sviluppatasi nella prima metà del Novecento, questa disciplina conobbe un forte aumento di interesse da parte dei ricercatori a partire dagli anni '50, dopo la pubblicazione del volume "Theory of Games and Economic Behavior" da parte del matematico John von Neumann insieme all'economista Oskar Morgenstern (\cite{tog}). Agli inizi degli anni 2000 la Teoria dei giochi ebbe modo di essere conosciuta anche dal pubblico non specialista grazie alla celebre pellicola holliwoodiana \emph{A Beautiful Mind}, ispirata alla vita e agli studi del famoso matematico John Nash, vincitore del premio Nobel per l'Economia nel 1994 con lavori di Teoria dei giochi (\cite{jnash}).
 
@@ -14,9 +14,7 @@ Un gioco può essere formalmente definito da quattro elementi (\cite{ramusen}):
    \item le \emph{azioni} a disposizione dei giocatori in ciascun momento decisivo;
    \item i \emph{payoff} o le funzioni di utilità per ogni giocatore, per ogni possibile risultato finale.   
 \end{enumerate}
-
-A partire da questa formalizzazione, lo studioso applica al gioco una regola formale che descrive le sue previsioni su come il gioco sarà svolto dai vari giocatori, ovvero quali strategie verranno adottate; tali regole vengono dette \emph{solution concept}.\\
-Tramite questo processo si cercano di dedurre delle strategie di \emph{equilibrio} tali che, se adottate, nessun giocatore può guadagnare punti rispetto agli altri deviando da esse.
+A partire da questa formalizzazione, si  può applicare al gioco una regola formale che descrive le sue previsioni su come il gioco sarà svolto dai vari giocatori, ovvero quali strategie verranno adottate; tali regole vengono dette \emph{solution concept}. Tramite questo processo si cercano di dedurre delle strategie che conducano a situazioni di \emph{equilibrio}.
 
 
 
@@ -32,10 +30,9 @@ In questo caso il \emph{payoff} può essere assegnato tramite una \emph{funzione
 \subsection{Il concetto di equilibrio}
 
 \begin{quote}
-Un gioco può essere descritto in termini di strategie, che i giocatori devono seguire nelle loro mosse: l'equilibrio c'è, quando nessuno riesce a migliorare in maniera unilaterale il proprio comportamento. Per cambiare, occorre agire insieme. \emph{John Nash}
+Un gioco può essere descritto in termini di strategie che i giocatori devono seguire nelle loro mosse: l'equilibrio c'è, quando nessuno riesce a migliorare in maniera unilaterale il proprio comportamento. Per cambiare, occorre agire insieme. \emph{John Nash}
 \end{quote}
-
-La precedente citazione introduce in maniera informale il concetto di \emph{equilibrio}, cardine della teoria dei giochi, secondo il quale la migliore strategia è quella che consente il miglior \emph{payoff} a tutti i partecipanti senza offrire a nessuno di essi la possibilità di deviare da tale strategia guadagnandoci.
+La precedente citazione introduce in maniera informale il concetto di \emph{equilibrio}, cardine della teoria dei giochi, secondo il quale la migliore strategia è quella che consente il miglior \emph{payoff} a tutti i partecipanti senza offrire a nessuno di essi la possibilità di deviare da tale strategia guadagnandoci.\\
 
 Più formalmente si può definire (\cite{eponimo}) il concetto come segue, caratterizzando un gioco come:
 \begin{itemize}
@@ -66,7 +63,7 @@ tale che
 %per ogni $i$ e per ogni strategia $s_i$ scelta dal giocatore $i$-esimo.
 
 
-Questo significa che se un gioco ammette un equilibrio di Nash, ogni agente ha a disposizione una strategia $s^*$ che massimizza il proprio payoff quando anche tutti gli altri agenti stiano seguendo una strategia scelta con lo stesso criterio.\\
+Più informalmente: se un gioco ammette un equilibrio di Nash, ogni agente ha a disposizione una strategia $s^*$ che massimizza il proprio payoff quando anche tutti gli altri agenti stiano seguendo una strategia scelta con lo stesso criterio.\\
 Da questa definizione è facile comprendere il significato intuitivo di strategia di equilibrio come strategia che non permetta agli altri partecipanti di deviare da essa senza diminuire il proprio payoff: l'unica variabile su cui il giocatore $i$ ha influenza nella formula finale è la scelta della propria strategia; ma $s_i^*$ costituisce già la strategia che consente di massimizzare il proprio payoff.
 
 
@@ -163,9 +160,7 @@ Secondo la classificazione della teoria dei giochi, i giochi di carte appartengo
 \end{itemize}
 
 Nonostante alcuni giochi di carte siano sia \emph{competitivi} che \emph{cooperativi}, come ad esempio il \emph{Bridge} o la \emph{Briscola a 4} in cui due squadre di giocatori fra loro cooperanti si affrontano competitivamente, è generalmente possibile semplificare le dinamiche del gioco considerando i giocatori di una stessa squadra come un unico agente, riconducendo l'ambiente ad uno semplicemente \emph{competitivo} (vedi \cite{pavel}).\\
-
-Per la classificazione cui appartengono i giochi di carte sono quindi adatti ad essere rappresentati in forma estesa, tramite un albero di decisione che ne rappresenti tutte le possibili mosse da parte di tutti i giocatori e comprenda per i nodi foglia, cioè le mosse finali, i relativi \emph{payoff}.\\
-
+Per la classificazione cui appartengono, i giochi di carte sono adatti ad essere rappresentati in forma estesa, tramite un \emph{albero di decisione} che ne rappresenti tutte le possibili mosse da parte di tutti i giocatori e comprenda per i nodi foglia, cioè le mosse finali, i relativi \emph{payoff}.\\
 Essendo i giochi di carte ad \emph{informazione imperfetta} sorgono alcune complicazioni nella costruzione della forma estesa del gioco.
 Infatti, alcune scelte possono non essere direttamente disponibili al giocatore; questo può coinvolgere sia le scelte effettuate dal caso, come quando si tratti della distribuzione delle carte in mano all'avversario, sia le scelte dell'avversario stesso, come quando questo giochi una carta mantenendola però coperta.\\
 Questo fa sì che un giocatore possa non sapere dove si trovi all'interno dell'albero della forma estesa.\\

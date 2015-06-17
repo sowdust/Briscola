@@ -3,8 +3,8 @@
 \subsection{L'agente mazziere}
 
 L'agente \textbf{mazziere} regola e gestisce la partita.
-Ha il compito di "aprire un tavolo", ovvero rendersi disponibile per condurre una partita verso un massimo di cinque giocatori.
-Dopo aver raggiunto un tavolo "completo" (con cinque iscritti) l'agente \textbf{mazziere}, pur comunicando le informazioni sui giocatori seduti al tavolo a tutti gli agenti iscritti, si fa carico di gestire la comunicazione fra di essi: ogni messaggio passa prima dal mazziere che decide se e a chi dev'essere ri-spedito.\\
+Ha il compito di ``aprire un tavolo'', ovvero rendersi disponibile per condurre una partita verso un massimo di cinque giocatori.
+Dopo aver raggiunto un tavolo "completo" (con cinque iscritti) l'agente mazziere, pur comunicando le informazioni sui giocatori seduti al tavolo a tutti gli agenti iscritti, si fa carico di gestire la comunicazione fra di essi: ogni messaggio passa prima dal mazziere che decide se e a chi dev'essere ri-spedito.\\
 Unica eccezione a tale modalità di comunicazione avviene con la chat: in questo caso i messaggi spediti da un agente vengono immediatamente ricevuti da tutti gli altri presenti al tavolo (compreso il mazziere).\\
 L'agente ha anche il compito di tenere un file di log che viene compilato al termine di ogni partita e contiene, in formato \texttt{CSV}, lo storico delle giocate effettuate dai singoli giocatori, gli eventuali commenti allegati da un giocatore umano alle singole giocate, i punteggi ottenuti e i ruoli dei giocatori.\\
 È ovviamente possibile avere più agenti mazziere in esecuzione in contemporanea sulla stessa piattaforma per permettere più partite simultaneamente.\\
@@ -27,19 +27,18 @@ Caricando una strategia da file invece, l'agente deciderà la mossa da compiere 
 \subsection{Comunicazione fra gli agenti}
 
 Gli agenti comunicano fra di loro tramite scambi di messaggi.
-Fatta eccezione per i messaggi della chat, che vengono recapitati contemporaneamente a tutti gli agenti iscrcitti ad uno stesso tavolo (mazziere compreso), tutti gli altri messaggi passano tramite il mazziere prima di essere consegnati al -- o ai -- destinatari effettivi.
+Fatta eccezione per i messaggi della chat, che vengono recapitati contemporaneamente a tutti gli agenti iscrcitti ad uno stesso tavolo (mazziere compreso), tutti gli altri messaggi passano tramite il mazziere prima di essere consegnati al (o ai) destinatari effettivi.
 Questa struttura pur presentando un collo di bottiglia costituito dal passaggio di tutti i messaggi attraverso il mazziere, permette di assicurarsi che la partita venga svolta secondo le regole anche quando un agente giocatore dovesse provare a compiere una mossa illegale.\\
 L' approccio centralizzato permette inoltre di redigere facilmente un unico file di log.\\
 Infine, nell'ottica di una piattaforma di gioco online, la presenza di agenti mazzieri residenti su un server in attesa di giocatori da remoto facilita il coordinamento degli agenti e rende possibile l'organizzazione di campionati e classifiche a punteggi.\\
-I messaggi scambiati possono essere di due tipi, \emph{bloccanti} e \emph{non bloccanti}.\\
 
 \subsubsection*{Messaggi bloccanti e non bloccanti}
 
+I messaggi scambiati possono essere di due tipi, \emph{bloccanti} e \emph{non bloccanti}.\\
 Nel caso di messaggi ad effetto bloccante, l'agente, dopo la spedizione di un messaggio, rimane in attesa del messaggio di conferma della ricezione da parte del destinatario, interrompendo il proprio flusso di esecuzione.\\
 L'invio di messaggi non bloccanti invece non influisce direttamente sul flusso di esecuzione del mittente.
-Questa divisione si è rivelata utile per distinguere fra messaggi la cui mancata ricezione può compromettere il flusso regolare della partita e messaggi la cui eventuale perdita non ha gravi effetti sullo svolgersi del gioco.\\
-Per esempio, mentre i messaggi di chat vengono inviati in maniera non bloccante, dato che la loro perdita non influirebbe sul regolare andamento della partita, i messaggi che gestiscono i turni di giocata sono inviati come bloccanti.
+Questa divisione si è rivelata utile per distinguere fra messaggi la cui mancata ricezione può compromettere il flusso regolare della partita e messaggi la cui eventuale perdita non ha gravi effetti sullo svolgersi del gioco. Per esempio, mentre i messaggi di chat vengono inviati in maniera non bloccante, dato che la loro perdita non influirebbe sul regolare andamento della partita, i messaggi che gestiscono i turni di giocata sono inviati come bloccanti.
 
 
 \subsubsection*{Formato dei messaggi}
-Dal punto di vista del livello dell'applicazione, i messaggi hanno formati variabili in base al loro utilizzo; restando fermi i campi \emph{Oggetto} e \emph{Destinatari/o} (un singolo agente o una lista di agenti), possono avere un \emph{Identificatore della conversazione}, usato per esempio nei messaggi bloccanti per distinguere fra le conferme di avvenuta ricezione o nella chat, ed un \emph{Contenuto} che può essere meramente testuale (es. chat) come anche un formato complesso (es. messaggi di offerta durante la fase dell'asta).
+Dal punto di vista del livello dell'applicazione, i messaggi hanno formati variabili in base al loro utilizzo; restando fermi i campi \emph{Oggetto} e \emph{Destinatario/i} (un singolo agente o una lista di agenti), possono avere un \emph{Identificatore della conversazione}, usato per esempio nei messaggi bloccanti per distinguere fra le conferme di avvenuta ricezione o nella chat, ed un \emph{Contenuto} che può essere meramente testuale (es. chat) come anche un formato complesso (es. messaggi di offerta durante la fase dell'asta).

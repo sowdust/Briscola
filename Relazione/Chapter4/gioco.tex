@@ -2,9 +2,8 @@
 
 
 
-Durante tutta la partita l'agente giocatore tenta di mantenere una conoscenza il più possibile completa della situazione al fine di selezionare la carta più vantaggiosa da giocare.
-
-Fa questo utilizzando il già accennato metodo dell'expert system: data una \emph{KB} nella quale sono di volta in volta memorizzate ed aggiornate le conoscenze formalizzate riguardo la situazione corrente, ad essa vengono applicate al momento giusto delle strategie, codificate come insiemi di regole, che a loro volta aggiornano la \emph{KB} o eseguono azioni vere e proprie (come quella di giocare una carta).
+Durante tutta la partita l'agente giocatore tenta di mantenere una conoscenza il più possibile completa della situazione al fine di selezionare la carta più vantaggiosa da giocare.\\
+Fa questo utilizzando il già accennato metodo dell'\emph{expert system}: data una \emph{KB} nella quale sono di volta in volta memorizzate ed aggiornate le conoscenze formalizzate riguardo la situazione corrente, ad essa vengono applicate al momento giusto delle strategie, codificate come insiemi di regole, che a loro volta aggiornano la \emph{KB} o eseguono azioni vere e proprie (come quella di giocare una carta).
 
 
 
@@ -15,8 +14,8 @@ Questi fatti possono essere semplici stringhe oppure, più comunemente, informaz
 In questo secondo caso va definita la loro struttura, detta \emph{template} (\cite{jessbook}).
 Un template è formato da
 \begin{itemize}
-   \item un nome dato all'informazione strutturata
-   \item degli \emph{slot} nominati, assimilabili ai nomi delle colonne di un database relazionale
+   \item un nome dato all'informazione strutturata,
+   \item degli \emph{slot} nominati, assimilabili ai nomi delle colonne di un database relazionale.
 \end{itemize}
 
 
@@ -29,7 +28,6 @@ Volendo rappresentare le informazioni sugli studenti di una scuola, si potrebbe 
       (slot matricola)
    )
 \end{verbatim}
-
 Per inserire nella \emph{KB} le informazioni riguardo allo studente Henri Malatesta con matricola 147865 bisognerebbe asserire il fatto
 \begin{verbatim}
    (studente (nome Henri) (cognome Malatesta) (matricola 147865))
@@ -44,7 +42,6 @@ I fatti definiti e utilizzati nella \emph{KB} sono di due tipi se considerati in
    \item Fatti perduranti l'intera partita
    \item Fatti che vengono cancellati ad ogni inizio di mano
 \end{itemize}
-
 I fatti che vengono mantenuti per l'intera durata della partita rappresentano condizioni generali (seppur mutevoli); alcuni esempi: \ref{fattiPermanenti}.
 
 
@@ -54,6 +51,7 @@ stringstyle=\ttfamily,
 basicstyle=\footnotesize, 
 showstringspaces=false,
 breaklines=true
+otherkeywords={slot,defrule,deftemplate},
 }
 
 \begin{lstlisting}[caption={Alcuni template di fatti che rimangono nella \emph{KB} per l'intera partita. Il contenuto di questi fatti viene aggiornato mano a mano che nuove informazioni si rendono disponibili all'agente giocatore}, label=fattiPermanenti]
@@ -120,13 +118,6 @@ Altri tipi di fatti (\ref{fattidiMano}), invece, si riferiscono esclusivamente a
 
 ( deftemplate giocata "info sulle giocate"
     (slot player)    (slot card)    (slot rank)    (slot suit)    (slot mano)    (slot turno)    (slot tipo)
-    ;;  tipi di giocata:
-    ;;  -   carichino               J,Q,K   a perdere
-    ;;  -   carico                  3,A     a perdere
-    ;;  -   strozzo                 3,A     del seme che comanda
-    ;;  -   strozzino               carta < 3 del seme che comanda
-    ;;  -   taglio                  taglino: quando taglio di briscola
-    ;;  -   liscio
 )
 \end{lstlisting}
 
@@ -135,7 +126,7 @@ Altri tipi di fatti (\ref{fattidiMano}), invece, si riferiscono esclusivamente a
 
 \subsection{La modifica della \emph{KB}}
 
-I fatti all'interno della \emph{KB} possono essere fatti "primitivi", cioè riguardanti eventi che sono stati direttamente comunicati all'agente, come le carte possedute in mano o la giocata effettuata da un altro giocatore; oppure possono essere fatti "derivati": questo accade quando il \emph{reasoning} applica le strategie al contenuto della \emph{KB} e ne deduce informazioni che sono a loro volta asserite all'interno della \emph{KB}.
+I fatti all'interno della \emph{KB} possono essere fatti ``primitivi'', cioè riguardanti eventi che sono stati direttamente comunicati all'agente, come le carte possedute in mano o la giocata effettuata da un altro giocatore; oppure possono essere fatti ``derivati'': questo accade quando il \emph{reasoning} applica le strategie al contenuto della \emph{KB} e ne deduce informazioni che sono a loro volta asserite all'interno della \emph{KB}.
 I fatti primitivi sono quindi adatti ad essere asseriti dall'agente giocatore stesso all'infuori del meccanismo di reasoning.
 
 \subsubsection*{Esempio: l'asserimento di fatti primitivi riguardanti una giocata appena effettuata}
@@ -154,6 +145,20 @@ breaklines=true
 }
 
 \begin{lstlisting}[caption={Funzione che viene richiamata ogni volta che si riceve la comunicazione di una nuova giocata (quindi anche la propria). Vengono aggiornati i fatti riguardanti la giocata stessa, la situazione in tavola e nel mazzo (ovvero nelle mani altrui) ed eventualmente i ruoli}, label=addGiocata]
+/**
+ * Every time a card is played, we need to update our internal
+ * representation.
+ * - add the card onto the table
+ * - if it was us playing, remove the card from our hand
+ * - if it was others playing, remove the card from the hidden deck
+ * - if the cards was the briscola, we now know the teams
+ *
+ * @param mano             # of "mani" played so far
+ * @param counter          # of "giocate" so far
+ * @param justPlayer       who has just played
+ * @param justCard         which card has just been played
+ * @throws JessException   
+*/
 public void addGiocata(int mano, int counter, Player justPlayer,
                        Card justCard) throws JessException {
 
@@ -199,15 +204,12 @@ public void addGiocata(int mano, int counter, Player justPlayer,
     
     rete.run();
 \end{lstlisting}
-
-
-
-I fatti "derivati", invece, sono invece asseriti dopo un processi di \emph{reasoning} applicato ai fatti già contenuti nella \emph{KB}.
+I fatti ``derivati'', invece, sono asseriti dopo un processo di \emph{reasoning} applicato ai fatti già contenuti nella \emph{KB}.
 Il reasoning, come si può vedere dall'ultima linea del listato \ref{addGiocata}, viene attivato ad ogni nuova giocata ricevuta, così che sia possibile ottimizzare i tempi portandosi avanti sull'analisi della situazione prima che arrivi il proprio turno.\\
 
 \subsubsection*{Esempio: fatti derivati asseriti applicando le strategie alle informazioni relative a una nuova giocata appena memorizzate nella KB}
 
-La regola \texttt{nuova-giocata} \ref{nuovagiocata} viene eseguita dal reasoner successivamente all'esecuzione della funzione \texttt{addGiocata} \ref{addGiocata} che ne asserisce i fatti contenuti nell'antecedente.
+La regola \texttt{nuova-giocata} (listato \ref{nuovagiocata}) viene eseguita dal reasoner successivamente all'esecuzione della funzione \texttt{addGiocata} (\ref{addGiocata}) che ne asserisce i fatti contenuti nell'antecedente.
 Questa regola permette nello specifico di analizzare una giocata appena ricevuta e di classificarla in uno dei modi previsti dal sistema (liscio, taglio, strozzo...).
 Vengono inoltre modificati i fatti \texttt{seme-mano} e \texttt{prende} per aggiornare, rispettivamente, quale sia il nuovo seme regnante e chi si stia aggiudicando la mano.
 
@@ -216,6 +218,7 @@ Vengono inoltre modificati i fatti \texttt{seme-mano} e \texttt{prende} per aggi
 stringstyle=\ttfamily,
 basicstyle=\footnotesize, 
 showstringspaces=false,
+otherkeywords={slot,defrule,deftemplate,else,if,bind,retract},
 breaklines=true
 }
 
@@ -278,7 +281,7 @@ breaklines=true
 
 \subsection{Le regole per le strategie di gioco}
 
-Le regole fin qui indicate, insieme ad altre dalla natura simile, permettono di creare un ambiente intuitivamente descrivibile tramite fatti e, di conseguenze, la semplice implementazione di svariate strategie di gioco anche da parte di non esperti di programmazione, complicata solo da alcune caratteristiche proprie del linguaggio \textsc{Jess}, come ad esempio il fatto che le regole vadano scritte usando la notazione prefissa degli operatori e il non molto intuitivo metodo per selezionare fatti in base alle caratteristiche del contenuto degli slot.\\
+Le regole fin qui indicate, insieme ad altre dalla natura simile, permettono di creare un ambiente intuitivamente descrivibile tramite fatti e, di conseguenza, la relativamente semplice implementazione di svariate strategie di gioco anche da parte di non esperti di programmazione, complicata solo da alcune caratteristiche proprie del linguaggio \textsc{Jess}, come ad esempio il fatto che le regole vadano scritte usando la notazione prefissa degli operatori e il non molto intuitivo metodo per selezionare fatti in base alle caratteristiche del contenuto degli slot.\\
 
 
 Anche le strategie di gioco si dividono in due principali categorie:
@@ -286,9 +289,8 @@ Anche le strategie di gioco si dividono in due principali categorie:
    \item le strategie di \emph{analisi};
    \item le strategie di \emph{decisione}.
 \end{itemize}
-
-Le prime sono quelle volte all'assegnamento, con un grado di certezza puramente euristico, di ogni giocatore al suo ruolo.
-Servono quindi, a tentare di capire chi sia il socio in base alle giocate.\\
+Le prime sono quelle volte all'assegnamento, con un grado di fiducia puramente euristico, di ogni giocatore al suo ruolo.
+Servono a tentare di capire chi sia il socio in base alle giocate osservate.\\
 Le strategie di decisione, invece, sono quelle che permettono di selezionare una carta tra quelle in mano per essere giocata.\\
 Sebbene il framework costruito non vincoli in alcun modo i due tipi di strategie, nelle regole implementate durante la sperimentazione  è parso ragionevole collegare le une alle altre.\\
 È immediatamente evidente come una strategia di decisione possa basarsi sul risultato ottenuto da una di analisi: per esempio, se quest'ultima avesse assegnato, con un'incertezza molto bassa, un dato giocatore al ruolo di socio, la strategia di decisione eviterebbe di far giocare un carico quando tal giocatore si trovi ultimo di mano dopo di sè.\\
@@ -296,7 +298,7 @@ Sebbene il framework costruito non vincoli in alcun modo i due tipi di strategie
 Allo stesso modo è possibile basare le strategie di analisi su quelle di decisione, assumendo che l'avversario segua strategie decisionali simili alle proprie.
 L'idea è quella di "rovesciare" le regole di decisione per costruire quelle di analisi, scambiando antecedente e conseguente.\\
 Per chiarire l'intuizione, si assuma che il giocatore \emph{P} abbia fra le sue regole una per cui: se il suo ruolo è \emph{socio}, dopo di lui c'è il \emph{chiamante} ultimo di mano, allora gioca un carico; \emph{P} osservando un giocatore \emph{A} penultimo di mano prima del \emph{chiamante} giocare un carico, assumendo che \emph{A} stia seguendo strategie simili alle proprie, potrà concludere con un certo grado di incertezza che il ruolo di \emph{A} è quello del \emph{socio}.\\
-Tale approccio è limitato da due fattori: in primis non è detto che l'avversario segua effettivamene le nostre stesse identiche strategie decisionali, per cui l'assunzione non è necessariamente corretta, soprattutto in casi in cui l'obiettivo dell'avversario sia quello di depistare il giocatore con un \emph{bluff}.\\
+Tale approccio è limitato da due fattori: in primis non è detto che l'avversario segua effettivamene le stesse identiche strategie decisionali del giocatore ``analista'', per cui l'assunzione non è necessariamente corretta, soprattutto in casi in cui l'obiettivo dell'avversario sia quello di depistare il giocatore con un \emph{bluff}.\\
 Inoltre le strategie decisionali hanno nel proprio antecedente anche delle condizioni che riguardano le carte in mano, quindi un'informazione privata non disponibile a nessun altro giocatore.\\
 Nonostante questi limiti ci è parso che un tentativo in questa direzione potesse costituire una buona approssimazione in mancanza di migliori strategie.\\
 
@@ -311,12 +313,12 @@ Nonostante questi limiti ci è parso che un tentativo in questa direzione potess
 \subsubsection*{Esempio: il socio tiene il giaguaro ultimo; se tiene il giaguaro ultimo è il socio}
 Un esempio dell'approccio appena accennato è l'implementazione delle regole \ref{socio1} e \ref{socio2}.
 Nel primo caso, del quale esistono diverse versioni in base alla precisa situazione ma di cui è qui presentata solo la più semplice, è formalizzata una regola piuttosto ovvia:
-\emph{Ruolo del socio è quello di favorire il chiamante (per esempio prendendo subito dopo di lui) e di tenerlo il più possibile ultimo, specialmente nelle mani finali}
-
-\begin{lstlisting}[caption={Se sono il socio e gioco subito dopo di lui, prendo per lasciarlo ultimo la mano successiva},label=socio1]
+\begin{quote}
+\emph{Ruolo del socio è quello di favorire il chiamante (per esempio prendendo subito dopo di lui) e di tenerlo il più possibile ultimo, specialmente nelle mani finali.}
+\end{quote}
+\begin{lstlisting}[caption={Se sono il socio e gioco subito dopo di lui, se posso prendere senza palesarmi, prendo per lasciarlo ultimo la mano successiva},label=socio1]
 ( defrule socio-tiene-giaguaro-ultimo
     ?w <- (calcola-giocata)
-    (mano-numero ?mano)
     (mio-ruolo socio)
     (giaguaro (player ?g))
     (mio-turno-numero ?n)
@@ -328,7 +330,6 @@ Nel primo caso, del quale esistono diverse versioni in base alla precisa situazi
     (assert (ora-di-giocare))
 )
 \end{lstlisting}
-
 Applicando il metodo dell'inversione delle regole, risulta la seguente \ref{socio2}.\\
 Si noti che, come anticipato, la precedente regola \ref{socio1} esiste in diverse versioni, di modo che nelle mani finali la sua applicazione sia più probabile. Questo giustifica il diverso valore di incertezza che viene assegnato alla validità dell'analisi effettuata dalla regola \ref{socio2}: se si è nelle fasi finali della partita, sarà più probabile che il giudizio sia corretto.
 
@@ -385,4 +386,3 @@ Un \emph{framework} di basso livello mette a disposizione strutture dati, funzio
 Le strategie attualmente implementate, raccolte da varie fonti, riflettono la conoscenza di giocatori esperti ed i loro comportamenti in alcune situazioni di carattere generale.\\
 Gran parte dei comportamenti da seguirsi dipendono strettamente dal ruolo che si ha nella partita. Questa osservazione ha reso possibile lo sviluppo di regole di \emph{analisi}, di supporto a quelle di \emph{decisone}, che permettono di assegnare con un margine di incertezza euristico un giocatore al suo ruolo presunto in base ai suoi comportamenti.\\
 La possibilità di estendere l'insieme di strategie applicabili dal giocatore può dare adito all'attivazione di più regole contrastanti contemporaneamete e di conseguenza a problemi di \emph{conflict resolution}; questi sono stati resi risolubili dando la possibilità di assegnare ad ogni strategia un valore euristico di priorità.
-
