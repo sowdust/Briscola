@@ -266,13 +266,6 @@ breaklines=true
     (bind ?new-counter-giocata (+ ?counter-giocata 1))
     (retract ?w)
     (retract ?y)
-    ;;  tipi di giocata:
-    ;;  -   carichino               J,Q,K   a perdere
-    ;;  -   carico                  3,A     a perdere
-    ;;  -   strozzo                 3,A     del seme che comanda
-    ;;  -   strozzino               carta < 3 del seme che comanda
-    ;;  -   taglio                  taglino: quando taglio di briscola
-    ;;  -   liscio
     (assert (giocata-numero ?new-counter-giocata))
     (assert (giocata (player ?p) (card ?c) (rank ?r) (suit ?s) (turno ?new-counter-giocata) (mano ?mano-numero) (tipo ?tipo)))
 )

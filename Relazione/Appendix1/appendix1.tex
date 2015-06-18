@@ -2,11 +2,30 @@
 \stepcounter{chapter}
 \addcontentsline{toc}{chapter}{Appendice A: Jade}
 
-Si parla di Jade
+\graphicspath{{Appendix1/figures/}}
+
+\textsc{Jade}, acronimo di \emph{Java Agent DEvelopment Framework}, è un framework sviluppato interamente in \textsc{Java} atto a essere utilizzato come \emph{middle-ware} nello sviluppo di applicazioni multiagente.
+È implementato rispettando le specifiche \emph{FIPA}, acronimo di \emph{Foundation for Intelligent Physical Agents}, un'organizzazione internazionale per lo sviluppo di standard per l'implementazione e la comunicazione di sistemi multi-agente.
+\textsc{Jade} è free software, distribuito sotto la licenza LGPL e sviluppato da \textsc{Telecom Italia}.
+\textsc{Jade} fornisce un sistema di astrazione per gli agenti,  un modello di per la composizione ed esecuzione di \emph{task} e un servizio di \emph{pagine gialle}.
+Le applicazioni multiagente sviluppate con \textsc{Jade} possono essere distribuite fra diversi host connessi in rete.
+Su ogni macchina che esegue la piattaforma viene attivata una sola applicazione \textsc{Java} all'interno della JVM che funge da ``contenitore'' di agenti fornendo anche un ambiente completo per l'esecuzione concorrente di più agenti contemporaneamente  (\ref{fig:distributed}).
+
+\begin{figure}[!htbp]
+  \begin{center}
+    \leavevmode
+      \includegraphics[width=0.8\textwidth]{distributed}
+    \caption{Architettura distribuita di \textsc{Jade}}
+    \label{fig:distributed}
+  \end{center}
+\end{figure}
 
 % ------------------------------------------------------------------------
+L'architettura di comunicazione offre un sistema di messaggistica flessibile ed efficiente: \textsc{Jade} crea e gestisce una coda privata di messaggi ACL per ogni agente; gli agenti possono accedere alla propria coda in diversi modi.
+Seguendo le specifiche FIPA, il modello di comunicazione è stato distinto nei suoi componenti: protocolli di interazione, envelope, ACL, linguaggi del contenuto, schemi di codifica, ontologie e protocolli di trasporto.
 
-%%% Local Variables: 
-%%% mode: latex
-%%% TeX-master: "../thesis"
-%%% End: 
+Gli agenti sono implementati come un singolo thread per agente, ma con la possibilità di associare ad ognuno più \emph{behaviour}, ciascuno dei quali viene eseguito in un thread dedicato, grazie all'ambiente multi-thread offerto da \textsc{Java}.
+
+
+La piattaforma fornisce anche un'interfaccia grafica (GUI) per la gestione remota degli agenti, il loro controllo e monitoraggio.
+

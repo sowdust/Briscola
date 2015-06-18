@@ -43,8 +43,8 @@ Allo stesso tempo, se il giocatore \emph{P} fosse sicuro di essere in squadra co
 
 
 \Tree[.{$P$ ha in mano \\ $2  \heartsuit$ e $ 2  \clubsuit$}
-         [.{$P$ gioca $2 \heartsuit$} [ .{\ldots} [.{termine partita} [ .{Il socio è A} [ {- 16} ] ] [ .{Il socio è B}  [ {+ 16} ]] [ .{Il socio è C}  [ {+ 16} ]] ]]]
-         [.{$P$ gioca $2 \clubsuit$} [ .{\ldots} [.{termine partita} [ .{Il socio è A}  [ {+ 16} ]] [ .{Il socio è B}  [ {+ 16} ]] [ .{Il socio è C}  [ {+ 16} ]] ]]]
+         [.{$P$ gioca $2 \heartsuit$} [ .{\ldots} [.{termine partita} [ .{Il socio è A} [\node [draw, circle] { - 16}; ] ] [ .{Il socio è B}  [ \node [draw, circle] {+ 16}; ]] [ .{Il socio è C}  [ \node [draw, circle] {+ 16}; ]] ]]]
+         [.{$P$ gioca $2 \clubsuit$} [ .{\ldots} [.{termine partita} [ .{Il socio è A}  [ \node [draw, circle] {+ 16}; ]] [ .{Il socio è B}  [ \node [draw, circle] {+ 16}; ]] [ .{Il socio è C}  [ \node [draw, circle] {+ 16}; ]] ]]]
 ]
 \end{tikzpicture}
 
