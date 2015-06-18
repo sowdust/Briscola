@@ -120,15 +120,15 @@ Il risultato di una tale definizione applicata al gioco del tris è visibile nel
 \begin{figure}[!htbp]
 
 
-\begin{tikzpicture}[level distance=3.5cm,sibling distance=.4cm, 
+\begin{tikzpicture}[level distance=3cm,sibling distance=.4cm, 
    edge from parent path={(\tikzparentnode) -- (\tikzchildnode)}]
 \tikzset{level 0/.style={level distance=175pt}}
-\tikzset{level 4/.style={level distance=100pt}}
+\tikzset{level 4/.style={level distance=80pt}}
 \Tree 
 [.\node(Root) [circle,label=west:0] {  \includegraphics[width=1.7cm]{tris/a_0} };
    \edge[loosely dotted];
    [.\node [label=west:1]{\includegraphics[width=1.7cm]{tris/b_1}};
-%   \edge node[auto=right] {$A$}; 
+%   \edge node[auto=right] {Muove \textsc{Max}}; 
     [.\node [label=west:-1]{\includegraphics[width=1.7cm]{tris/c-2}};
 %      \edge node[auto=right] {$B$};  
       [.\node [label=west:0]{\includegraphics[width=1.7cm]{tris/d1}};
