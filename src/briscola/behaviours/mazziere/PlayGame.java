@@ -137,6 +137,7 @@ public class PlayGame extends Behaviour {
                     mazziere.say(p.getName() + "\t " + status.getScore(p));
                     points.add(status.getScore(p));
                 }
+                mazziere.getMemory().setPoints(points);
                 ScoreMessage scoreMessage = new ScoreMessage(players, points);
                 SendAndWait b = new SendAndWait(players, ACL_SCORE_MESSAGE,
                                                 scoreMessage);

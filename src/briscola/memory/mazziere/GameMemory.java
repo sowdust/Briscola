@@ -8,9 +8,12 @@ import briscola.objects.Bid;
 import briscola.objects.Card;
 import briscola.objects.Hand;
 import briscola.objects.Role;
+import static briscola.objects.Role.GIAGUARO;
+import static briscola.objects.Role.SOCIO;
 import jade.core.AID;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +24,7 @@ public class GameMemory implements Serializable {
     private static final long serialVersionUID = 1L;
     private final MazziereAgent mazziere;
     private List<Player> players;
+    private List<String> points;
     private final Map<AID, Role> roles;
     private final Map<Role, Player> playerRoles;
     private final Map<Player, Hand> hands;
@@ -38,7 +42,14 @@ public class GameMemory implements Serializable {
         this.bids = new LinkedList<>();
         this.giocate = new LinkedList<>();
         this.prese = new LinkedList<>();
+        this.points = new ArrayList<>();
         this.mano = 0;
+    }
+
+    public void setPoints(List<Integer> points) {
+        for (Integer p : points) {
+            this.points.add(p.toString());
+        }
     }
 
     synchronized public void setPlayers(List<Player> players) {
@@ -87,39 +98,67 @@ public class GameMemory implements Serializable {
         //  LOG PLAYERS AND THEIR ROLES
         List<String> playerNames = new LinkedList<>();
         List<String> rolesList = new LinkedList<>();
-        for (Player p : players) {
+        int socioIndex = -1;
+        int giaguaroIndex = -1;
+        List<Integer> villIndex = new LinkedList<>();
+        Role r;
+        Player p;
+        for (int i = 0; i < players.size(); ++i) {
+            p = players.get(i);
+            r = this.roles.get(p.getAID());
             playerNames.add(p.getName());
-            rolesList.add(this.roles.get(p.getAID()).toString());
-        }
-        mazziere.logCSV(playerNames.toArray(new String[playerNames.size()]));
-        mazziere.logCSV(rolesList.toArray(new String[roles.size()]));
-
-        //  LOG BIDS HISTORY (skip pass)
-        separator[0] = "Asta";
-        mazziere.logCSV(separator);
-        String[] bidss = new String[2];
-        for (Bid b : bids) {
-            if (!b.passo()) {
-                bidss[0] = b.getPlayer().getName();
-                bidss[1] = b.rank().toString();
-                mazziere.logCSV(bidss);
+            rolesList.add(r.toString());
+            if (r.equals(GIAGUARO)) {
+                giaguaroIndex = i;
+            } else if (r.equals(SOCIO)) {
+                socioIndex = i;
+            } else {
+                villIndex.add(i);
             }
         }
 
-        //  LOG GIOCATE HISTORY
-        separator[0] = "Giocate";
-        mazziere.logCSV(separator);
-        for (Giocata g : giocate) {
-            mazziere.logCSV(g.toStringArray());
+        List<String> resultPlayers = new LinkedList<>();
+        List<String> resultPoints = new LinkedList<>();
+
+        resultPoints.add(points.get(giaguaroIndex));
+        resultPoints.add(points.get(socioIndex));
+        for (int i : villIndex) {
+            resultPoints.add(points.get(i));
         }
 
-        //  LOG HISTORY PRESE
-        separator[0] = "Prese";
-        mazziere.logCSV(separator);
-        for (Presa p : prese) {
-            mazziere.logCSV(p.toStringArray());
-        }
+        mazziere.logCSV(resultPoints.toArray(new String[points.size()]));
 
+        /*
+         mazziere.logCSV(playerNames.toArray(new String[playerNames.size()]));
+         mazziere.logCSV(rolesList.toArray(new String[roles.size()]));
+         mazziere.logCSV(points.toArray(new String[points.size()]));
+
+         //  LOG BIDS HISTORY (skip pass)
+         separator[0] = "Asta";
+         mazziere.logCSV(separator);
+         String[] bidss = new String[2];
+         for (Bid b : bids) {
+         if (!b.passo()) {
+         bidss[0] = b.getPlayer().getName();
+         bidss[1] = b.rank().toString();
+         mazziere.logCSV(bidss);
+         }
+         }
+
+         //  LOG GIOCATE HISTORY
+         separator[0] = "Giocate";
+         mazziere.logCSV(separator);
+         for (Giocata g : giocate) {
+         mazziere.logCSV(g.toStringArray());
+         }
+
+         //  LOG HISTORY PRESE
+         separator[0] = "Prese";
+         mazziere.logCSV(separator);
+         for (Presa p : prese) {
+         mazziere.logCSV(p.toStringArray());
+         }
+         */
         mazziere.getCsvWriter().flushQuietly();
     }
 

@@ -145,8 +145,8 @@
 ( deftemplate socio (slot player) )
 ( deftemplate villano   (slot player) )
 ( deftemplate briscola (slot card) (slot rank) (slot suit) )
-( deftemplate seme-mano-fact (slot suit) "Il seme che guida la mano")
-( deftemplate prob-socio (slot player) (slot sal) "La probabilità che un dato giocatore sia il socio")
+( deftemplate seme-mano-fact (slot suit) )
+( deftemplate prob-socio (slot player) (slot sal) )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;     GLOBAL VARs

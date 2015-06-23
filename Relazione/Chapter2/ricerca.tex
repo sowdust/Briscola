@@ -83,7 +83,7 @@ Prendiamo qui in considerazione uno degli algoritmi più utilizzati per raggiung
 Chiamiamo i due giocatori \textsc{Min} e \textsc{Max} e, seguendo \cite{randw}, formalizziamo il gioco in questi elementi
 \begin{itemize}
    \item lo stato iniziale \emph{$S_0$} 
-   \item la funzione \textsc{Player(\emph{S})} che indica il giocatore cui spetta muovere nello stato \emph{s}
+   \item la funzione \textsc{Player(\emph{s})} che indica il giocatore cui spetta muovere nello stato \emph{s}
    \item l'insieme di \emph{azioni applicabili} ad un dato stato \emph{s}, \textsc{Actions(\emph{s})}
    \item il modello di transizione \textsc{Result(\emph{s},\emph{a})}
    \item un \emph{test di fine gioco}, \textsc{Terminal-test(\emph{s})}, che indica se nello stato  \emph{s} la partita è conclusa
@@ -192,7 +192,6 @@ L'algoritmo \textsc{Minimax} eseguito da un agente giocatore assegna ad ogni sta
 
 
 \begin{algorithm}
-\label{alg:minimax}
 \begin{PseudoCode}[mathescape,escapechar=~]
 function minimax-decision (s : state) : action
    return $argmax_{a \in Actions(s)}$ minvalue(~\textsc{result}~(s, a))
@@ -212,9 +211,10 @@ function minvalue(s : state) : utility value
    return v
 \end{PseudoCode}
 \caption{L'algoritmo minimax. La funzione \textsc{minimax-decision} applicata ad uno stato \emph{s} restituisce la mossa ottimale applicabile in \emph{s}. \cite{randw}}
+\label{alg:minimax}
 \end{algorithm}
 
-L'algoritmo \ref{alg:minimax} può facilmente essere esteso ad una situazione a più di due giocatori modificando la funzione \textsc{Utility} in modo che restituisca un vettore di valori invece che uno solo.
+L'algoritmo~\ref{alg:minimax} può facilmente essere esteso ad una situazione a più di due giocatori modificando la funzione \textsc{Utility} in modo che restituisca un vettore di valori invece che uno solo.
 (Si noti che nei giochi \emph{zero sum} a due soli avversari è sufficiente un solo valore per entrambi dato che uno è l'opposto dell'altro, ma la cosa equivale ad utilizzare un vettore a due valori).
 
 Come precedentemente anticipato la generazione dell'intero spazio degli stati, e a maggior ragione la sua visita completa in profondità, sono computazionalmente intrattabili per qualsiasi gioco non banale.
