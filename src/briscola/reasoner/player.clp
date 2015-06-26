@@ -711,7 +711,7 @@
     (giaguaro (player ?g))
     (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(<> ?pos 1)))
 =>
-    (gioca ?c 90)
+    (gioca ?c 110)
     (debug (create$ sono ultimo di mano, prendo gratis perchè ci sono punti e non lascio giaguaro ultimo! (?c toString) ?m ))
     (assert (ora-di-giocare))
 )
@@ -727,7 +727,7 @@
     (briscola (card ?b))
     (posso-prendere (card ?c&:(= ?c (get-piu-alta-seme ?s))) (suit ?s&:(<> ?s ?*briscola*)))
 =>
-    (gioca ?c 100)
+    (gioca ?c 120)
     (debug (create$ sono ultimo di mano, prendo gratis perchè più di 9 punti! (?c toString) ?m ))
     (assert (ora-di-giocare))
 )
@@ -740,7 +740,7 @@
     (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?pos (- ?n 1)  )   )  )
     (liscio-piu-basso (card ?c))
 =>
-    (gioca ?c 110)
+    (gioca ?c 60)
     (debug (create$ gioco prima del chiamante ma non sono ultimo, liscio))
     (assert (ora-di-giocare))
 )
@@ -892,7 +892,7 @@
 =>
     (bind ?sal (- 60 (?carta getPosition)))
     (gioca ?carta ?sal)
-    (debug (create$ sono villano, giaguaro ultimo, punti in tavola, gioco briscoletta (?da-giocare toString)))
+    (debug (create$ sono villano, giaguaro ultimo, punti in tavola, gioco briscoletta (?carta toString)))
     (assert (ora-di-giocare))
 )
 

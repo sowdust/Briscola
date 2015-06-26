@@ -88,7 +88,7 @@ public class PlayerAgent extends GeneralAgent {
         gui.setVisible(visible);
 
         say("Giocatore " + getAID().getName() + " iscritto alla piattaforma");
-        say("Utilizzerò la strategia " + strategy);
+        say("Utilizzerò la strategia " + strategy, true);
         addBehaviour(new Subscribe(this));
     }
     //  SETTING UP THE RETE INSTANCE FOR JESS RULE PROCESSING

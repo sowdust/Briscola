@@ -100,6 +100,8 @@ public class GameMemory implements Serializable {
         List<String> rolesList = new LinkedList<>();
         int socioIndex = -1;
         int giaguaroIndex = -1;
+        String ruoloMartinuzza = "V";
+        String ruoloMattia = "V";
         List<Integer> villIndex = new LinkedList<>();
         Role r;
         Player p;
@@ -110,8 +112,20 @@ public class GameMemory implements Serializable {
             rolesList.add(r.toString());
             if (r.equals(GIAGUARO)) {
                 giaguaroIndex = i;
+                if (p.getName().equals("martinuzza")) {
+                    ruoloMartinuzza = "G";
+                }
+                if (p.getName().equals("mattia")) {
+                    ruoloMattia = "G";
+                }
             } else if (r.equals(SOCIO)) {
                 socioIndex = i;
+                if (p.getName().equals("martinuzza")) {
+                    ruoloMartinuzza = "S";
+                }
+                if (p.getName().equals("mattia")) {
+                    ruoloMattia = "S";
+                }
             } else {
                 villIndex.add(i);
             }
@@ -125,6 +139,8 @@ public class GameMemory implements Serializable {
         for (int i : villIndex) {
             resultPoints.add(points.get(i));
         }
+        resultPoints.add(ruoloMartinuzza);
+        resultPoints.add(ruoloMattia);
 
         mazziere.logCSV(resultPoints.toArray(new String[points.size()]));
 
