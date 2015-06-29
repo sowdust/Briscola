@@ -319,7 +319,7 @@ Nel primo caso, del quale esistono diverse versioni in base alla precisa situazi
     (briscola (card ?b))
     (posso-prendere (card ?c&:(<> ?c ?b)))
 =>
-    (gioca ?c 100)
+    (gioca ?c (- 100 (?c getValue)))
     (assert (ora-di-giocare))
 )
 \end{lstlisting}

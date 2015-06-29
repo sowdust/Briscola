@@ -1,11 +1,10 @@
 \chapter*{Appendice B: \textsc{Jess}}
 \stepcounter{chapter}
 \addcontentsline{toc}{chapter}{Appendice B: Jess}
-si parla di jess
-
-% ------------------------------------------------------------------------
-
-%%% Local Variables: 
-%%% mode: latex
-%%% TeX-master: "../thesis"
-%%% End: 
+\textsc{Jess} è insieme un \emph{rule egine} (\emph{motore inferenziale}) e un ambiente di scripting, scritti interamente in \textsc{Oracle Java} da Ernest Friedman-Hill per i Sandia National Laboratories di Livermore, California.\\
+Con \textsc{Jess} è possibile creare del software \textsc{Java} che sia capace di ``ragionare'' secondo regole scritte in maniera dichiarativa.\\
+Pur essendo un sistema leggero, \textsc{Jess} risulta essere uno dei più veloci motori referenziali in circolazione. Ulteriore potenzialità è l'accesso completo all'insieme di API \textsc{Java} a partire dal linguaggio di scripting.\\
+Per la selezione delle regole da attivarsi, il motore inferenziale utilizza una versione modificata dell'algoritmo \textsc{Rete}.
+Quest'ultimo è un meccanismo molto efficiente che permette di risolvere il complesso problema del matching molti-a-molti  (si veda, a riguardo, \cite{rete}).\\
+Alcuni punti di forza di \textsc{Jess} rispetto ad altri sistemi dello stesso tipo includono la possibilità di effettuare il \emph{backward chaining} delle regole, di eseguire query dirette alla memoria di lavoro e di ragionare e manipolare direttamente oggetti \textsc{Java}.
+È disponibile liberamente per uso accademico.
