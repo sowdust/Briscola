@@ -6,10 +6,23 @@
 
 \def\baselinestretch{1.66}
 
-Qualche conclusione... ...
+Lo scopo di questo lavoro era quello di creare una piattaforma per il gioco della Briscola in 5 in cui potessero confrontarsi giocatori sia umani che virtuali.\\
+Per raggiungere tale scopo si è innanzitutto valutato il metodo migliore per la realizzazione di un'intelligenza artificiale ad uso del giocatore virtuale; dopo aver passato in rassegna le principali tipologie di soluzione applicate ai giochi in letteratura, si è optato per l'uso di un sistema esperto.\\
+La ragione principale di questa scelta, che costituisce anche la maggiore difficoltà nel gioco della Briscola in 5, è stata quella di essere detto gioco non classificabile in assoluto nè come competitivo nè come cooperativo.\\
+Si è quindi sviluppato, tramite l'ausilio del \emph{rule engine} \textsc{Jess}, un framework per l'implementazione e l'estensione di strategie, insieme con alcune strategie basilari raccolte da diverse fonti. Si sono previste due principali categorie di strategie: quelle di analisi, che permettano di capire empiricamente la formazione delle squadre prima che queste siano palesi, e quelle di gioco che selezionino la carta migliore da giocarsi ad ogni mano.\\
+La piattaforma di gioco vera è propria, realizzata a partire dal framework \textsc{Jade}, è stata progettata con l'intento di renderla adatta all'uso da parte di giocatori esperti, in modo che questi, giocando, possano annotare e consigliare nuove strategie.
+Tale piattaforma permette inoltre lo svolgimento di partite in rete, pur mantenendo un agente ``mazziere'' che permette la centralizzazione dello svolgimento della partita e di conseguenza del log degli avvenimenti.\\
+Proprio a partire da questa attività di log è stato possibile valutare empiricamente l'efficiacia delle seppur basilari strategie implementate: mettendo a confronto le percentuali di partite vinte da un tipo di squadra in base alla tipologia di strategie adottate dai suoi giocatori, si è reso evidente l'incremento di successi ottenuti dai giocatori a strategia rispetto a quelli casuali.
+
+
 
 
 \section{Sviluppi futuri}
+
+Nell'ottica di un miglioramento del lavoro fin qui svolto, potrebbero innanzitutto essere prese in considerazione altre soluzioni per la realizzazione dell'intelligenza artificiale del giocatore a strategie. Sarebbe infatti interessante valutare l'applicabilità di metodi di \emph{machine learning} al problema della briscola in cinque. Inoltre, la stessa strategia del sistema esperto adottata potrebbe essere integrata con altri strumenti: in primis, si potrebbe pensare di limitare l'uso dell'expert system alla sola fase della partita in cui la formazione delle squadre non è certa, integrando poi nella seconda parte della partita un metodo di soluzione diverso, come una ricerca nello spazio degli stati. Si potrebbe poi pensare di integrare alle strategie di analisi un sistema di \emph{reputation} che permetta di assegnare con maggiore precisione le probabilità che un dato giocatore appartenga ad una certa squadra.\\
+Sarebbe poi auspicabile esplorare altri sistemi e criteri di valutazione della bontà di una strategia; tale valutazione potrebbe essere fatta sia in maniera formale, a partire da un osservatore onniscente che possa calcolare in maniera rigorosa la bontà di una mossa, sia in maniera più empirica, mettendo direttamente a confronto l'intelligenza artificiale con degli avversari umani.\\
+
+
 
 %%% ----------------------------------------------------------------------
 
