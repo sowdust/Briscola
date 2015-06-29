@@ -1,0 +1,62 @@
+\chapter*{Sperimentazione}
+\stepcounter{chapter}
+\addcontentsline{toc}{chapter}{Sperimentazione}
+\graphicspath{{Chapter6/Chapter6Figs/PNG/}{Chapter6/Chapter6Figs/PDF/}{Chapter6/Chapter6Figs/}}
+
+Una volta in possesso di un framework generale che permetta l'implementazione di strategie arbitrarie, è auspicabile poter disporre di un metodo di valutazione della bontà di tali strategie.\\
+Le difficoltà riscontrate nell'affrontare il problema della decisione della mossa da effettuarsi in maniera puramente algoritmica si ripropongono nel momento in cui si voglia applicare lo stesso approccio algoritmico ad un tentativo di valutazione della bontà delle singole mosse.\\
+Per questa ragione si è pensato di provare a valutare un giocatore empiricamente in base ai successi conseguiti --- espressi in termini di percentuali di vittorie sul totale delle partite ---  confrontandoli con quelli di un giocatore che abbia una strategia puramente casuale.
+
+
+\section{Random vs Random}
+
+Per ottenere un indice di confronto da cui partire si sono innanzitutto condotte delle partite con cinque giocatori a strategia completamente casuale; i risultati ottenuti sono contenuti nella tabella \ref{tab:esperimento-random-random}.\\
+Si nota immediatamente come in queste condizioni la squadra del chiamante sia decisamente avvantaggiata; volendo provare a dare un'interpretazione a tale fatto si può avanzare l'ipotesi per cui, mentre la squadra del chiamante sfrutta appieno il vantaggio derivato dalla fase dell'asta (che viene sempre e comunque effettuata in maniera oculata anche nel caso dei giocatori random), costituito dall'avere in mano le carte migliori, la squadra dei villani non ricorre al vantaggio derivato dalla propria superiorità numerica che potrebbe essere invece sfruttato facendo gioco di squadra.\\
+Va inoltre considerato che anche nella tradizione è convinzione comune che una buona conduzione della fase dell'asta porti alla squadra del chiamante un considerevole vantaggio rispetto alla squadra avversaria.
+
+\begin {table}
+\begin{center}
+  \begin{tabular*}{1\textwidth}{@{\extracolsep{\fill}} | c | c | c | }
+    \hline
+                    chiamante + socio & villani & pareggi   \\ \hline
+                    66.7 \% & 30 \% & 3.3 \%              \\ \hline 
+  \end{tabular*}
+  \caption {Percentuali di vittorie in base alla squadra} \label{tab:esperimento-random-random} 
+\end{center}
+\end {table}
+
+\section{Un giocatore a strategia vs Random}
+
+Nel secondo esperimento condotto si sono giocate delle partite nelle quali un solo giocatore utilizzasse il sistema a strategia mentre tutti gli avversari giocavano casualmente.\\
+I risultati, espressi nella tabella \ref{tab:esperimento-uno}, indicano, in base alla squadra di appartenenza del giocatore a strategie, la percentuale di vittorie conseguite.\\
+Mentre l'incremento di vittorie da parte della squadra del chiamante era abbastanza atteso, stupisce a prima vista il netto peggioramento della squadra dei compari, che risulta avere più successo se composta da giocatori del tutto casuali rispetto ad averne uno che segua delle strategie.\\
+Questo fatto è però facilmente spiegabile tramite l'osservazione per cui le strategie implementate assumono la complicità dei propri compagni di squadra; per esempio, un villano che si trovi a giocare ultimo di mano in un turno in cui stia, molto probabilmente giocherà il carico di maggior valore che possiede in mano, sicuro che uno dei propri compagni abbia la possibilità di prenderlo.
+Se però questi compagni giocano casualmente è facile che lascino i punti alla squadra avversaria.
+
+\begin {table}
+\begin{center}
+  \begin{tabular*}{1\textwidth}{@{\extracolsep{\fill}} | c | c | }
+    \hline
+                    chiamante + socio & villani    \\ \hline
+                    76.5 \% & 21.2 \%               \\ \hline 
+  \end{tabular*}
+  \caption {Percentuale di vittorie conseguite da ogni squadra con un solo giocatore a strategie} \label{tab:esperimento-uno} 
+\end{center}
+\end {table}
+
+
+\section{Una squadra a strategia vs Random}
+
+Infine si sono condotte delle partite tra una squadra formata da giocatori a strategie ed una da giocatori casuali.
+Confrontando i risultati di questo esperimento, illustrati nella tabella \ref{tab:esperimento-ultimo}, con quelli ottenuti con squadre a giocatori casuali, (\ref{tab:esperimento-random-random}), è immediato notare come, per entrambe le squadre, ci sia stato un notevole vantaggio derivato dall'adozione (da parte dell'intera squadra) delle strategie basi finora implementate.
+\begin {table}
+\begin{center}
+  \begin{tabular*}{1\textwidth}{@{\extracolsep{\fill}} | c | c | }
+    \hline
+                    chiamante + socio & villani    \\ \hline
+                    80 \% &  60\%               \\ \hline 
+  \end{tabular*}
+  \caption {Percentuale di vittorie conseguite, per ogni tipo di squadra, da una squadra di giocatori a strategie contro una a giocatori casuali} \label{tab:esperimento-ultimo} 
+\end{center}
+\end {table}
+\\Questo ha infatti portato a un incremento del 13.3 \% di vittorie sul numero assoluto di partite per la squadra del chiamante e del 30 \% per la squadra dei villani, che equivale addirittura al doppio della percentuale di partite vinte dalla stessa squadra formata da giocatori a strategia casuale.
