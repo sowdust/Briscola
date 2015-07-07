@@ -6,7 +6,7 @@
 Una volta in possesso di un framework generale che permetta l'implementazione di strategie arbitrarie, è auspicabile poter disporre di un metodo di valutazione della bontà di tali strategie.\\
 Le difficoltà riscontrate nell'affrontare il problema della decisione della mossa da effettuarsi in maniera puramente algoritmica si ripropongono nel momento in cui si voglia applicare lo stesso approccio algoritmico ad un tentativo di valutazione della bontà delle singole mosse.\\
 Per questa ragione si è pensato di provare a valutare un giocatore empiricamente in base ai successi conseguiti --- espressi in termini di percentuali di vittorie sul totale delle partite ---  confrontandoli con quelli di un giocatore che abbia una strategia puramente casuale.\\
-Si noterà che il numero delle prove eseguite per certe configurazione è piuttosto ridotto; questo è dovuto al fatto che, data la struttura dell'agente giocatore e la fissità della strategia con cui gestisce la fase di asta (fase decisiva nella formazione delle squadre), non è possibile associare a priori la natura (casuale o strategica) di un giocatore al suo ruolo. È stato quindi necessario in alcuni casi condurre un gran numero di prove per ottenerne una quantità accettabile che rispondesse all'interesse sperimentale.
+Si noterà che il numero delle prove eseguite per certe configurazioni è piuttosto ridotto: questo è dovuto al fatto che, data la struttura dell'agente giocatore e la fissità della strategia con cui gestisce la fase di asta (fase decisiva nella formazione delle squadre), non è possibile associare a priori la natura (casuale o strategica) di un giocatore al suo ruolo. È stato quindi necessario in alcuni casi condurre un gran numero di prove per ottenerne una quantità accettabile che rispondesse all'interesse sperimentale.
 
 
 \section{Random vs Random}
@@ -31,7 +31,7 @@ Va inoltre considerato che anche nella tradizione è convinzione comune che una 
 \def\cyclelist{{"blue","red","green","orange","white"}}
 \newcount\cyclecount \cyclecount=-1
 \newcount\ind \ind=-1
-\begin{figure}[t]
+\begin{figure}[!htb]
 \centering
 
 \subfigure[Percentuale di vittorie conseguite per squadra]{
@@ -84,15 +84,15 @@ Va inoltre considerato che anche nella tradizione è convinzione comune che una 
 \section{Un giocatore a strategia vs Random}
 
 Nel secondo esperimento condotto si sono giocate 50 partite nelle quali un solo giocatore utilizzava il sistema a strategia mentre tutti gli avversari giocavano casualmente.\\
-I risultati sono espressi nella figura \ref{pietab:esperimento-strat-random}.\\
-Mentre l'incremento di vittorie da parte della squadra del chiamante era abbastanza atteso, stupisce a prima vista il netto peggioramento della squadra dei compari, che risulta avere più successo se composta da giocatori del tutto casuali rispetto ad averne uno che segua delle strategie.\\
-Questo fatto è però facilmente spiegabile tramite l'osservazione per cui le strategie implementate assumono la complicità dei propri compagni di squadra; per esempio, un villano che si trovi a giocare per terzo, prima dei suoi compagni, molto probabilmente giocherà il carico di maggior valore che possiede in mano, sicuro che uno dei propri compagni abbia la possibilità di prenderlo.
+I risultati sono espressi nelle figure \ref{pietab:esperimento-esiti-strat-random-altro} e \ref{pietab:esperimento-esiti-strat-random}.\\
+Mentre l'incremento di vittorie da parte della squadra del chiamante [\ref{pie:esperimento-strat-random-1-soci}] era abbastanza atteso, stupisce a prima vista il netto peggioramento della squadra dei compari [\ref{pie:esperimento-strat-random-1-vill}], che risulta avere più successo se composta da giocatori del tutto casuali rispetto ad averne uno che segua delle strategie.\\
+Questo fatto è però facilmente spiegabile tramite l'osservazione per cui le strategie implementate assumono la complicità dei propri compagni di squadra; per esempio, un villano che si trovi a giocare per terzo, prima dei suoi compagni, molto probabilmente giocherà il carico di maggior valore che possiede in mano, nella speranza che uno dei propri compagni abbia la possibilità di prenderlo.
 Se però questi compagni giocano casualmente è facile che lascino i punti alla squadra avversaria.
 
 
-\begin{figure}[t]
+\begin{figure}[!htb]
 \centering
-\subfigure[Suddivisione delle partite in base alla squadra di appartenenza del giocatore a strategie]{
+
 \begin{tikzpicture}[scale=1]
    \small
   \foreach \percent/\name in {
@@ -119,9 +119,12 @@ Se però questi compagni giocano casualmente è facile che lascino i punti alla 
       \fi
     };
 \end{tikzpicture}
-\label{pie:esperimento-strat-random-1}
-}
+\caption{Suddivisione delle partite in base alla squadra di appartenenza del giocatore a strategie} \label{pietab:esperimento-esiti-strat-random-altro}
+\end{figure}
 
+
+\begin{figure}[!htb]
+\centering
 
 \subfigure[Esiti delle prove in cui il giocatore a strategie era fra i soci]{%
 \begin{tikzpicture}[scale=.48]%
@@ -188,7 +191,7 @@ Se però questi compagni giocano casualmente è facile che lascino i punti alla 
 
 
 
-\subfigure[Esiti delle partite in valore assoluto]{
+\subfigure[Esiti delle partite suddivise in base al ruolo del giocatore a strategia]{
  \begin{tabular*}{.8\textwidth}{@{\extracolsep{\fill}} | c | c | c | }
     \hline
                   & soci   & villani   \\ \hline
@@ -205,7 +208,8 @@ Se però questi compagni giocano casualmente è facile che lascino i punti alla 
 
 
 
-\caption {Un giocatore a strategia vs Random: esiti delle partite in base alla squadra di appartenenza} \label{pietab:esperimento-strat-random} 
+\caption {Un giocatore a strategia vs Random: esiti delle partite in base alla squadra di appartenenza}
+\label{pietab:esperimento-esiti-strat-random} 
 \end{figure}
 
 
@@ -226,24 +230,254 @@ Se però questi compagni giocano casualmente è facile che lascino i punti alla 
 
 \section{Una squadra a strategia vs Random}
 
-Infine si sono condotte 170 partite con due giocatori a strategia, ottenendone 10 in cui entrambi i giocatori fossero nella squadra dei soci e 115 con tre giocatori a strategia ottenendone 10 in cui fossero tutti tra i villani.
-In questo modo è stato possibile valutare le prestazioni di una squadra (sia essa dei villani o dei soci) a strategie contro una random.
+Si sono poi condotte 170 partite con due giocatori a strategia, ottenendone 10 in cui entrambi i giocatori fossero nella squadra dei soci e 115 con tre giocatori a strategia ottenendone 10 in cui questi fossero tutti tra i villani.
+In questo modo è stato possibile valutare le prestazioni di una squadra a strategie (sia essa dei villani o dei soci) contro una random.\\
+Confrontando i risultati di questo esperimento, illustrati nelle figure \ref{pie:esperimento-ultimo-soci-2} e \ref{pie:esperimento-ultimo-vill-2}, con quelli ottenuti con squadre a giocatori casuali, (\ref{pie:esperimento-random-random}), è immediato notare come, per entrambe le squadre, ci sia stato un notevole vantaggio derivato dall'adozione (da parte dell'intera squadra) delle strategie basi finora implementate.
+\\Questo ha infatti portato a un incremento del 13.3 \% di vittorie sul numero assoluto di partite per la squadra del chiamante e del 30 \% per la squadra dei villani, che equivale al doppio della percentuale di partite vinte dalla stessa squadra formata da giocatori a strategia casuale.
 
 
-Confrontando i risultati di questo esperimento, illustrati nella tabella \ref{tab:esperimento-ultimo}, con quelli ottenuti con squadre a giocatori casuali, (\ref{pie:esperimento-random-random}), è immediato notare come, per entrambe le squadre, ci sia stato un notevole vantaggio derivato dall'adozione (da parte dell'intera squadra) delle strategie basi finora implementate.
-\\Questo ha infatti portato a un incremento del 13.3 \% di vittorie sul numero assoluto di partite per la squadra del chiamante e del 30 \% per la squadra dei villani, che equivale addirittura al doppio della percentuale di partite vinte dalla stessa squadra formata da giocatori a strategia casuale.
-\begin {table}
-\begin{center}
+
+
+
+
+
+
+\begin{figure}[!htb]
 \centering
-  \begin{tabular*}{1\textwidth}{@{\extracolsep{\fill}} | p{0.45\linewidth} | p{0.45\linewidth} | @{} }
-  
+\subfigure[Frazione delle partite ``utili'' (in cui i due giocatori a strategie erano soci) sul totale]{%
+\begin{tikzpicture}[scale=.48]%
+\footnotesize%
+  \foreach \percent/\name in {%
+      93.1/Altro,%
+      5.9/Soci%
+    }{%
+      \ifx\percent\empty\else%               % If \percent is empty, do nothing
+        \global\advance\cyclecount by 1%     % Advance cyclecount
+        \global\advance\ind by 1%            % Advance list index
+        \ifnum3<\cyclecount%                 % If cyclecount is larger than list
+          \global\cyclecount=0%              %   reset cyclecount and
+          \global\ind=0%                     %   reset list index
+        \fi%
+        \pgfmathparse{\cyclelist[\the\ind]}% Get color from cycle list
+        \edef\color{\pgfmathresult}%         %   and store as \color
+        % Draw angle and set labels
+        \draw[fill={\color!50},draw={\color}] (0,0) -- (\angle:\radius)%
+          arc (\angle:\angle+\percent*3.6:\radius) -- cycle;%
+        \node at (\angle+0.5*\percent*3.6:0.7*\radius) {\percent\,\%};%
+        \node[pin=\angle+0.5*\percent*3.6:\name]%
+          at (\angle+0.5*\percent*3.6:\radius) {};%
+        \pgfmathparse{\angle+\percent*3.6}%  % Advance angle
+        \xdef\angle{\pgfmathresult}%         %   and store in \angle
+      \fi%
+    };%
+\end{tikzpicture}%
+   \label{pie:esperimento-ultimo-soci-1}%
+}%
+\hfill
+\subfigure[Esiti delle sole prove ``utili'']{%
+\begin{tikzpicture}[scale=.48]%
+\footnotesize%
+  \foreach \percent/\name in {%
+      80/Vittorie,%
+      20/Sconfitte,%
+      0/Pareggi%
+    } {%
+      \ifx\percent\empty\else%               % If \percent is empty, do nothing
+        \global\advance\cyclecount by 1%     % Advance cyclecount
+        \global\advance\ind by 1%            % Advance list index
+        \ifnum3<\cyclecount%                 % If cyclecount is larger than list
+          \global\cyclecount=0%              %   reset cyclecount and
+          \global\ind=0%                     %   reset list index
+        \fi%
+        \pgfmathparse{\cyclelist[\the\ind]}% Get color from cycle list
+        \edef\color{\pgfmathresult}%         %   and store as \color
+        % Draw angle and set labels
+        \draw[fill={\color!50},draw={\color}] (0,0) -- (\angle:\radius)%
+          arc (\angle:\angle+\percent*3.6:\radius) -- cycle;%
+        \node at (\angle+0.5*\percent*3.6:0.7*\radius) {\percent\,\%};%
+        \node[pin=\angle+0.5*\percent*3.6:\name]%
+          at (\angle+0.5*\percent*3.6:\radius) {};%
+        \pgfmathparse{\angle+\percent*3.6}%  % Advance angle
+        \xdef\angle{\pgfmathresult}%         %   and store in \angle
+      \fi%
+    };%
+\end{tikzpicture}%
+   \label{pie:esperimento-ultimo-soci-2}%
+}%
+
+
+
+
+\subfigure[Esiti delle partite in valore assoluto. Con \emph{utili} si indicano quelle partite in cui i due giocatori a strategia erano soci]{
+ \begin{tabular*}{.8\textwidth}{@{\extracolsep{\fill}} | c | c | c | }
     \hline
-                    chiamante + socio & villani    \\ \hline
-                    80 \% &  60\%               \\ \hline 
+         totale   & utili  & vittorie tra le utili    \\ \hline
+         170      & 10     & 8         \\ \hline         
   \end{tabular*}
-  \caption {Percentuale di vittorie conseguite, per ogni tipo di squadra, da una squadra di giocatori a strategie contro una a giocatori casuali} \label{tab:esperimento-ultimo} 
-\end{center}
-\end {table}
+  \label{tab:esperimento-ultimo-soci}
+
+}
+\label{piech:ultimo-soci}
+\caption{Esiti delle partite svolte con due giocatori a strategia}
+\end{figure}
+
+
+
+
+
+
+
+
+
+\begin{figure}[!htb]
+\centering
+\subfigure[Frazione delle partite ``utili'' (in cui i tre giocatori a strategie erano villani) sul totale]{%
+\begin{tikzpicture}[scale=.48]%
+\footnotesize%
+  \foreach \percent/\name in {%
+      91.3/Altro,%
+      8.7/Villani%
+    }{%
+      \ifx\percent\empty\else%               % If \percent is empty, do nothing
+        \global\advance\cyclecount by 1%     % Advance cyclecount
+        \global\advance\ind by 1%            % Advance list index
+        \ifnum3<\cyclecount%                 % If cyclecount is larger than list
+          \global\cyclecount=0%              %   reset cyclecount and
+          \global\ind=0%                     %   reset list index
+        \fi%
+        \pgfmathparse{\cyclelist[\the\ind]}% Get color from cycle list
+        \edef\color{\pgfmathresult}%         %   and store as \color
+        % Draw angle and set labels
+        \draw[fill={\color!50},draw={\color}] (0,0) -- (\angle:\radius)%
+          arc (\angle:\angle+\percent*3.6:\radius) -- cycle;%
+        \node at (\angle+0.5*\percent*3.6:0.7*\radius) {\percent\,\%};%
+        \node[pin=\angle+0.5*\percent*3.6:\name]%
+          at (\angle+0.5*\percent*3.6:\radius) {};%
+        \pgfmathparse{\angle+\percent*3.6}%  % Advance angle
+        \xdef\angle{\pgfmathresult}%         %   and store in \angle
+      \fi%
+    };%
+\end{tikzpicture}%
+   \label{pie:esperimento-ultimo-vill-1}%
+}%
+\hfill
+\subfigure[Esiti delle sole prove ``utili'']{%
+\begin{tikzpicture}[scale=.48]%
+\footnotesize%
+  \foreach \percent/\name in {%
+      60/Vittorie,%
+      40/Sconfitte,%
+      0/Pareggi%
+    } {%
+      \ifx\percent\empty\else%               % If \percent is empty, do nothing
+        \global\advance\cyclecount by 1%     % Advance cyclecount
+        \global\advance\ind by 1%            % Advance list index
+        \ifnum3<\cyclecount%                 % If cyclecount is larger than list
+          \global\cyclecount=0%              %   reset cyclecount and
+          \global\ind=0%                     %   reset list index
+        \fi%
+        \pgfmathparse{\cyclelist[\the\ind]}% Get color from cycle list
+        \edef\color{\pgfmathresult}%         %   and store as \color
+        % Draw angle and set labels
+        \draw[fill={\color!50},draw={\color}] (0,0) -- (\angle:\radius)%
+          arc (\angle:\angle+\percent*3.6:\radius) -- cycle;%
+        \node at (\angle+0.5*\percent*3.6:0.7*\radius) {\percent\,\%};%
+        \node[pin=\angle+0.5*\percent*3.6:\name]%
+          at (\angle+0.5*\percent*3.6:\radius) {};%
+        \pgfmathparse{\angle+\percent*3.6}%  % Advance angle
+        \xdef\angle{\pgfmathresult}%         %   and store in \angle
+      \fi%
+    };%
+\end{tikzpicture}%
+   \label{pie:esperimento-ultimo-vill-2}%
+}%
+
+
+
+
+\subfigure[Esiti delle partite in valore assoluto. Con \emph{utili} si indicano quelle partite in cui i due giocatori a strategia erano villani]{
+ \begin{tabular*}{.8\textwidth}{@{\extracolsep{\fill}} | c | c | c | }
+    \hline
+         totale   & utili  & vittorie tra le utili    \\ \hline
+         115      & 10     & 6         \\ \hline         
+  \end{tabular*}
+  \label{tab:esperimento-ultimo-vill}
+
+}
+\label{piech:ultimo-vill}
+\caption{Esiti delle partite svolte con tre giocatori a strategia}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Strategia vs Strategia}
+
+Infine si sono condotte 50 prove con con tutti e cinque i giocatori a strategia, i cui esiti sono raccolti in figura \ref{pietab:esperimento-strat-strat}.\\
+Usando questa configurazione si è tornati a una situazione molto simile a quella iniziale di random vs random (\ref{pietab:esperimento-random-random}), con un lieve incremento di vittorie da parte dei villani a discapito dei soci.\\
+Questa variazione degli equilibri, oltre a poter dipendere da una maggior bontà delle strategie implementate specificamente per i villani rispetto a quelle per i soci, potrebbe essere anche giustificabile tramite le stesse ipotesi avanzate nel tentativo di spiegare la disparità nei risultati random vs random: mentre il vantaggio connaturato nel ruolo di soci rimane, spostando favorevolmente verso questi le percentuali di vittoria, si perde l'ulteriore svantaggio che avevano i soci nel caso random vs random.
+Allora infatti essi erano impossibilitati a contrapporre al vantaggio dei soci derivato dalle migliori carte possedute, la propria superiorità numerica; potendo invece qui far gioco di squadra tale disparità, se non sparisce, si riduce.
+
+
+\begin{figure}[!htb]
+\centering
+
+\subfigure[Percentuale di vittorie conseguite per squadra]{
+\begin{tikzpicture}[scale=1]
+   \small
+  \foreach \percent/\name in {
+      60/Soci,
+      38/Villani,
+      2/Pareggio
+    } {
+      \ifx\percent\empty\else               % If \percent is empty, do nothing
+        \global\advance\cyclecount by 1     % Advance cyclecount
+        \global\advance\ind by 1            % Advance list index
+        \ifnum3<\cyclecount                 % If cyclecount is larger than list
+          \global\cyclecount=0              %   reset cyclecount and
+          \global\ind=0                     %   reset list index
+        \fi
+        \pgfmathparse{\cyclelist[\the\ind]} % Get color from cycle list
+        \edef\color{\pgfmathresult}         %   and store as \color
+        % Draw angle and set labels
+        \draw[fill={\color!50},draw={\color}] (0,0) -- (\angle:\radius)
+          arc (\angle:\angle+\percent*3.6:\radius) -- cycle;
+        \node at (\angle+0.5*\percent*3.6:0.7*\radius) {\percent\,\%};
+        \node[pin=\angle+0.5*\percent*3.6:\name]
+          at (\angle+0.5*\percent*3.6:\radius) {};
+        \pgfmathparse{\angle+\percent*3.6}  % Advance angle
+        \xdef\angle{\pgfmathresult}         %   and store in \angle
+      \fi
+    };
+\end{tikzpicture}
+\label{pie:esperimento-random-random}
+}
+
+\subfigure[Numero assoluto di vittorie conseguite per squadra su un totale di 50 partite]{
+ \begin{tabular*}{1\textwidth}{@{\extracolsep{\fill}} | c | c | c | c | }
+    \hline
+                    chiamante + socio & villani & pareggi & totale prove svolte   \\ \hline
+                    30  & 19  & 1 & 50               \\ \hline 
+  \end{tabular*}
+  \label{tab:esperimento-random-random}
+
+}
+
+\caption {Strategia vs Strategia: esiti delle partite in base alla squadra di appartenenza} \label{pietab:esperimento-strat-strat} 
+\end{figure}
+
+
+
+
+
 
 \section{Interpretazione dei dati sperimentali}
 
@@ -251,59 +485,3 @@ A causa dell'impossibilità di decidere a priori la formazione delle squadre e, 
 Inoltre è importante ribadire come le regole implementate siano estremamente basilari, arbitrarie e in numero ridotto (una trentina) data la loro funzione esemplificativa piuttosto che competitiva.\\
 Nonostante queste considerazioni l'incremento di prestazioni ottenuto dal giocatore a strategia rispetto a quello random è nettamente visibile. \\
 Questa osservazione ci fa concludere che il sistema sia potenzialmente valido e che aumentando l'ampiezza dell'insieme delle strategie, anche tramite l'uso dell'interfaccia per l'utente esperto, sia possibile ottenere giocatori sempre più performanti in questo tipo di valutazione.
-
-
-% \newcommand{\slice}[4]{
-%   \pgfmathparse{0.5*#1+0.5*#2}
-%   \let\midangle\pgfmathresult
-%
-%   % slice
-%   \draw[thick,fill=black!10] (0,0) -- (#1:1) arc (#1:#2:1) -- cycle;
-%
-%   % outer label
-%   \node[label=\midangle:#4] at (\midangle:1) {};
-%
-%   % inner label
-%   \pgfmathparse{min((#2-#1-10)/110*(-0.3),0)}
-%   \let\temp\pgfmathresult
-%   \pgfmathparse{max(\temp,-0.5) + 0.8}
-%   \let\innerpos\pgfmathresult
-%   \node at (\midangle:\innerpos) {#3};
-% }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

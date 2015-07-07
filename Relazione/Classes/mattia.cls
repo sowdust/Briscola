@@ -222,12 +222,12 @@
     {{\@collegeordept} \par}}
     {\large \vspace*{15mm} {{\@crest} \par} }
     
-    {\normalsize \vspace*{10mm} {{\submittedtext} \par} \vspace*{1ex} }
+    {\large \vspace*{10mm} {{\submittedtext} \par} \vspace*{1ex} }
     {\normalsize   {  \vspace*{2ex}  {\@degreedate}} \vspace*{15mm}}
     
     
   
-    { \Huge {\bfseries {\@title}} \par \vspace*{25mm}}
+    { \LARGE {\bfseries {\@title}} \par \vspace*{25mm}}
 \end{center}
 
     {\large {\@degree} \par \vspace*{18mm}}
