@@ -216,7 +216,7 @@
     \thispagestyle{empty}
 %  \null\vfill
   \begin{center}
-  {\large %\vspace*{1ex}
+  {\Large %\vspace*{1ex}
     {{\@university} \par}
 \vspace*{1ex}
     {{\@collegeordept} \par}}
@@ -227,7 +227,7 @@
     
     
   
-    { \LARGE {\bfseries {\@title}} \par \vspace*{25mm}}
+    { \Large {\bfseries {\@title}} \par \vspace*{25mm}}
 \end{center}
 
     {\large {\@degree} \par \vspace*{18mm}}
