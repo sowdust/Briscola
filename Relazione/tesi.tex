@@ -12,6 +12,8 @@
 \usepackage{tikz-qtree}
 \usepackage{subfigure}
 \usepackage[labelfont=bf]{caption}
+\usepackage{calc}
+\usepackage{ifthen}
 \usetikzlibrary{shapes}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 
@@ -46,7 +48,6 @@
     \pdfcatalog { /PageMode (/UseOutlines)
                   /OpenAction (fitbh)  }
 \fi
-
 
 %--------------------------------------------------------------------------------------
 \title{Briscola in 5: un sistema esperto per una strategia a regole}
@@ -168,7 +169,7 @@
 \include{Appendix1/appendix1}
 \include{Appendix2/appendix2}
 %---------------------------------
-\listoffigures
+%\listoffigures
 %---------------------------------
 %\printnomenclature  %% Print the nomenclature
 %\addcontentsline{toc}{chapter}{Nomenclature}

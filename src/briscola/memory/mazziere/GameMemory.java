@@ -112,20 +112,20 @@ public class GameMemory implements Serializable {
             rolesList.add(r.toString());
             if (r.equals(GIAGUARO)) {
                 giaguaroIndex = i;
-                if (p.getName().equals("martinuzza")) {
-                    ruoloMartinuzza = "G";
-                }
-                if (p.getName().equals("mattia")) {
-                    ruoloMattia = "G";
-                }
+                /*if (p.getName().equals("martinuzza")) {
+                 ruoloMartinuzza = "G";
+                 }
+                 if (p.getName().equals("mattia")) {
+                 ruoloMattia = "G";
+                 }*/
             } else if (r.equals(SOCIO)) {
                 socioIndex = i;
-                if (p.getName().equals("martinuzza")) {
-                    ruoloMartinuzza = "S";
-                }
-                if (p.getName().equals("mattia")) {
-                    ruoloMattia = "S";
-                }
+                /*                if (p.getName().equals("martinuzza")) {
+                 ruoloMartinuzza = "S";
+                 }
+                 if (p.getName().equals("mattia")) {
+                 ruoloMattia = "S";
+                 }*/
             } else {
                 villIndex.add(i);
             }
@@ -139,10 +139,10 @@ public class GameMemory implements Serializable {
         for (int i : villIndex) {
             resultPoints.add(points.get(i));
         }
-        resultPoints.add(ruoloMartinuzza);
-        resultPoints.add(ruoloMattia);
+//        resultPoints.add(ruoloMartinuzza);
+//        resultPoints.add(ruoloMattia);
 
-        mazziere.logCSV(resultPoints.toArray(new String[points.size()]));
+        mazziere.logCSV(resultPoints.toArray(new String[resultPoints.size()]));
 
         /*
          mazziere.logCSV(playerNames.toArray(new String[playerNames.size()]));
