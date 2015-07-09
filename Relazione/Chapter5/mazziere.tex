@@ -29,7 +29,7 @@ inizializza le proprie strutture dati e il proprio reasoner (usato per codificar
         }
 \end{lstlisting}
 
-
+\noindent
 L'agente mazziere si registra al registro pubblico fornito da \textsc{Jade} per segnalare agli altri agenti della piattaforma la propria disponibilità a gestire una partita (\ref{setup2}). 
 
 \begin{lstlisting}[caption={stralcio del metodo setup() di MazziereAgent: registrazione al servizio pagine gialle},label=setup2]
@@ -54,8 +54,9 @@ L'agente mazziere si registra al registro pubblico fornito da \textsc{Jade} per 
         }
 \end{lstlisting}
 
+\noindent
 Infine, richiama il proprio metodo \texttt{startNewGame()} per dare inizio alla partita, avviando i \emph{Behaviours} che si occupano dell'apertura del tavolo e della ricezione degli eventuali commenti alle giocate.
-Inizializza inoltre un nuovo "registro della partita" che costituisce un vero e proprio log delle attività svoltesi, che è implementato nella classe \texttt{GameMemory}.
+Inizializza inoltre un nuovo ``registro della partita'' che costituisce un vero e proprio log delle attività svoltesi, che è implementato nella classe \texttt{GameMemory}.
 
 
 
@@ -86,4 +87,5 @@ In questa fase (\ref{takedown}) l'agente mazziere si preoccupa di disallocare le
     }
 \end{lstlisting}
 
-Gli altri metodo implementati in questa classe sono principalmente metodi di utilità o metodi per interagire con il registro in memoria della partita.
+\noindent
+Gli altri metodi implementati in questa classe sono principalmente metodi di utilità o metodi per interagire con il registro in memoria della partita.

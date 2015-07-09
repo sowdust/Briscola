@@ -1,14 +1,14 @@
 \section{Teoria dei giochi}
 
-La \emph{Teoria dei giochi} è una branca della matematica che studia ``modelli di conflitto e cooperazione tra agenti razionali capaci di ``intraprendere decisioni'' \cite{gtheory}, ovvero le strategie da seguire per effettuare decisioni in maniera ottimale.\\
+La \emph{Teoria dei giochi} è una branca della matematica che studia ``modelli di conflitto e cooperazione tra agenti razionali capaci di ``intraprendere decisioni'', \cite{gtheory} ovvero le strategie da seguire per effettuare decisioni in maniera ottimale.\\
 Gli ambiti applicativi delle teoria dei giochi sono diversi: Economia, Politica, Logica, Biologia, Informatica e persino Psicologia.\\
 Sviluppatasi nella prima metà del Novecento, questa disciplina conobbe un forte aumento di interesse da parte dei ricercatori a partire dagli anni '50, dopo la pubblicazione del volume ``Theory of Games and Economic Behavior'' da parte del matematico John von Neumann insieme all'economista Oskar Morgenstern. % (\cite{tog}).
-Agli inizi degli anni 2000 la Teoria dei giochi ebbe modo di essere conosciuta anche dal pubblico non specialista grazie alla celebre pellicola holliwoodiana \emph{A Beautiful Mind}, ispirata alla vita e agli studi del famoso matematico John Nash, vincitore del premio Nobel per l'Economia nel 1994 con lavori di Teoria dei giochi (\cite{jnash}).
+Agli inizi degli anni 2000 la Teoria dei giochi ebbe modo di essere conosciuta anche dal pubblico non specialista grazie alla celebre pellicola holliwoodiana \emph{A Beautiful Mind}, ispirata alla vita e agli studi del famoso matematico John Nash, vincitore del premio Nobel per l'Economia nel 1994 con lavori di Teoria dei giochi. (\cite{jnash})
 
 
 \subsection{Rappresentazione dei giochi}
 
-Un gioco può essere formalmente definito da quattro elementi (\cite{ramusen}):
+Un gioco può essere formalmente definito da quattro elementi: (\cite{ramusen})
 \begin{enumerate}
    \item i \emph{giocatori} o, più in generale, gli agenti partecipanti al processo;
    \item le \emph{informazioni} disponibili ai giocatori in ciascun momento decisivo;
@@ -33,8 +33,7 @@ In questo caso il \emph{payoff} può essere assegnato tramite una \emph{funzione
 \begin{quote}
 Un gioco può essere descritto in termini di strategie che i giocatori devono seguire nelle loro mosse: l'equilibrio c'è, quando nessuno riesce a migliorare in maniera unilaterale il proprio comportamento. Per cambiare, occorre agire insieme. \emph{John Nash}
 \end{quote}
-La precedente citazione introduce in maniera informale il concetto di \emph{equilibrio}, cardine della teoria dei giochi, secondo il quale la migliore strategia è quella che consente il miglior \emph{payoff} a tutti i partecipanti senza offrire a nessuno di essi la possibilità di deviare da tale strategia guadagnandoci.\\
-
+La precedente citazione introduce in maniera informale il concetto di \emph{equilibrio}, cardine della teoria dei giochi, secondo il quale la migliore strategia è quella che consente il miglior \emph{payoff} a tutti i partecipanti senza offrire a nessuno di essi la possibilità di deviare da tale strategia guadagnandoci.\vspace*{.7cm} \\
 Più formalmente si può definire (\cite{eponimo}) il concetto come segue, caratterizzando un gioco come:
 \begin{itemize}
    \item un insieme $G$ di giocatori o agenti, di cardinalità $N$ 
@@ -63,8 +62,8 @@ tale che
 
 %per ogni $i$ e per ogni strategia $s_i$ scelta dal giocatore $i$-esimo.
 
-
-Più informalmente: se un gioco ammette un equilibrio di Nash, ogni agente ha a disposizione una strategia $s^*$ che massimizza il proprio payoff quando anche tutti gli altri agenti stiano seguendo una strategia scelta con lo stesso criterio.\\
+\noindent
+Informalmente: se un gioco ammette un equilibrio di Nash, ogni agente ha a disposizione una strategia $s^*$ che massimizza il proprio payoff quando anche tutti gli altri agenti stiano seguendo una strategia scelta con lo stesso criterio.\\
 Da questa definizione è facile comprendere il significato intuitivo di strategia di equilibrio come strategia che non permetta agli altri partecipanti di deviare da essa senza diminuire il proprio payoff: l'unica variabile su cui il giocatore $i$ ha influenza nella formula finale è la scelta della propria strategia; ma $s_i^*$ costituisce già la strategia che consente di massimizzare il proprio payoff.
 
 
@@ -98,7 +97,7 @@ Il dilemma è il seguente:
   \caption {Dilemma del prigioniero in forma normale; per i prigionieri A e B sono indicati come \emph{payoff} (in questo caso negativi) gli anni di carcere cui vanno incontro nelle varie situazioni possibili} \label{prigionierofn} 
 \end{center}
 \end {table}
-
+\noindent
 Si chiamino i due prigionieri $A$ e $B$.
 La situazione è descritta dalla forma normale \ref{prigionierofn} e dalla forma estesa \ref{extensive}.
 Si può notare che entrambi i prigionieri ottengono un maggior \emph{payoff} tradendo il compagno piuttosto che cooperando con lui rimanendogli fedele.
@@ -159,11 +158,11 @@ Secondo la classificazione della teoria dei giochi, i giochi di carte appartengo
    \item \emph{sequenziali} in quanto si sviluppano nel tempo e i giocatori hanno la possibilità di muovere uno alla volta dopo aver visto le mosse altrui;
    \item \emph{a informazione imperfetta}  perchè le carte nelle mani altrui non sono visibili.
 \end{itemize}
-
-Nonostante alcuni giochi di carte siano sia \emph{competitivi} che \emph{cooperativi}, come ad esempio il \emph{Bridge} o la \emph{Briscola a 4} in cui due squadre di giocatori fra loro cooperanti si affrontano competitivamente, è generalmente possibile semplificare le dinamiche del gioco considerando i giocatori di una stessa squadra come un unico agente, riconducendo l'ambiente ad uno semplicemente \emph{competitivo} (vedi \cite{pavel}).\\
+\noindent
+Nonostante alcuni giochi di carte siano sia \emph{competitivi} che \emph{cooperativi}, come ad esempio il \emph{Bridge} o la \emph{Briscola a 4} in cui due squadre di giocatori fra loro cooperanti si affrontano competitivamente, è generalmente possibile semplificare le dinamiche del gioco considerando i giocatori di una stessa squadra come un unico agente, riconducendo l'ambiente ad uno semplicemente \emph{competitivo}. (\cite{pavel})\\
 Per la classificazione cui appartengono, i giochi di carte sono adatti ad essere rappresentati in forma estesa, tramite un \emph{albero di decisione} che ne rappresenti tutte le possibili mosse da parte di tutti i giocatori e comprenda per i nodi foglia, cioè le mosse finali, i relativi \emph{payoff}.\\
 Essendo i giochi di carte ad \emph{informazione imperfetta} sorgono alcune complicazioni nella costruzione della forma estesa del gioco.
 Infatti, alcune scelte possono non essere direttamente disponibili al giocatore; questo può coinvolgere sia le scelte effettuate dal caso, come quando si tratti della distribuzione delle carte in mano all'avversario, sia le scelte dell'avversario stesso, come quando questo giochi una carta mantenendola però coperta.\\
 Questo fa sì che un giocatore possa non sapere dove si trovi all'interno dell'albero della forma estesa.\\
-Nonostante alcune soluzioni per superare queste difficoltà siano già state formulate (si veda \cite{wiley}), per la maggior parte dei giochi di carte l'albero rimarrebbe comunque troppo esteso per poter essere trattato computazionalmente in pratica (\cite{frank}).\\
+Nonostante alcune soluzioni per superare queste difficoltà siano già state formulate, (si veda \cite{wiley}) per la maggior parte dei giochi di carte l'albero rimarrebbe comunque troppo esteso per poter essere trattato computazionalmente in pratica. (\cite{frank})\\
 Anche in questo caso quindi, valgono le considerazioni fatte per gli algoritmi di ricerca e la possibilità di utilizzare strategemmi approssimativi unite ad algoritmi di pruning (\cite{pavel}) per rendere l'esplorazione eseguibile in un tempo ragionevole.

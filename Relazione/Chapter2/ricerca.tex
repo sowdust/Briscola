@@ -16,7 +16,7 @@ Tralasciando quest'ultima caratteristica, in generale un agente che si trovi a d
 Per fare ciò è però altresì necessario che il problema sia ben posto.
 
 \subsection{Problemi ben posti}
-Un \emph{problema} può essere formalizzato in cinque componenti (\cite{randw}):
+Un \emph{problema} può essere formalizzato in cinque componenti: (\cite{randw})
 \begin{enumerate}
    \item Uno \emph{stato iniziale} $s_0$ da cui partire.
    \item Una serie di \emph{azioni} o, nel caso degli scacchi, di \emph{mosse}: dato un particolare stato della scacchiera \emph{s}, le mosse che si possono fare rispettando le regole del gioco vengono dette \emph{azioni applicabili in \emph{s}}. La funzione virtuale \textsc{ACTIONS(\emph{s})} fornisce l'insieme delle azioni legali nello stato \emph{s}.
@@ -30,10 +30,10 @@ Un \emph{percorso} nello spazio degli stati è una sequenza di stati connessi da
 Per fare un esempio applichiamo la definizione di \emph{problema ben posto} alla chiusura \emph{Hansen vs. Larsen, Odense 1988}.
 L'agente che prendiamo in considerazione è il giocatore nero.
 In questo caso l'obiettivo non è quello di dare scacco matto all'avversario (obiettivo impossibile) ma di raggiungere una situazione di pareggio invece che una di sconfitta.\\
-Lo \emph{stato iniziale} \emph{s\textsubscript{0}} è rappresentato dalla situazione in figura \ref{stato-iniziale}.\\
+Lo \emph{stato iniziale} \emph{s\textsubscript{0}} è rappresentato dalla situazione nella Figura \ref{stato-iniziale}.\\
 Le \emph{azioni} \textsc{ACTIONS(\emph{s\textsubscript{0}})}, ovvero le possibili mosse applicabili allo stato iniziale, equivalgono alle sole mosse effettuabili dal re (unica pedina nera in gioco) che, secondo le regole degli scacchi, può spostarsi di una casella in ogni direzione (fig. \ref{azioni}).\\
-Il \emph{modello di transizione} \textsc{RESULT(\emph{s\textsubscript{0}},\emph{a})} è rappresentato in figura \ref{tmodel} per ogni azione legale \emph{a} descritta in \textsc{ACTIONS(\emph{s\textsubscript{0}})}.\\
-Lo stato di \emph{goal} (o \emph{obiettivo}) è rappresentato nella figura \ref{goal}.
+Il \emph{modello di transizione} \textsc{RESULT(\emph{s\textsubscript{0}},\emph{a})} è rappresentato nella Figura \ref{tmodel} per ogni azione legale \emph{a} descritta in \textsc{ACTIONS(\emph{s\textsubscript{0}})}.\\
+Lo stato di \emph{goal} (o \emph{obiettivo}) è rappresentato nella Figura \ref{goal}.
 \begin{figure}[!htb]
 \centering
 \subfigure[Stato Iniziale \emph{s\textsubscript{0}}]{
@@ -92,10 +92,9 @@ Chiamiamo i due giocatori \textsc{Min} e \textsc{Max} e, seguendo \cite{randw}, 
    \item un \emph{test di fine gioco}, \textsc{Terminal-test(\emph{s})}, che indica se nello stato  \emph{s} la partita è conclusa
    \item una \emph{funzione di utilità} \textsc{Utility(\emph{s},\emph{p})} che assegna un valore numerico allo stato finale \emph{s} per il giocatore \emph{p} (per esempio negli scacchi potrebbe essere 1 per la vittoria, $-1$ per la sconfitta e 0 per il pareggio)
 \end{itemize}
-
-\textbf{Nota} L'algoritmo richiede che il gioco sia classificabile come un \emph{zero-sum game}: ovvero un gioco in cui i valori della funzione di utilità in uno stato finale del gioco sono sempre uguali ed opposti.
-Questo vincolo vale per la maggior parte dei giochi trattati in AI, compreso quello degli scacchi.\\
-
+\vspace{.7cm}
+\textbf{Nota}: l'algoritmo richiede che il gioco sia classificabile come un \emph{zero-sum game}: ovvero un gioco in cui i valori della funzione di utilità in uno stato finale del gioco sono sempre uguali ed opposti.
+Questo vincolo vale per la maggior parte dei giochi trattati in AI, compreso quello degli scacchi.\vspace{.7cm}\\
 Nei giochi non è possibile definire in anticipo il percorso che giunge ad uno stato di goal (uno stato terminale in cui l'agente si aggiudichi la partita) dato che il percorso che seguirà la partita è deciso anche dal (o dai) giocatore avversario.
 Per risolvere questa difficoltà si assume quindi che l'avversario giochi una partita ottimale; è dimostrabile come questo garantisca una decisione vincente (anche se non necessariamente la migliore) anche in situazioni in cui l'avversario non dovesse giocare ottimamente.\\
 Prima di presentare un algoritmo che permetta di scegliere, ad ogni nodo, l'azione ottimale, è necessario definire il valore \emph{minimax} associato ad un nodo.
@@ -115,7 +114,7 @@ Formalmente:
 
 
 
-Il risultato di una tale definizione applicata al gioco del tris è visibile nella figura \ref{gametree}.
+Il risultato di una tale definizione applicata al gioco del tris è visibile nella Figura \ref{gametree}.
 
 
 \begin{center}
@@ -188,13 +187,8 @@ Il risultato di una tale definizione applicata al gioco del tris è visibile nel
 \subsubsection*{L'algoritmo \textsc{Minimax}}
 
 L'algoritmo \textsc{Minimax} eseguito da un agente giocatore assegna ad ogni stato, ovvero ad ogni nodo dell'albero, il suo \emph{valore di utilità}, applicando ricorsivamente la definizione \ref{minimax-value}.
-\textsc{Minimax} è quindi un algoritmo di esplorazione in profondità: chiamando \emph{m} la profondità dell'albero e \emph{b} il branching factor, la sua complessità risulta essere $O(b^m)$.
-
-
-
-
-
-\begin{algorithm}
+\textsc{Minimax} è quindi un algoritmo di esplorazione in profondità: chiamando \emph{m} la profondità dell'albero e \emph{b} il branching factor, la sua complessità risulta essere $O(b^m)$.\\
+\begin{algorithm}[!htb]
 \begin{PseudoCode}[mathescape,escapechar=~]
 function minimax-decision (s : state) : action
    return $argmax_{a \in Actions(s)}$ minvalue(~\textsc{result}~(s, a))
@@ -217,9 +211,9 @@ function minvalue(s : state) : utility value
 \label{alg:minimax}
 \end{algorithm}
 
-L'algoritmo~\ref{alg:minimax} può facilmente essere esteso ad una situazione a più di due giocatori modificando la funzione \textsc{Utility} in modo che restituisca un vettore di valori invece che uno solo.
-(Si noti che nei giochi \emph{zero sum} a due soli avversari è sufficiente un solo valore per entrambi dato che uno è l'opposto dell'altro, ma la cosa equivale ad utilizzare un vettore a due valori).
-
+\noindent
+L'Agoritmo~\ref{alg:minimax} può facilmente essere esteso ad una situazione a più di due giocatori modificando la funzione \textsc{Utility} in modo che restituisca un vettore di valori invece che uno solo.
+(Si noti che nei giochi \emph{zero sum} a due soli avversari è sufficiente un solo valore per entrambi dato che uno è l'opposto dell'altro, ma la cosa equivale ad utilizzare un vettore a due valori).\\
 Come precedentemente anticipato la generazione dell'intero spazio degli stati, e a maggior ragione la sua visita completa in profondità, sono computazionalmente intrattabili per qualsiasi gioco non banale.
 Per ovviare a questo problema esistono vari metodi che permettono di generare solo un sottoinsieme interessante dell'intero spazio degli stati e di farlo mano a mano che lo si esplora. Tali metodi applicati all'albero sono detti di \emph{pruning}.
 

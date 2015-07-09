@@ -11,7 +11,7 @@ Fa questo utilizzando il già accennato metodo dell'\emph{expert system}: data u
 
 La conoscenza formalizzata nella \emph{KB} è suddivisa in \emph{fatti}.
 Questi fatti possono essere semplici stringhe oppure, più comunemente, informazioni strutturate.
-In questo secondo caso va definita la loro struttura, detta \emph{template} (\cite{jessbook}).
+In questo secondo caso va definita la loro struttura, detta \emph{template}. (\cite{jessbook})
 Un template è formato da
 \begin{itemize}
    \item un nome dato all'informazione strutturata,
@@ -75,9 +75,7 @@ otherkeywords={slot,defrule,deftemplate},
 ( deftemplate briscola (slot card) (slot rank) (slot suit) )
 \end{lstlisting}
 
-
-
-
+\noindent
 Altri tipi di fatti (\ref{fattidiMano}), invece, si riferiscono esclusivamente alla mano in corso e vengono quindi rimossi ogni volta che tutti e cinque i giocatori hanno effettuato la loro giocata e che il mazziere ha dato inizio ad una nuova mano.
 
 \begin{lstlisting}[caption={Alcuni template di fatti la cui validità è limitata alla giocata corrente}, label=fattidiMano]
@@ -187,11 +185,11 @@ public void addGiocata(int mano, int counter, Player justPlayer,
     rete.run();
 \end{lstlisting}
 I fatti ``derivati'', invece, sono asseriti dopo un processo di \emph{reasoning} applicato ai fatti già contenuti nella \emph{KB}.
-Il reasoning, come si può vedere dall'ultima linea del listato \ref{addGiocata}, viene attivato ad ogni nuova giocata ricevuta, così che sia possibile ottimizzare i tempi portandosi avanti sull'analisi della situazione prima che arrivi il proprio turno.\\
+Il reasoning, come si può vedere dall'ultima linea del Listato \ref{addGiocata}, viene attivato ad ogni nuova giocata ricevuta, così che sia possibile ottimizzare i tempi portandosi avanti sull'analisi della situazione prima che arrivi il proprio turno.\\
 
 \subsubsection*{Esempio: fatti derivati asseriti applicando le strategie alle informazioni relative a una nuova giocata appena memorizzate nella KB}
 
-La regola \texttt{nuova-giocata} (listato \ref{nuovagiocata}) viene eseguita dal reasoner successivamente all'esecuzione della funzione \texttt{addGiocata} (\ref{addGiocata}) che ne asserisce i fatti contenuti nell'antecedente.
+La regola \texttt{nuova-giocata} (Listato \ref{nuovagiocata}) viene eseguita dal reasoner successivamente all'esecuzione della funzione \texttt{addGiocata} (\ref{addGiocata}) che ne asserisce i fatti contenuti nell'antecedente.
 Questa regola permette nello specifico di analizzare una giocata appena ricevuta e di classificarla in uno dei modi previsti dal sistema (liscio, taglio, strozzo\dots).
 Vengono inoltre modificati i fatti \texttt{seme-mano} e \texttt{prende} per aggiornare, rispettivamente, quale sia il nuovo seme regnante e chi si stia aggiudicando la mano.
 
@@ -269,7 +267,7 @@ Servono a tentare di capire chi sia il socio in base alle giocate osservate.\\
 Le strategie di decisione, invece, sono quelle che permettono di selezionare una carta tra quelle in mano per essere giocata.\\
 Sebbene il framework costruito non vincoli in alcun modo i due tipi di strategie, nelle regole implementate durante la sperimentazione  è parso ragionevole collegare le une alle altre.\\
 È immediatamente evidente come una strategia di decisione possa basarsi sul risultato ottenuto da una di analisi: per esempio, se quest'ultima avesse assegnato, con un'incertezza molto bassa, un dato giocatore al ruolo di socio, la strategia di decisione eviterebbe di far giocare un carico quando tal giocatore si trovi ultimo di mano dopo di sè.\\
-
+\noindent
 Allo stesso modo è possibile basare le strategie di analisi su quelle di decisione, assumendo che l'avversario segua strategie decisionali simili alle proprie.
 L'idea è quella di ``rovesciare'' le regole di decisione per costruire quelle di analisi, scambiando antecedente e conseguente.\\
 Per chiarire l'intuizione, si assuma che il giocatore \emph{P} abbia fra le sue regole una per cui: se il suo ruolo è \emph{socio}, dopo di lui c'è il \emph{chiamante} ultimo di mano, allora gioca un carico; \emph{P} osservando un giocatore \emph{A} penultimo di mano prima del \emph{chiamante} giocare un carico, assumendo che \emph{A} stia seguendo strategie simili alle proprie, potrà concludere con un certo grado di incertezza che il ruolo di \emph{A} è quello del \emph{socio}.\\
@@ -332,7 +330,7 @@ Si noti che, come anticipato, la precedente regola \ref{socio1} esiste in divers
 
 In base alla situazione rappresentata nella \emph{KB}, un diverso numero di regole può essere attivato contemporaneamente.\\
 Questo può portare a una situazione in cui il reasoner si trovi ad avere dei fatti di tipo \texttt{da-giocarsi} (quelli che contengono le carte selezionate per la giocata) in conflitto fra loro.\\
-Per risolvere questo tipo di conflitti si è preso ad esempio il sistema di \emph{conflict resolution} interno adottato da \textsc{Jess} (\cite{jessbook}): ogni fatto \texttt{da-giocarsi} non contiene solo l'indicazione della carta che una regola ha ritenuto opportuno giocare, bensì anche un valore euristico che indica la validità di tale carta.
+Per risolvere questo tipo di conflitti si è preso ad esempio il sistema di \emph{conflict resolution} interno adottato da \textsc{Jess}: (\cite{jessbook}) ogni fatto \texttt{da-giocarsi} non contiene solo l'indicazione della carta che una regola ha ritenuto opportuno giocare, bensì anche un valore euristico che indica la validità di tale carta.
 La funzione \ref{dagiocarsi}, al momento di giocare, sceglie fra le carte selezionate quella con migliore priorità per essere effettivamente giocata.
 In questo modo una regola ``di difesa'' che venga attivata quasi sempre e scelga una carta da giocarsi in modo da limitare al minimo le perdite, viene surclassata da una regola ``di attacco'' che permetta di prendere un numero decisivo di punti in tavola.\\
 Tale metodo permette inoltre un immediato ``tuning'' delle regole che può avvenire non solo con l'aggiunta e le modifiche di queste, ma anche con l'aggiornamento dei loro valori di priorità, a volti detti \emph{salience}.
