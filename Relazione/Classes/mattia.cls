@@ -227,11 +227,11 @@
     
     
   
-    { \Large {\bfseries {\@title}} \par \vspace*{25mm}}
+    { \Large {\bfseries {\@title}}  \vspace*{25mm}}
 \end{center}
-
-    {\large {\@degree} \par \vspace*{18mm}}
-    {\hfill {\large {Candidato: } \@author} \par}
+   
+    {\noindent \large {\@degree} \par \vspace*{18mm}}
+    {\hfill {\large {Candidato:} \@author} \par}
 
 
   \null\vfill
@@ -264,10 +264,10 @@
 \newenvironment{acknowledgements}
 {\pagestyle{empty}
 \begin{alwayssingle}
-\begin{center}
-\vspace*{1.5cm}
-{\Large \bfseries Ringraziamenti}
-\end{center}
+% \begin{center}
+% \vspace*{1.5cm}
+% {\Large \bfseries Ringraziamenti}
+% \end{center}
 \vspace{0.5cm}
 \begin{quote}}
 {\end{quote}\end{alwayssingle}}

@@ -18,6 +18,10 @@
 \usetikzlibrary{shapes}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 
+
+%% immagini da sole solo se occupano 80 % della pagina
+\renewcommand{\floatpagefraction}{.8}%
+
 \lstloadlanguages{Matlab} %use listings with Matlab for Pseudocode
 \lstnewenvironment{PseudoCode}[1][]
 {\lstset{%
@@ -63,7 +67,7 @@
 % insert below the file name that contains the crest in-place of 'UnivShield'
   \crest{\includegraphics[width=35mm]{logo}}
 \else
-  \author{Mattia Vinci}
+  \author{Mattia \textsc{Vinci}}
   \collegeordept{Dipartimento di Informatica}
   \university{Università degli studi di Torino}
 % insert below the file name that contains the crest in-place of 'UnivShield'
@@ -76,7 +80,7 @@
 
 %--------------------------------------------------------------------------------------
 \renewcommand{\submittedtext}{Corso di laurea in Informatica \\ Relazione di stage}
-\degree{Relatore: Prof. R. Micalizio}
+\degree{Relatore: \\Dott. Roberto Micalizio}
 \degreedate{Anno accademico 2014/'15}
 
 % turn of those nasty overfull and underfull hboxes

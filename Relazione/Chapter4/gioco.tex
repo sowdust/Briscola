@@ -23,14 +23,12 @@ Un template è formato da
 Volendo rappresentare le informazioni sugli studenti di una scuola, si potrebbe definire un template del genere:
 \begin{verbatim}
    ( deftemplate studente 
-      (slot nome)
-      (slot cognome)
-      (slot matricola)
+      (slot nome)      (slot cognome)      (slot matricola)
    )
 \end{verbatim}
-Per inserire nella \emph{KB} le informazioni riguardo allo studente Henri Malatesta con matricola 147865 bisognerebbe asserire il fatto
+Per inserire nella \emph{KB} le informazioni riguardo allo studente Gianluca Malatesta con matricola 147865 bisognerebbe asserire il fatto
 \begin{verbatim}
-   (studente (nome Henri) (cognome Malatesta) (matricola 147865))
+   (studente (nome Gianluca) (cognome Malatesta) (matricola 147865))
 \end{verbatim}
 
 
@@ -56,28 +54,19 @@ otherkeywords={slot,defrule,deftemplate},
 
 \begin{lstlisting}[caption={Alcuni template di fatti che rimangono nella \emph{KB} per l'intera partita. Il contenuto di questi fatti viene aggiornato mano a mano che nuove informazioni si rendono disponibili all'agente giocatore}, label=fattiPermanenti]
 ( deftemplate in-mano "carte che posso ancora giocare"
-    (slot card)
-    (slot rank)
-    (slot suit)
+    (slot card)    (slot rank)    (slot suit)
 )
 
 ( deftemplate in-mazzo "carte ancora da scoprire"
-    (slot card)
-    (slot rank)
-    (slot suit)
+    (slot card)    (slot rank)    (slot suit)
 )
 
 ( deftemplate lisci-in-mano "Le carte di tipo liscio che posso giocare"
-    (slot card)
-    (slot rank)
-    (slot suit)
+    (slot card)    (slot rank)    (slot suit)
 )
 
 ( deftemplate carico-piu-basso "La minor carta di tipo carico che ho in mano"
-    (slot card)
-    (slot rank)
-    (slot suit)
-    (slot points)
+    (slot card)    (slot rank)    (slot suit)    (slot points)
 )
 
 ( deftemplate giaguaro  (slot player) )
@@ -93,27 +82,19 @@ Altri tipi di fatti (\ref{fattidiMano}), invece, si riferiscono esclusivamente a
 
 \begin{lstlisting}[caption={Alcuni template di fatti la cui validità è limitata alla giocata corrente}, label=fattidiMano]
 ( deftemplate in-tavolo "carte sul tavolo"
-    (slot card)
-    (slot player)
-    (slot rank)
-    (slot suit)
+    (slot card)    (slot player)    (slot rank)    (slot suit)
 )
 
 ( deftemplate da-giocarsi "carte attivate per il gioco e loro -salience-"
-    (slot card)
-    (slot sal)
+    (slot card)    (slot sal)
 )
 
 ( deftemplate turno "ordine in cui si gioca la mano"
-    (slot player)
-    (slot posizione)
+    (slot player)    (slot posizione)
 )
 
 ( deftemplate prende "chi, per ora, prende"
-    (slot player)
-    (slot card)
-    (slot rank)
-    (slot suit)
+    (slot player)    (slot card)    (slot rank)    (slot suit)
 )
 
 ( deftemplate giocata "info sulle giocate"
@@ -128,11 +109,12 @@ Altri tipi di fatti (\ref{fattidiMano}), invece, si riferiscono esclusivamente a
 
 I fatti all'interno della \emph{KB} possono essere fatti ``primitivi'', cioè riguardanti eventi che sono stati direttamente comunicati all'agente, come le carte possedute in mano o la giocata effettuata da un altro giocatore; oppure possono essere fatti ``derivati'': questo accade quando il \emph{reasoning} applica le strategie al contenuto della \emph{KB} e ne deduce informazioni che sono a loro volta asserite all'interno della \emph{KB}.
 I fatti primitivi sono quindi adatti ad essere asseriti dall'agente giocatore stesso all'infuori del meccanismo di reasoning.
+Questo viene realizzato tramite le API \textsc{Java} di \textsc{Jess}.
 
 \subsubsection*{Esempio: l'asserimento di fatti primitivi riguardanti una giocata appena effettuata}
 
-Quanto un agente giocatore riceve dal mazziere la comunicazione di una nuova giocata avvenuta, sia essa la propria o di un altro giocatore, deve aggiornare la conoscenza del mondo circostante all'interno della \emph{KB}.
-Sono infatti disponibili nuove informazioni riguardo le giocate effettuate finora e le carte in tavola (e di conseguenza le carte che non sono più nascoste nel "mazzo", ovvero nelle mani altrui); è inoltre possibile che sia stata giocata la carta chiamata: in questo caso si rendono noti i ruoli di tutti i giocatori, che quindi vanno aggiornati definitivamente.
+Quando un agente giocatore riceve dal mazziere la comunicazione di una nuova giocata avvenuta, sia essa la propria o quella di un altro giocatore, deve aggiornare la conoscenza del mondo circostante all'interno della \emph{KB}.
+Sono infatti disponibili nuove informazioni riguardo le giocate effettuate finora e le carte in tavola (e di conseguenza le carte che non sono più nascoste nel ``mazzo'', ovvero nelle mani altrui); è inoltre possibile che sia stata giocata la carta chiamata: in questo caso si rendono noti i ruoli di tutti i giocatori, che quindi vanno aggiornati definitivamente.
 
 
 
@@ -149,9 +131,9 @@ breaklines=true
  * Every time a card is played, we need to update our internal
  * representation.
  * - add the card onto the table
- * - if it was us playing, remove the card from our hand
+ * - if it was us playing, remove the card from our "mano"
  * - if it was others playing, remove the card from the hidden deck
- * - if the cards was the briscola, we now know the teams
+ * - if the card was the briscola, we now know the teams
  *
  * @param mano             # of "mani" played so far
  * @param counter          # of "giocate" so far
@@ -210,7 +192,7 @@ Il reasoning, come si può vedere dall'ultima linea del listato \ref{addGiocata}
 \subsubsection*{Esempio: fatti derivati asseriti applicando le strategie alle informazioni relative a una nuova giocata appena memorizzate nella KB}
 
 La regola \texttt{nuova-giocata} (listato \ref{nuovagiocata}) viene eseguita dal reasoner successivamente all'esecuzione della funzione \texttt{addGiocata} (\ref{addGiocata}) che ne asserisce i fatti contenuti nell'antecedente.
-Questa regola permette nello specifico di analizzare una giocata appena ricevuta e di classificarla in uno dei modi previsti dal sistema (liscio, taglio, strozzo...).
+Questa regola permette nello specifico di analizzare una giocata appena ricevuta e di classificarla in uno dei modi previsti dal sistema (liscio, taglio, strozzo\dots).
 Vengono inoltre modificati i fatti \texttt{seme-mano} e \texttt{prende} per aggiornare, rispettivamente, quale sia il nuovo seme regnante e chi si stia aggiudicando la mano.
 
 \lstset{numbers=left, numberstyle=\tiny, stepnumber=1,firstnumber=1,
@@ -289,7 +271,7 @@ Sebbene il framework costruito non vincoli in alcun modo i due tipi di strategie
 È immediatamente evidente come una strategia di decisione possa basarsi sul risultato ottenuto da una di analisi: per esempio, se quest'ultima avesse assegnato, con un'incertezza molto bassa, un dato giocatore al ruolo di socio, la strategia di decisione eviterebbe di far giocare un carico quando tal giocatore si trovi ultimo di mano dopo di sè.\\
 
 Allo stesso modo è possibile basare le strategie di analisi su quelle di decisione, assumendo che l'avversario segua strategie decisionali simili alle proprie.
-L'idea è quella di "rovesciare" le regole di decisione per costruire quelle di analisi, scambiando antecedente e conseguente.\\
+L'idea è quella di ``rovesciare'' le regole di decisione per costruire quelle di analisi, scambiando antecedente e conseguente.\\
 Per chiarire l'intuizione, si assuma che il giocatore \emph{P} abbia fra le sue regole una per cui: se il suo ruolo è \emph{socio}, dopo di lui c'è il \emph{chiamante} ultimo di mano, allora gioca un carico; \emph{P} osservando un giocatore \emph{A} penultimo di mano prima del \emph{chiamante} giocare un carico, assumendo che \emph{A} stia seguendo strategie simili alle proprie, potrà concludere con un certo grado di incertezza che il ruolo di \emph{A} è quello del \emph{socio}.\\
 Tale approccio è limitato da due fattori: in primis non è detto che l'avversario segua effettivamene le stesse identiche strategie decisionali del giocatore ``analista'', per cui l'assunzione non è necessariamente corretta, soprattutto in casi in cui l'obiettivo dell'avversario sia quello di depistare il giocatore con un \emph{bluff}.\\
 Inoltre le strategie decisionali hanno nel proprio antecedente anche delle condizioni che riguardano le carte in mano, quindi un'informazione privata non disponibile a nessun altro giocatore.\\
@@ -352,8 +334,8 @@ In base alla situazione rappresentata nella \emph{KB}, un diverso numero di rego
 Questo può portare a una situazione in cui il reasoner si trovi ad avere dei fatti di tipo \texttt{da-giocarsi} (quelli che contengono le carte selezionate per la giocata) in conflitto fra loro.\\
 Per risolvere questo tipo di conflitti si è preso ad esempio il sistema di \emph{conflict resolution} interno adottato da \textsc{Jess} (\cite{jessbook}): ogni fatto \texttt{da-giocarsi} non contiene solo l'indicazione della carta che una regola ha ritenuto opportuno giocare, bensì anche un valore euristico che indica la validità di tale carta.
 La funzione \ref{dagiocarsi}, al momento di giocare, sceglie fra le carte selezionate quella con migliore priorità per essere effettivamente giocata.
-In questo modo una regola "di difesa" che venga attivata quasi sempre e scelga una carta da giocarsi in modo da limitare al minimo le perdite, viene surclassata da una regola "di attacco" che permetta di prendere un numero decisivo di punti in tavola.\\
-Tale metodo permette inoltre un immediato "tuning" delle regole che può avvenire non solo con l'aggiunta e le modifiche di queste, ma anche con l'aggiornamento dei loro valori di priorità, a volti detti \emph{salience}.
+In questo modo una regola ``di difesa'' che venga attivata quasi sempre e scelga una carta da giocarsi in modo da limitare al minimo le perdite, viene surclassata da una regola ``di attacco'' che permetta di prendere un numero decisivo di punti in tavola.\\
+Tale metodo permette inoltre un immediato ``tuning'' delle regole che può avvenire non solo con l'aggiunta e le modifiche di queste, ma anche con l'aggiornamento dei loro valori di priorità, a volti detti \emph{salience}.
 
 \begin{lstlisting}[caption={funzione che sceglie fra tutte quelle selezionate la carta da giocarsi},label=dagiocarsi]
 ( deffunction carta-da-giocarsi ()

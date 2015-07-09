@@ -4,7 +4,7 @@ La fase dell'asta è una fase discriminante nel gioco della Briscola in 5, in qu
 Obiettivo di ogni giocatore in questa fase in cui i ruoli non sono ancora assegnati è quello di ottenere la vittoria con la carta più alta possibile se si hanno buone carte in mano e viceversa di non lasciare una carta troppo alta al vincitore se non si hanno carte abbastanza buone da cercare di giocare nel ruolo del chiamante.\\
 Nonostante l'importanza di questa fase di gioco sia innegabile, i suoi meccanismi sono decisamente più deterministici e meno interessanti della fase di gioco vera e propria.\\
 Per questa ragione abbiamo deciso di semplificare l'implementazione di tale fase seguendo un approccio già intrapreso in \cite{villa}.
-Per prima cosa si è eliminata la \emph{Chiamata in mano}, ovvero la possibilità da parte di un giocatore con ottime carte di chiamare una carta in proprio possesso, trovandosi quindi, in caso di vittoria dell'asta, a giocare da solo contro gli altri quattro.\\
+Per prima cosa si è eliminata la \emph{chiamata in mano}, ovvero la possibilità da parte di un giocatore con ottime carte di chiamare una carta in proprio possesso, trovandosi quindi, in caso di vittoria dell'asta, a giocare da solo contro gli altri quattro.\\
 Abbiamo inoltre eliminato la possibilità di continuare l'asta dopo la chiamata del 2: mentre in molte versioni della briscola è possibile rilanciare scommettendo (questa volta al rialzo) sul punteggio ottenibile al termine della partita, in questo lavoro si è deciso di far sì che il primo giocatore a chiamare il 2 si aggiudichi l'asta.
 La fase dell'asta è l'unica a essere gestita nello stesso modo da tutti e tre i tipi di agenti giocatori.\\
 La gestione è deterministica e si basa sulla combinazione di due elementi che riguardano le carte in mano:
@@ -14,8 +14,8 @@ La gestione è deterministica e si basa sulla combinazione di due elementi che r
 \end{itemize}
 La combinazione di queste due informazioni forma una tabella (\ref{tab:title}) che ha al suo interno due ulteriori informazioni:
 \begin{itemize}
-   \item Delle carte che è necessario possedere per poter chiamare
-   \item Il limite inferiore di punteggio della carta da chiamare 
+   \item le carte che è necessario possedere per poter chiamare
+   \item il limite inferiore di punteggio della carta da chiamare 
 \end{itemize}
 
 

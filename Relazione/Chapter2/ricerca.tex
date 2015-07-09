@@ -34,9 +34,7 @@ Lo \emph{stato iniziale} \emph{s\textsubscript{0}} è rappresentato dalla situaz
 Le \emph{azioni} \textsc{ACTIONS(\emph{s\textsubscript{0}})}, ovvero le possibili mosse applicabili allo stato iniziale, equivalgono alle sole mosse effettuabili dal re (unica pedina nera in gioco) che, secondo le regole degli scacchi, può spostarsi di una casella in ogni direzione (fig. \ref{azioni}).\\
 Il \emph{modello di transizione} \textsc{RESULT(\emph{s\textsubscript{0}},\emph{a})} è rappresentato in figura \ref{tmodel} per ogni azione legale \emph{a} descritta in \textsc{ACTIONS(\emph{s\textsubscript{0}})}.\\
 Lo stato di \emph{goal} (o \emph{obiettivo}) è rappresentato nella figura \ref{goal}.
-
-
-\begin{figure}[t]
+\begin{figure}[!htb]
 \centering
 \subfigure[Stato Iniziale \emph{s\textsubscript{0}}]{
 \includegraphics[width=.3\textwidth]{initial-state}
@@ -61,6 +59,11 @@ Lo stato di \emph{goal} (o \emph{obiettivo}) è rappresentato nella figura \ref{
 \end{figure}
 
 
+
+
+
+
+
 \subsection{Lo spazio degli stati}
 
 Dato un problema ben posto è quindi possibile rappresentarne lo \emph{spazio degli stati} come un albero in cui
@@ -73,7 +76,7 @@ Per costruire tale albero è possibile procedere per successiva \emph{espansione
 L'insieme dei nodi raggiunti ma ancora da espandere viene chiamato \emph{frontiera}.
 Viene detto \emph{branching factor} il numero (esatto o medio) di figli di ogni nodo, ovvero di azioni applicabili ad uno stato.
 È immediato notare come un branching factor elevato renda praticamente impossibile la costruzione ed esplorazione dell'intero spazio degli stati, data la natura esponenziale della crescita dei nodi da un livello al successivo.\\
-Questo vale ovviamente anche per il gioco degli scacchi, il cui branching factor - ovvero il numero medio di mosse che un giocatore può effettuare - è stato calcolato essere 35 (\cite{chessbf}).
+Questo vale ovviamente anche per il gioco degli scacchi, il cui branching factor --- ovvero il numero medio di mosse che un giocatore può effettuare --- è stato calcolato essere 35 (\cite{chessbf}).
 Considerando una media di 50 mosse per giocatore come durata di una partita, la cardinalità dello spazio degli stati raggiungerebbe l'intrattabile numero di $ 35^{100} $ \\
 Per questo motivo è necessario che gli algoritmi di ricerca implementino delle strategie utili a espandere solo i nodi considerati più convenienti per raggiungere un nodo goal.
 
@@ -82,12 +85,12 @@ Una volta conosciuto lo spazio degli stati si rende necessario scegliere, ad ogn
 Prendiamo qui in considerazione uno degli algoritmi più utilizzati per raggiungere tale scopo.\\
 Chiamiamo i due giocatori \textsc{Min} e \textsc{Max} e, seguendo \cite{randw}, formalizziamo il gioco in questi elementi
 \begin{itemize}
-   \item lo stato iniziale \emph{$S_0$} 
+   \item lo stato iniziale \emph{$s_0$} 
    \item la funzione \textsc{Player(\emph{s})} che indica il giocatore cui spetta muovere nello stato \emph{s}
    \item l'insieme di \emph{azioni applicabili} ad un dato stato \emph{s}, \textsc{Actions(\emph{s})}
    \item il modello di transizione \textsc{Result(\emph{s},\emph{a})}
    \item un \emph{test di fine gioco}, \textsc{Terminal-test(\emph{s})}, che indica se nello stato  \emph{s} la partita è conclusa
-   \item una \emph{funzione di utilità} \textsc{Utility(\emph{s},\emph{p})} che assegna un valore numerico allo stato finale \emph{s} per il giocatore \emph{p} (per esempio negli scacchi potrebbe essere 1 per la vittoria, -1 per la sconfitta e 0 per il pareggio)
+   \item una \emph{funzione di utilità} \textsc{Utility(\emph{s},\emph{p})} che assegna un valore numerico allo stato finale \emph{s} per il giocatore \emph{p} (per esempio negli scacchi potrebbe essere 1 per la vittoria, $-1$ per la sconfitta e 0 per il pareggio)
 \end{itemize}
 
 \textbf{Nota} L'algoritmo richiede che il gioco sia classificabile come un \emph{zero-sum game}: ovvero un gioco in cui i valori della funzione di utilità in uno stato finale del gioco sono sempre uguali ed opposti.
@@ -230,14 +233,14 @@ Secondo la definizione di \cite{randw} infatti essi sono ambienti
 \end{itemize}
 In questo caso l'informazione posseduta dall'agente giocatore è \emph{incompleta} ma non del tutto \emph{casuale}.
 Si può quindi tentare di applicare il metodo del \textsc{minmax} anche a questa situazione.
-Per farlo, si "sviluppa" l'informazione mancante, generando tutti i possibili stati $s$ ed associando ad ognuno una probabilità $P(s)$.
-A quel punto si risolve ognuno di questi possibili "mondi" come se fossero \emph{completamente osservabili} e infine si sceglie la mossa che abbia la migliore \emph{utility function} pesata su tutti i casi in base alla loro probabilità.
+Per farlo, si ``sviluppa'' l'informazione mancante, generando tutti i possibili stati $s$ ed associando ad ognuno una probabilità $P(s)$.
+A quel punto si risolve ognuno di questi possibili ``mondi'' come se fossero \emph{completamente osservabili} e infine si sceglie la mossa che abbia la migliore \emph{utility function} pesata su tutti i casi in base alla loro probabilità.
 La mossa da effettuare è quindi:
 
 \begin{center}
 $ argmax_a \sum_{s} P(s) \textsc{minimax(result}(s,a)) $.\\
 \end{center}
-Un ulteriore problema è che nella maggior parte dei giochi di carte il numero dei "mondi possibili" è estremamente grande.
+Un ulteriore problema è che nella maggior parte dei giochi di carte il numero dei ``mondi possibili'' è estremamente grande.
 In un gioco come il \emph{bridge}, in cui un giocatore può vedere metà delle carte, vi sono due mani nascoste di 13 carte ciascuna.
 Il numero di mondi possibili è quindi di $ \left(\! \begin{array}{c} 26 \\  13\end{array}\!\right)  = 10 400 600 $ (\cite{randw}).\\
 Per ovviare a questo secondo inconveniente un metodo spesso utilizzato è quello di costruire un'approssimazione \emph{Monte Carlo} dell'intero spazio degli stati.

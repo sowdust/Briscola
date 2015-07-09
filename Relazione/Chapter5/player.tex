@@ -57,7 +57,7 @@ Nel listato \ref{initMano} è possibile vedere come questo avvenga all'inizio di
 
 
 La stessa cosa succede in risposta alla ricezione dell'informazione (da parte del mazziere) di una nuova giocata: in questo caso l'agente giocatore dovrà innanzitutto aggiornare le immediate informazioni che descrivono, all'interno della \emph{KB}, le carte in tavolo e quelle ancora coperte; inoltre, se la carta giocata è la \emph{chiamata}, vengono aggiornate anche le informazioni riguardanti i ruoli dei giocatori.\\
-Inoltre viene aggiunto alla \emph{KB} anche un fatto complesso che riassuma la giocata, contenente le informazioni sul giocatore autore della stessa e la carta che è stata giocata; queste informazioni verranno poi integrate all'interno del reasoner dopo che questo avrà attivato le proprie regole di analisi e quindi classificato la giocata come appartenente a uno dei predefiniti gruppi (\emph{taglio}, \emph{carico}, \emph{liscio}...) (Parte del codice della funzione si trova in \ref{addGiocata})
+Inoltre viene aggiunto alla \emph{KB} anche un fatto complesso che riassuma la giocata, contenente le informazioni sul giocatore autore della stessa e la carta che è stata giocata; queste informazioni verranno poi integrate all'interno del reasoner dopo che questo avrà attivato le proprie regole di analisi e quindi classificato la giocata come appartenente a uno dei predefiniti gruppi (\emph{taglio}, \emph{carico}, \emph{liscio}\dots) (Parte del codice della funzione si trova in \ref{addGiocata})
 
 %
 % \begin{lstlisting}[caption={il metodo \texttt{initMano} di PlayerAgent},label=initMano]

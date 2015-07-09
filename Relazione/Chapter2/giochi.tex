@@ -1,8 +1,9 @@
 \section{Teoria dei giochi}
 
 La \emph{Teoria dei giochi} è una branca della matematica che studia ``modelli di conflitto e cooperazione tra agenti razionali capaci di ``intraprendere decisioni'' \cite{gtheory}, ovvero le strategie da seguire per effettuare decisioni in maniera ottimale.\\
-Gli ambiti applicativi delle teoria dei giochi sono svariati: Economia, Politica, Logica, Biologia, Informatica e persino Psicologia.\\
-Sviluppatasi nella prima metà del Novecento, questa disciplina conobbe un forte aumento di interesse da parte dei ricercatori a partire dagli anni '50, dopo la pubblicazione del volume "Theory of Games and Economic Behavior" da parte del matematico John von Neumann insieme all'economista Oskar Morgenstern (\cite{tog}). Agli inizi degli anni 2000 la Teoria dei giochi ebbe modo di essere conosciuta anche dal pubblico non specialista grazie alla celebre pellicola holliwoodiana \emph{A Beautiful Mind}, ispirata alla vita e agli studi del famoso matematico John Nash, vincitore del premio Nobel per l'Economia nel 1994 con lavori di Teoria dei giochi (\cite{jnash}).
+Gli ambiti applicativi delle teoria dei giochi sono diversi: Economia, Politica, Logica, Biologia, Informatica e persino Psicologia.\\
+Sviluppatasi nella prima metà del Novecento, questa disciplina conobbe un forte aumento di interesse da parte dei ricercatori a partire dagli anni '50, dopo la pubblicazione del volume ``Theory of Games and Economic Behavior'' da parte del matematico John von Neumann insieme all'economista Oskar Morgenstern. % (\cite{tog}).
+Agli inizi degli anni 2000 la Teoria dei giochi ebbe modo di essere conosciuta anche dal pubblico non specialista grazie alla celebre pellicola holliwoodiana \emph{A Beautiful Mind}, ispirata alla vita e agli studi del famoso matematico John Nash, vincitore del premio Nobel per l'Economia nel 1994 con lavori di Teoria dei giochi (\cite{jnash}).
 
 
 \subsection{Rappresentazione dei giochi}
@@ -24,7 +25,7 @@ Il modello di tali giochi viene generalmente rappresentato in \textbf{forma norm
 Se il gioco è invece di tipo \emph{sequenziale}, allora si usa la \textbf{forma estesa}: un albero di decisione finito che ha per nodi le possibili mosse (vedi \ref{extensive}).
 Le mosse possono essere \emph{personali} o \emph{casuali}: le prime sono le mosse direttamente riconducibili alla scelta di un giocatore, le seconde invece a un evento ambientale ai cui possibili esiti è associata una precisa probabilità; fanno parte di questo genere di mosse il lancio di un dado o l'estrazione di una carta da un mazzo non ordinato.
 Un nodo posto alla radice, generalmente rappresentato con la forma di un diamante, rappresenta lo stato iniziale $S_0$ del gioco.
-Un "gioco" (o \emph{play}) $\alpha$ viene realizzato a partire dal nodo radice, effettuando una scelta (da parte dei giocatori o del caso) ad ogni ramo e terminando in un nodo foglia.\\
+Un ``gioco'' (o \emph{play}) $\alpha$ viene realizzato a partire dal nodo radice, effettuando una scelta (da parte dei giocatori o del caso) ad ogni ramo e terminando in un nodo foglia.\\
 In questo caso il \emph{payoff} può essere assegnato tramite una \emph{funzione di utilità} del gioco, così che il \emph{payoff} del giocatore $i$ sul gioco $\alpha$ secondo la utility function $K$ è dato dal valore $K_i(\alpha)$. \cite{frank}
 
 \subsection{Il concetto di equilibrio}
@@ -102,10 +103,10 @@ Si chiamino i due prigionieri $A$ e $B$.
 La situazione è descritta dalla forma normale \ref{prigionierofn} e dalla forma estesa \ref{extensive}.
 Si può notare che entrambi i prigionieri ottengono un maggior \emph{payoff} tradendo il compagno piuttosto che cooperando con lui rimanendogli fedele.
 Si consideri il prigioniero $B$: può tradire il compagno o cooperare con lui.
-Se $B$ collaborasse, ad $A$ converrebbe tradire, dato che in questo modo uscirebbe di prigione invece che scontare un anno di pena.
-Se invece $B$ tradisse, anche ad $A$ converrebbe farlo, dato che sconterebbe un solo anno invece che 3.
-Si conclude che in ogni caso al giocatore $A$ conviene tradire.
-Lo stesso ragionamento può essere seguito simmetricamente per $B$.
+Se $A$ collaborasse, a $B$ converrebbe tradire, dato che in questo modo uscirebbe di prigione invece che scontare un anno di pena.
+Se invece $A$ tradisse, anche a $B$ converrebbe farlo, dato che sconterebbe un solo anno invece che 3.
+Si conclude che in ogni caso al giocatore $B$ conviene tradire.
+Lo stesso ragionamento può essere seguito simmetricamente per $A$.
 
 
 \begin{center}
@@ -131,7 +132,7 @@ Lo stesso ragionamento può essere seguito simmetricamente per $B$.
     \edge node[auto=left] {$A$ non tradisce}; 
     [.\node (two) {2};
       \edge node[auto=right] {$B$ tradisce};  
-      [.\node[rectangle] {$A$: 3; $B$: 2};  ]
+      [.\node[rectangle] {$A$: 3; $B$: 0};  ]
       \edge node[auto=left] {$B$ non tradisce};  
       [.\node[rectangle] (leaf) {$A$: 1; $B$: 1}; ] 
     ] 

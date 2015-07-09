@@ -6,7 +6,7 @@
 Una volta in possesso di un framework generale che permetta l'implementazione di strategie arbitrarie, è auspicabile poter disporre di un metodo di valutazione della bontà di tali strategie.\\
 Le difficoltà riscontrate nell'affrontare il problema della decisione della mossa da effettuarsi in maniera puramente algoritmica si ripropongono nel momento in cui si voglia applicare lo stesso approccio algoritmico ad un tentativo di valutazione della bontà delle singole mosse.\\
 Per questa ragione si è pensato di provare a valutare un giocatore empiricamente in base ai successi conseguiti --- espressi in termini di percentuali di vittorie sul totale delle partite ---  confrontandoli con quelli di un giocatore che abbia una strategia puramente casuale.\\
-Si noterà che il numero delle prove eseguite per certe configurazioni è piuttosto ridotto: questo è dovuto al fatto che, data la struttura dell'agente giocatore e la fissità della strategia con cui gestisce la fase di asta (fase decisiva nella formazione delle squadre), non è possibile associare a priori la natura (casuale o strategica) di un giocatore al suo ruolo. È stato quindi necessario in alcuni casi condurre un gran numero di prove per ottenerne una quantità accettabile che rispondesse all'interesse sperimentale.
+Data la struttura dell'agente giocatore e la fissità della strategia con cui gestisce la fase di asta (fase decisiva nella formazione delle squadre), non è possibile associare a priori la natura (casuale o strategica) di un giocatore al suo ruolo. È stato quindi necessario in alcuni casi eseguire un gran numero di prove per ottenerne una quantità accettabile che rispondesse all'interesse sperimentale.
 
 
 \section{Random vs Random}
@@ -424,7 +424,7 @@ Confrontando i risultati di questo esperimento, illustrati nelle figure \ref{pie
 Infine si sono condotte 50 prove con con tutti e cinque i giocatori a strategia, i cui esiti sono raccolti in figura \ref{pietab:esperimento-strat-strat}.\\
 Usando questa configurazione si è tornati a una situazione molto simile a quella iniziale di random vs random (\ref{pietab:esperimento-random-random}), con un lieve incremento di vittorie da parte dei villani a discapito dei soci.\\
 Questa variazione degli equilibri, oltre a poter dipendere da una maggior bontà delle strategie implementate specificamente per i villani rispetto a quelle per i soci, potrebbe essere anche giustificabile tramite le stesse ipotesi avanzate nel tentativo di spiegare la disparità nei risultati random vs random: mentre il vantaggio connaturato nel ruolo di soci rimane, spostando favorevolmente verso questi le percentuali di vittoria, si perde l'ulteriore svantaggio che avevano i soci nel caso random vs random.
-Allora infatti essi erano impossibilitati a contrapporre al vantaggio dei soci derivato dalle migliori carte possedute, la propria superiorità numerica; potendo invece qui far gioco di squadra tale disparità, se non sparisce, si riduce.
+Allora infatti essi erano impossibilitati a contrapporre al vantaggio dei soci derivato dalle migliori carte possedute, la propria superiorità numerica; potendo invece qui far gioco di squadra tale disparità, se non sparisce, si riduce sensibilmente.
 
 
 \begin{figure}[!htb]
@@ -481,7 +481,6 @@ Allora infatti essi erano impossibilitati a contrapporre al vantaggio dei soci d
 
 \section{Interpretazione dei dati sperimentali}
 
-A causa dell'impossibilità di decidere a priori la formazione delle squadre e, quindi, i ruoli ricoperti dai giocatori di una particolare natura --- a strategia o casuali ---, è stato necessario condurre molte più prove di quante fossero effettivamente utili ai nostri scopi, con la conseguenza di un numero limitato di queste ultime. \\
-Inoltre è importante ribadire come le regole implementate siano estremamente basilari, arbitrarie e in numero ridotto (una trentina) data la loro funzione esemplificativa piuttosto che competitiva.\\
-Nonostante queste considerazioni l'incremento di prestazioni ottenuto dal giocatore a strategia rispetto a quello random è nettamente visibile. \\
-Questa osservazione ci fa concludere che il sistema sia potenzialmente valido e che aumentando l'ampiezza dell'insieme delle strategie, anche tramite l'uso dell'interfaccia per l'utente esperto, sia possibile ottenere giocatori sempre più performanti in questo tipo di valutazione.
+Nonostante le difficoltà riscontrate nel generare un test-set significativo, l'incremento di prestazioni ottenuto dai giocatori a strategia rispetto a quelli random è chiaramente visibile.
+Considerando inoltre la natura piuttosto basilare delle strategie implementate, i dati raccolti sono molto incoraggianti.
+Queste osservazioni ci fanno concludere che il sistema costruito sia potenzialmente valido e che aumentando l'ampiezza dell'insieme delle strategie, anche tramite l'uso dell'interfaccia per l'utente esperto, sia possibile ottenere giocatori sempre più performanti in questo tipo di valutazione.
