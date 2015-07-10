@@ -93,7 +93,7 @@
                  breaklinks = true,
                  linktocpage,
                  pagebackref,
-                 colorlinks = true,
+                 colorlinks = false,
                  linkcolor = blue,
                  urlcolor  = blue,
                  citecolor = red,
