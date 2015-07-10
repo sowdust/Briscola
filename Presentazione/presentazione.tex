@@ -1,0 +1,481 @@
+\documentclass{beamer}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{tikz}
+\usepackage{subfigure}
+\usepackage[italian]{babel}
+\usepackage{listings}
+
+\graphicspath{{Images/}}
+
+\mode<presentation>
+{   
+   \setbeamercovered{transparent}
+   \usefonttheme{serif}
+
+%---
+%\usetheme{Berlin}
+%\usetheme{PaloAlto}
+%\usetheme{Malmoe}
+%\usetheme{Warsaw}
+%---
+%\usecolortheme{wolverine}
+%\setbeamertemplate{blocks}[rounded][shadow=true]
+%\usecolortheme{sidebartab}
+%\setbeamercolor{some beamer element}{fg=red}
+}
+% elimina controlli in basso a destra
+%\beamertemplatenavigationsymbolsempty 
+
+%------------------------------------------------------------------------
+%  Riduce dimensioni delle didascalie
+%------------------------------------------------------------------------
+\setbeamerfont{caption}{size=\tiny}
+%------------------------------------------------------------------------
+%  Lista con segni delle carte
+%------------------------------------------------------------------------
+\newcommand*\lista{\item[$\diamondsuit$]}
+%------------------------------------------------------------------------
+%  Fa ricomparire l'indice a ogni cambio sezione
+%------------------------------------------------------------------------
+\AtBeginSection[] {
+	\begin{frame}<beamer>{Outline}
+		\tableofcontents[currentsection,currentsubsection]
+	\end{frame}
+}
+%------------------------------------------------------------------------
+%  Listing style
+%------------------------------------------------------------------------
+\lstset{ language=Lisp, stringstyle=\ttfamily, basicstyle=\scriptsize,showstringspaces=false,
+         otherkeywords={slot,defrule,deftemplate,else,if,bind,retract},breaklines=true }
+%------------------------------------------------------------------------
+\title{Briscola in 5: un sistema esperto per una strategia a regole}
+\author{Mattia Vinci}
+\date{Venerdì 17 luglio 2015}
+\titlegraphic{\includegraphics[width=2cm]{logo}}
+\institute[Università degli studi di Torino]
+{\textsc{Università degli studi di Torino} \\ Dipartimento di Informatica \\ \medskip Relatore: Dott. Roberto Micalizio}
+%------------------------------------------------------------------------
+
+
+
+\begin{document}
+
+
+%------------------------------------------------------------------------
+%  FRONTESPIZIO
+%------------------------------------------------------------------------
+\begin{frame}
+   \titlepage
+\end{frame}
+
+%------------------------------------------------------------------------
+%  SOMMARIO
+%------------------------------------------------------------------------
+\section*{Sommario}
+\begin{frame}
+   \frametitle{Sommario}
+   \begin{center}
+   \textbf{Scopo del lavoro:}   
+   \end{center}
+   Costruzione di una piattaforma per il gioco \emph{Briscola in 5} per giocatori umani e virtuali.
+   \vspace*{1em}
+   \begin{center}
+      \textbf{Contributi realizzati:}
+   \end{center}
+   \begin{itemize}
+      \lista Intelligenza artificiale per il giocatore virtuale
+      \lista Piattaforma per il gioco
+   \end{itemize}  
+   
+\end{frame}
+
+%------------------------------------------------------------------------
+%  INDICE
+%------------------------------------------------------------------------
+\section*{Indice}
+\begin{frame}
+   \frametitle{Indice}
+   \tableofcontents
+\end{frame}
+
+%------------------------------------------------------------------------
+%  LA BRISCOLA IN 5
+%------------------------------------------------------------------------
+\section{La briscola in 5}
+
+\begin{frame}
+   \frametitle{Il gioco}
+   
+   La \emph{briscola in 5} è un gioco di carte derivato dalla briscola classica, ma con qualche significativa differenza:\\
+   \begin{itemize}
+      \lista le squadre non sono simmetriche
+      \lista vi è una fase d'asta iniziale
+      \lista la formazione delle squadre non è nota a tutti
+   \end{itemize}
+\end{frame}
+
+%------------------------------------------------------------------------
+%  L'INTELLIGENZA ARTIFICIALE
+%------------------------------------------------------------------------
+\section{L'intelligenza artificiale}
+
+\begin{frame}
+   \frametitle{Background}
+   Abbiamo inizialmente passato in rassegna alcuni fra i principali metodi presenti in letteratura per la risoluzione di giochi.\\
+   \begin{itemize}
+      \lista Ricerca nello spazio degli stati e algoritmo \texttt{minimax} 
+      \lista Teoria dei giochi
+      \lista Sistemi esperti
+   \end{itemize}
+   
+\end{frame}
+
+%------------------------------------------------------------------------
+
+\begin{frame}
+   \frametitle{Il problema della briscola in 5}
+   Non essendo le squadre note a tutti i giocatori, alcuni di essi si trovano a giocare con persone (o agenti virtuali) che non possono identificare con certezza nè come compagni nè come avversari.
+   \vfill
+   \pause
+   Per questo motivo l'ambiente della briscola in 5 non può essere considerato nè come \emph{competitivo}, nè come \emph{cooperativo}, rendendo inapplicabili i metodi di ricerca nello spazio degli stati e la teoria dei giochi a causa dell'impossibilità di assegnare \emph{valori di utilità} ben definiti alle mosse.
+   \vfill
+   \pause   
+   Questo ci ha spinti alla decisione di tentare di simulare il comportamento di un giocatore umano tramite un \emph{sistema esperto}.
+   
+\end{frame}
+
+%------------------------------------------------------------------------
+
+\begin{frame}
+   \frametitle{Il sistema esperto}
+   Il sistema esperto è stato realizzato tramite il \emph{rule engine} \textsc{Jess}.
+   \vfill
+   \pause
+   Il framework generale realizzato prevede due tipi di strategie:
+   \begin{itemize}
+      \lista di \textbf{analisi}: assegnano empiricamente la ``probabilità'' che un giocatore abbia un certo ruolo
+      \lista di \textbf{decisione}: selezionano la carta da giocare
+   \end{itemize}
+   \vfill
+   \pause
+   Più regole di decisione possono essere attivate contemporaneamente; un sistema di \emph{conflict resolution} basato sulla priorità assegnata alle regole decide quale carta tra le candidate.
+\end{frame}
+
+%------------------------------------------------------------------------
+%  LA PIATTAFORMA
+%------------------------------------------------------------------------
+\section{La piattaforma}
+
+\begin{frame}
+   \frametitle{Architettura della piattaforma}
+   Requisiti:
+   \begin{itemize}
+      \lista distribuita
+      \lista interfaccia utente esperto
+      \lista log attività
+   \end{itemize}
+   \vfill   
+   \pause
+   La piattaforma è stata realizzata usando il framework per lo sviluppo di piattaforme multi-agente \textsc{Jade}.\\
+   Prevede due tipi di agente: \emph{mazziere} e \emph{giocatore}.
+   \visible<2>{
+   \begin{center}
+   \begin{figure}      
+   \includegraphics[width=.8\textwidth]{architettura}
+   \end{figure}
+   \end{center}
+   }
+\end{frame}
+
+%------------------------------------------------------------------------
+
+\begin{frame}
+   \frametitle{L'agente Mazziere}
+   L'agente mazziere regola e gestisce la partita. Fra i suoi compiti principali:
+   \begin{itemize}
+      \pause
+      \lista ``aprire un tavolo'' (servizio pagine gialle di \textsc{Jade})
+      \pause
+      \lista farsi carico della comunicazione fra agenti (tranne chat)
+      \pause
+      \lista gestire la partita tramite messaggi
+      \pause
+      \lista redigere un file di log
+   \end{itemize}
+   \vfill
+   \pause
+   La presenza dell'agente mazziere rende centralizzata la gestione della partita. 
+   Questo presenta alcuni vantaggi:
+   \begin{itemize}
+      \pause
+      \lista rispetto delle regole
+      \pause
+      \lista semplice gestione di piattaforme con molti ``tavoli aperti'' e tornei
+      \pause
+      \lista unico file di log da parte di un giocatore onniscente
+   \end{itemize}
+\end{frame}
+
+%------------------------------------------------------------------------
+
+\begin{frame}
+   \frametitle{Giocatore}
+   L'agente giocatore è quello che prende parte al gioco e s'impegna a fare una mossa legale quando gli è richiesta.\\
+   \vfill
+   \pause   
+   Può avere modalità:
+   \begin{itemize}
+      \lista manuale
+      \lista random
+      \lista strategia da file
+   \end{itemize}
+   \vfill
+   \pause
+   Nella fase di sperimentazione abbiamo usato un file contenente una trentina di regole generali raccolte su manuali, siti e forum dedicati alla briscola in 5, oltre che dall'esperienza personale.
+\end{frame}
+
+%------------------------------------------------------------------------
+%  CONCLUSIONI
+%------------------------------------------------------------------------
+
+\section{Risultati sperimentali e conclusioni}
+\begin{frame}
+   \frametitle{Risultati}
+   Abbiamo condotto degli esperimenti facendo giocare delle partite a dei giocatori con una strategia basilare contro dei giocatori random in diverse configurazioni.
+   Alcuni fra i risultati più significativi:
+   
+   
+\def\angle{0}
+\def\radius{3}
+\def\cyclelist{{"blue","red","green"}}
+\newcount\cyclecount \cyclecount=-1
+\newcount\ind \ind=-1
+
+
+\begin{columns}
+   \column{.5\textwidth}
+   \vfill
+   
+\begin{figure}
+   \tiny
+   \centering
+\begin{tikzpicture}[scale=.37]
+  \foreach \percent/\name in {
+      66.7/Soci,
+      30/Villani,
+      3.3/Pareggio
+    } {
+      \ifx\percent\empty\else               % If \percent is empty, do nothing
+        \global\advance\cyclecount by 1     % Advance cyclecount
+        \global\advance\ind by 1            % Advance list index
+        \ifnum3<\cyclecount                 % If cyclecount is larger than list
+          \global\cyclecount=0              %   reset cyclecount and
+          \global\ind=0                     %   reset list index
+        \fi
+        \pgfmathparse{\cyclelist[\the\ind]} % Get color from cycle list
+        \edef\color{\pgfmathresult}         %   and store as \color
+        % Draw angle and set labels
+        \draw[fill={\color!50},draw={\color}] (0,0) -- (\angle:\radius)
+          arc (\angle:\angle+\percent*3.6:\radius) -- cycle;
+        \node at (\angle+0.5*\percent*3.6:0.7*\radius) {\percent\,\%};
+        \node[pin=\angle+0.5*\percent*3.6:\name]
+          at (\angle+0.5*\percent*3.6:\radius) {};
+        \pgfmathparse{\angle+\percent*3.6}  % Advance angle
+        \xdef\angle{\pgfmathresult}         %   and store in \angle
+      \fi
+    };
+\end{tikzpicture}
+\vfill
+\vspace*{2.2em}
+\caption{Random vs Random}
+\end{figure}
+%---
+\column{.5\textwidth}
+
+\begin{figure}
+
+\subfigure{
+\tiny
+\cyclecount=-1
+\ind=-1
+\begin{tikzpicture}[scale=.3]%
+  \foreach \percent/\name in {%
+      80/Vittorie,%
+      20/Sconfitte,%
+      0/Pareggi%
+    } {%
+      \ifx\percent\empty\else%               % If \percent is empty, do nothing
+        \global\advance\cyclecount by 1%     % Advance cyclecount
+        \global\advance\ind by 1%            % Advance list index
+        \ifnum3<\cyclecount%                 % If cyclecount is larger than list
+          \global\cyclecount=0%              %   reset cyclecount and
+          \global\ind=0%                     %   reset list index
+        \fi%
+        \pgfmathparse{\cyclelist[\the\ind]}% Get color from cycle list
+        \edef\color{\pgfmathresult}%         %   and store as \color
+        % Draw angle and set labels
+        \draw[fill={\color!50},draw={\color}] (0,0) -- (\angle:\radius)%
+          arc (\angle:\angle+\percent*3.6:\radius) -- cycle;%
+        \node at (\angle+0.5*\percent*3.6:0.7*\radius) {\percent\,\%};%
+        %\node[pin=\angle+0.5*\percent*.5:\name]%
+          at (\angle+0.5*\percent*3.6:\radius) {};%
+        \pgfmathparse{\angle+\percent*3.6}%  % Advance angle
+        \xdef\angle{\pgfmathresult}%         %   and store in \angle
+      \fi%
+    };%
+\end{tikzpicture}%
+(a)
+}
+
+
+\subfigure{%
+\tiny
+\cyclecount=-1
+\ind=-1
+\begin{tikzpicture}[scale=.3]%
+  \foreach \percent/\name in {%
+      60/Vittorie,%
+      40/Sconfitte,%
+      0/Pareggi%
+    } {%
+      \ifx\percent\empty\else%               % If \percent is empty, do nothing
+        \global\advance\cyclecount by 1%     % Advance cyclecount
+        \global\advance\ind by 1%            % Advance list index
+        \ifnum3<\cyclecount%                 % If cyclecount is larger than list
+          \global\cyclecount=0%              %   reset cyclecount and
+          \global\ind=0%                     %   reset list index
+        \fi%
+        \pgfmathparse{\cyclelist[\the\ind]}% Get color from cycle list
+        \edef\color{\pgfmathresult}%         %   and store as \color
+        % Draw angle and set labels
+        \draw[fill={\color!50},draw={\color}] (0,0) -- (\angle:\radius)%
+          arc (\angle:\angle+\percent*3.6:\radius) -- cycle;%
+        \node at (\angle+0.5*\percent*3.6:0.7*\radius) {\percent\,\%};%
+        %\node[pin=\angle+0.5*\percent*.5:\name]%
+          at (\angle+0.5*\percent*3.6:\radius) {};%
+        \pgfmathparse{\angle+\percent*3.6}%  % Advance angle
+        \xdef\angle{\pgfmathresult}%         %   and store in \angle
+      \fi%
+    };%
+\end{tikzpicture}%
+(b)
+}%
+\caption{Una squadra a strategie contro una random. In (a) i soci a strategie; in (b) villani a strategie. In Blu le vittorie, in rosso le sconfitte.}
+\end{figure}
+   
+   
+   
+\end{columns}
+
+
+
+   
+   
+\end{frame}
+
+%------------------------------------------------------------------------
+
+\begin{frame}
+   \frametitle{Conclusioni}
+   Abbiamo realizzato una piattaforma multiagente distribuita per l'esecuzione di partite di briscola in 5 cui possano partecipare giocatori sia umani che virtuali.\\
+   Viste le peculiarità della briscola in 5, per l'intelligenza artificiale del giocatore virtuale abbiamo optato per un sistema esperto.\\
+   Abbiamo scritto un framework in \textsc{Jess} che permetta l'implementazione di strategie in maniera semplice, insieme ad un set di strategie di carattere generale.\\
+   Abbiamo implementato la piattaforma --- usando \textsc{Jade} --- con due tipi di agente, il \emph{mazziere} e il \emph{giocatore} e prevedendo un'interfaccia per l'utente esperto che permetta l'annotazione e il suggerimento di nuove regole.\\
+   Infine abbiamo effettuato delle sperimentazioni i cui risultati incoraggiano ulteriori sviluppi.   
+\end{frame}
+
+%------------------------------------------------------------------------
+
+\begin{frame}
+   \frametitle{Possibili sviluppi futuri}
+   \begin{itemize}
+      \lista Incorporazione del sistema esperto con un altro metodo nella seconda fase della partita.
+      \lista Utilizzo di metodi di \emph{machine learning} per la raccolta di strategie.
+      \lista Integrazione di un meccanismo di \emph{reputation} alle strategie di analisi.
+      \lista Nuovi criteri di valutazione della validità delle strategie, compreso il confronto con giocatori umani.
+   \end{itemize}
+   
+\end{frame}
+
+%------------------------------------------------------------------------
+
+\begin{frame}
+   \centering
+   Grazie per l'attenzione.
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+   \frametitle{Il sistema esperto: rappresentazione della conoscenza}
+\begin{lstlisting}
+(deftemplate in-mano "carte che posso ancora giocare"
+   (slot card)    (slot rank)    (slot suit) )
+
+( deftemplate giocata "info sulle giocate"
+    (slot player)	(slot card)		(slot rank)    (slot suit)
+    (slot mano)   (slot turno)	(slot tipo) )
+
+( deftemplate posso-prendere "Carte con le quali posso prendere la mano"
+    (slot card)   (slot rank)    (slot suit)   )
+
+( deftemplate carichi-in-mano "Le carte da punto che ho in mano"
+    (slot card)    (slot rank)    (slot suit)    (slot points) )
+
+( deftemplate giaguaro  (slot player) )
+( deftemplate socio (slot player) )
+( deftemplate villano   (slot player) )
+( deftemplate seme-mano-fact (slot suit) )
+( deftemplate prob-socio (slot player) (slot sal) )
+\end{lstlisting} 
+\end{frame}
+
+
+\begin{frame}[fragile]
+   \frametitle{Il sistema esperto: una regola di decisione}
+   Se sono il socio e gioco subito dopo al chiamante, prendo per lasciarlo ultimo la mano successiva, soprattutto nelle mani finali.
+\begin{lstlisting}
+( defrule socio-tiene-giaguaro-ultimo
+    ?w <- (calcola-giocata)
+    (mio-ruolo socio)
+    (giaguaro (player ?g))
+    (mio-turno-numero ?n)
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?n (mod (+ ?pos 1) 5) ) ) )
+    (briscola (card ?b))
+    (posso-prendere (card ?c&:(<> ?c ?b)))
+=>
+    (gioca ?c (- 100 (?c getValue)))
+    (assert (ora-di-giocare))
+)
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+   \frametitle{Il sistema esperto: una regola di decisione}
+   Se un giocatore prende lasciando ultimo il giaguaro la mano successiva, probabilmente è il socio, soprattutto se nelle ultime mani.
+
+\begin{lstlisting}
+( defrule vs-socio-tiene-giaguaro-ultimo
+    (not(exists(socio (player ?player))))
+    (mano-numero ?mano-numero)
+    (giaguaro (player ?g))
+    (turno (player ?p&:(= ?p ?g)) (posizione ?pos-giaguaro))
+    (giocata (player ?soc) (tipo ?t&:( or ( = ?t "taglio") (or (= ?t "strozzino")  (= ?t "strozzo") ) )  ))
+    (turno (player ?pl&:(= ?pl ?soc)) (posizione ?pos-soc&:( = ?pos-soc (mod (+ ?pos-giaguaro 1) 5) )))
+=>
+    (if (> ?mano-numero 3) then
+        (bind ?new-sal 80)
+    else
+        (bind ?new-sal 40)
+    )
+    (aumenta-sal-socio ?soc ?new-sal)
+)
+\end{lstlisting}
+\end{frame}
+
+
+\end{document}
