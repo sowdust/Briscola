@@ -6,6 +6,8 @@
 \usepackage{subfigure}
 \usepackage[italian]{babel}
 \usepackage{listings}
+\usepackage{xcolor}
+\usepackage{color}
 
 \graphicspath{{Images/}}
 
@@ -45,10 +47,26 @@
 	\end{frame}
 }
 %------------------------------------------------------------------------
-%  Listing style
+%  Colori usati nei listing
 %------------------------------------------------------------------------
-\lstset{ language=Lisp, stringstyle=\ttfamily, basicstyle=\scriptsize,showstringspaces=false,
-         otherkeywords={slot,defrule,deftemplate,else,if,bind,retract},breaklines=true }
+\definecolor{pblue}{rgb}{0.13,0.13,1}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{pred}{rgb}{0.9,0,0}
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
+%------------------------------------------------------------------------
+%  Listing style per JESS. Più sotto cambiato con Java
+%------------------------------------------------------------------------
+\lstset{
+   language=Lisp,
+   stringstyle=\ttfamily,
+   basicstyle=\scriptsize,
+   showstringspaces=false,
+   otherkeywords={slot,defrule,deftemplate,else,if,bind,retract},
+   breaklines=true,
+   commentstyle=\color{pgreen},
+   keywordstyle=\color{pblue},
+   stringstyle=\color{pred}
+}
 %------------------------------------------------------------------------
 \title{Briscola in 5: un sistema esperto per una strategia a regole}
 \author{Mattia Vinci}
@@ -110,8 +128,11 @@
    
    La \emph{briscola in 5} è un gioco di carte derivato dalla briscola classica, ma con qualche significativa differenza:\\
    \begin{itemize}
+      \pause
       \lista le squadre non sono simmetriche
+      \pause
       \lista vi è una fase d'asta iniziale
+      \pause
       \lista la formazione delle squadre non è nota a tutti
    \end{itemize}
 \end{frame}
@@ -148,6 +169,30 @@
 
 %------------------------------------------------------------------------
 
+
+\begin{frame}
+   \frametitle{Il problema della briscola in 5 (V. 2)}
+   \centering
+   Informazione incompleta sulle squadre per alcuni giocatori \\
+   $\implies$\\
+   avversari o compagni?
+   \vfill
+   \pause
+   Ambiente della briscola in 5: nè \emph{competitivo} nè \emph{cooperativo} \\
+   $\implies$\\
+   \emph{ricerca nello spazio degli stati} e  \emph{teoria dei giochi} inapplicabili: impossibilità di assegnare \emph{valori di utilità} univoci.
+   \vfill
+   \pause
+   \Large   
+   $\Downarrow$\\
+   \normalsize
+   \textbf{sistema esperto}
+   
+\end{frame}
+
+%------------------------------------------------------------------------
+
+
 \begin{frame}
    \frametitle{Il sistema esperto}
    Il sistema esperto è stato realizzato tramite il \emph{rule engine} \textsc{Jess}.
@@ -160,8 +205,12 @@
    \end{itemize}
    \vfill
    \pause
-   Più regole di decisione possono essere attivate contemporaneamente; un sistema di \emph{conflict resolution} basato sulla priorità assegnata alle regole decide quale carta tra le candidate.
+   Strategie di \emph{decisione} usano i risultati della fase di \emph{analisi}; strategie di \emph{analisi} si basano su quelle di \emph{decisione}
+   \vfill
+   \pause
+   Un sistema di \emph{conflict resolution} basato sulla priorità assegnata alle regole decide quale carta giocaretra le candidate.
 \end{frame}
+
 
 %------------------------------------------------------------------------
 %  LA PIATTAFORMA
@@ -170,6 +219,7 @@
 
 \begin{frame}
    \frametitle{Architettura della piattaforma}
+   \vfill
    Requisiti:
    \begin{itemize}
       \lista distribuita
@@ -183,13 +233,50 @@
    \visible<2>{
    \begin{center}
    \begin{figure}      
-   \includegraphics[width=.8\textwidth]{architettura}
+   \includegraphics[width=.7\textwidth]{architettura}
    \end{figure}
    \end{center}
    }
 \end{frame}
 
 %------------------------------------------------------------------------
+
+\begin{frame}
+   \frametitle{Architettura della piattaforma (V. 2)}
+   \begin{columns}
+         \column{.3\textwidth}
+
+   Requisiti:
+   \begin{itemize}
+      \lista distribuita
+      \lista interfaccia utente esperto
+      \lista log attività
+   \end{itemize}
+
+   \column{.7\textwidth}
+
+   \visible<2>{
+   \begin{center}
+   \begin{figure}      
+   \includegraphics[width=\textwidth]{architettura}
+   \end{figure}
+   \end{center}
+   }
+
+   \end{columns}
+   
+   \vfill
+   \pause
+
+   La piattaforma è stata realizzata usando il framework per lo sviluppo di piattaforme multi-agente \textsc{Jade}.\\
+   Prevede due tipi di agente: \emph{mazziere} e \emph{giocatore}.
+   \vfill
+
+\end{frame}
+
+%------------------------------------------------------------------------
+
+
 
 \begin{frame}
    \frametitle{L'agente Mazziere}
@@ -362,7 +449,7 @@
 \end{tikzpicture}%
 (b)
 }%
-\caption{Una squadra a strategie contro una random. In (a) i soci a strategie; in (b) villani a strategie. In Blu le vittorie, in rosso le sconfitte.}
+\caption{Una squadra a strategie contro una random. In (a) i soci a strategie; in (b) villani a strategie. In blu le \textcolor{blue}{vittorie}, in rosso le \textcolor{red}{sconfitte}}
 \end{figure}
    
    
@@ -379,11 +466,31 @@
 
 \begin{frame}
    \frametitle{Conclusioni}
-   Abbiamo realizzato una piattaforma multiagente distribuita per l'esecuzione di partite di briscola in 5 cui possano partecipare giocatori sia umani che virtuali.\\
-   Viste le peculiarità della briscola in 5, per l'intelligenza artificiale del giocatore virtuale abbiamo optato per un sistema esperto.\\
-   Abbiamo scritto un framework in \textsc{Jess} che permetta l'implementazione di strategie in maniera semplice, insieme ad un set di strategie di carattere generale.\\
-   Abbiamo implementato la piattaforma --- usando \textsc{Jade} --- con due tipi di agente, il \emph{mazziere} e il \emph{giocatore} e prevedendo un'interfaccia per l'utente esperto che permetta l'annotazione e il suggerimento di nuove regole.\\
-   Infine abbiamo effettuato delle sperimentazioni i cui risultati incoraggiano ulteriori sviluppi.   
+   Abbiamo realizzato una piattaforma \emph{multiagente distribuita} per l'esecuzione di partite di briscola in 5 cui possano partecipare \emph{giocatori sia umani che virtuali}.\\
+   \vfill
+   Viste le peculiarità della briscola in 5, per l'intelligenza artificiale del giocatore virtuale abbiamo optato per un \emph{sistema esperto}.\\
+   \vfill
+   Abbiamo scritto un framework in \textsc{Jess} che permetta l'\emph{implementazione di strategie in maniera semplice}, insieme ad un set di strategie di carattere generale.\\
+   \vfill
+   Abbiamo implementato la piattaforma --- usando \textsc{Jade} --- con \emph{due tipi di agente}, il \emph{mazziere} e il \emph{giocatore} e prevedendo un'\emph{interfaccia per l'utente esperto} che permetta l'annotazione e il suggerimento di nuove regole.\\
+   \vfill
+   Infine abbiamo effettuato delle \emph{sperimentazioni} i cui risultati incoraggiano ulteriori sviluppi.   
+\end{frame}
+
+%------------------------------------------------------------------------
+
+
+\begin{frame}
+   \frametitle{Conclusioni (V. 2)}
+   Abbiamo realizzato una piattaforma \textbf{multiagente distribuita} per l'esecuzione di partite di briscola in 5 cui possano partecipare \textbf{giocatori sia umani che virtuali}.\\
+   \vfill
+   Viste le peculiarità della briscola in 5, per l'intelligenza artificiale del giocatore virtuale abbiamo optato per un \textbf{sistema esperto}.\\
+   \vfill
+   Abbiamo scritto un framework in \textsc{Jess} che permetta l'\textbf{implementazione di strategie in maniera semplice}, insieme ad un set di strategie di carattere generale.\\
+   \vfill
+   Abbiamo implementato la piattaforma --- usando \textsc{Jade} --- con \textbf{due tipi di agente}, il \textbf{mazziere} e il \textbf{giocatore} e prevedendo un'\textbf{interfaccia per l'utente esperto} che permetta l'annotazione e il suggerimento di nuove regole.\\
+   \vfill
+   Infine abbiamo effettuato delle \textbf{sperimentazioni} i cui risultati incoraggiano ulteriori sviluppi.   
 \end{frame}
 
 %------------------------------------------------------------------------
@@ -405,8 +512,6 @@
    \centering
    Grazie per l'attenzione.
 \end{frame}
-
-
 
 \begin{frame}[fragile]
    \frametitle{Il sistema esperto: rappresentazione della conoscenza}
@@ -455,7 +560,7 @@
 
 
 \begin{frame}[fragile]
-   \frametitle{Il sistema esperto: una regola di decisione}
+   \frametitle{Il sistema esperto: una regola di analisi}
    Se un giocatore prende lasciando ultimo il giaguaro la mano successiva, probabilmente è il socio, soprattutto se nelle ultime mani.
 
 \begin{lstlisting}
@@ -475,6 +580,164 @@
     (aumenta-sal-socio ?soc ?new-sal)
 )
 \end{lstlisting}
+\end{frame}
+
+%------------------------------------------------------------------------
+%  Listing style per JESS piccolo
+%------------------------------------------------------------------------
+\lstset{
+   language=Lisp,
+   stringstyle=\ttfamily,
+   basicstyle=\tiny,
+   showstringspaces=false,
+   otherkeywords={slot,defrule,deftemplate,else,if,bind,retract},
+   breaklines=true,
+   commentstyle=\color{pgreen},
+   keywordstyle=\color{pblue},
+   stringstyle=\color{pred}
+}
+%------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+   \frametitle{Il sistema esperto: analisi delle giocate altrui}
+   \begin{lstlisting}
+( defrule nuova-giocata "Ricevo una giocata: aggiorno la situa"
+  ?w <- (nuova-giocata (player ?p) (card ?c) (rank ?r) (suit ?s))
+  (prende (player ?prende-player) (card ?prende-card))
+  ?y <- (giocata-numero ?counter-giocata)
+  (seme-mano-fact (suit ?seme-mano))
+  (mano-numero ?mano-numero)
+=>
+  (bind ?tipo "liscio")
+  (if (= ?counter-giocata -1) then  ;;  Aggiorniamo chi prende
+    (assert (prende (player ?p) (card ?c) (suit (?c getSuit)) (rank (?c getRank))))
+    (assert (seme-mano-fact (suit ?s)))
+    (bind ?seme-mano ?s)
+  else
+    (if (batte ?c ?prende-card ?seme-mano )  then
+      (assert (prende (player ?p) (card ?c) (suit (?c getSuit)) (rank (?c getRank))))
+      (if (= ?seme-mano ?s) then
+        (if (< (?r getValue) 10) then  (bind ?tipo "strozzino")
+        else  (bind ?tipo "strozzo") )
+      else  (bind ?tipo "taglio"))
+    else
+      (if ( > (?r getValue) 9) then  (bind ?tipo "carico")
+      else
+        (if (> (?r getValue) 0) then
+          (bind ?tipo "carichino")
+  ))))
+  (bind ?new-counter-giocata (+ ?counter-giocata 1))
+  (retract ?w)  (retract ?y)
+  (assert (giocata-numero ?new-counter-giocata))
+  (assert (giocata (player ?p) (card ?c) (rank ?r) (suit ?s) (turno ?new-counter-giocata) (mano ?mano-numero) (tipo ?tipo)))  
+)
+   \end{lstlisting}
+   
+\end{frame}
+
+
+
+%------------------------------------------------------------------------
+%  Listing style per Java
+%------------------------------------------------------------------------
+\lstset{language=Java,
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  commentstyle=\color{pgreen},
+  keywordstyle=\color{pblue},
+  stringstyle=\color{pred},
+  basicstyle=\tiny,
+  moredelim=[il][\textcolor{pgrey}]{$$},
+  moredelim=[is][\textcolor{pgrey}]{\%\%}{\%\%},
+  otherkeywords={slot,defrule,deftemplate,else,if,bind,retract}
+}
+%------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+   \frametitle{Il momento di giocare: recupero la carta}
+   \begin{lstlisting}
+public Card play() throws JessException, InterruptedException {
+   Card c;
+   switch (strategy) {
+      case RANDOM:
+         c = getHand().drawRandom();
+         break;
+      case NORMAL:
+         Value v = getRete().fetch("DA-GIOCARE");
+         if (null == v) { // se nessuna regola attivata
+            say("Giocando a caso");
+            c = getHand().drawRandom();
+         } else {	// recupero la carta selezionata
+            c = (Card) v.javaObjectValue(getRete().getGlobalContext());
+            getHand().removeCard(c);
+         }
+         break;
+      case MANUAL:
+         ((PlayerGUI) gui).beginGiocata();
+         say("Aspettando la giocata manuale...");
+         while (cartaDaGiocare == null) {
+            Thread.sleep(1000);
+         }
+         c = cartaDaGiocare;
+         cartaDaGiocare = null;
+         break;
+      default:
+         say("Strategia sconosciuta", true);
+         c = getHand().drawRandom();
+         break;
+   }
+   return c;
+}
+   \end{lstlisting}
+   
+\end{frame}
+
+%------------------------------------------------------------------------
+
+\begin{frame}[fragile]
+   \frametitle{Il momento di giocare: comunico la decisione}
+%    \begin{columns}
+%    
+%    \column{.5\textwidth}
+   
+\begin{lstlisting}
+/** Parte behaviour agente giocatore: seleziona carta da giocare */
+class SendGiocata extends OneShotBehaviour {
+   @Override
+   public void action() {
+      ACLMessage gMsg = new ACLMessage(ACL_TELL_GIOCATA);
+      try {	// do inizio al reasoning
+         Fact f = new Fact("mio-turno", agent.getRete());
+         agent.getRete().assertFact(f);
+         agent.getRete().run();
+		   //	recupero la carta da giocare
+         Card c;
+         try {
+            c = agent.play();
+         } catch (InterruptedException ex) {
+            ex.printStackTrace();
+            c = null;
+         }	// riazzero la carta da giocare per la prossima mano
+         agent.setCardToPlay(null);
+		   //	popolo e spedisco un messaggio di tipo GiocataMessage
+         GiocataMessage g = new GiocataMessage(agent.getPlayer(), c,
+                                      status.getMano(),
+                                      status.getCounter());
+         gMsg.setContentObject(g);	// lo spedisco al mazziere
+         gMsg.addReceiver(agent.getMazziereAID());
+         myAgent.send(gMsg);
+         agent.say("* Gioco" + g);
+         ++lastPlayed;
+      } catch (IOException | JessException ex) {
+         ex.printStackTrace();
+      }
+      block();
+}}
+\end{lstlisting}
+
 \end{frame}
 
 
