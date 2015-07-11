@@ -241,7 +241,49 @@
    \vfill
    \pause
 
+   La piattaforma è stata realizzata usando il framework per lo sviluppo di piattaforme multi-agente \textsc{Jade}.
+   \vfill
+   Prevede due tipi di agente: \emph{mazziere} e \emph{giocatore}.
+   \vfill
+
+\end{frame}
+
+%------------------------------------------------------------------------
+
+\begin{frame}
+   \frametitle{Architettura della piattaforma (V. 2)}
+   \begin{columns}
+         \column{.3\textwidth}
+
+   Requisiti:
+   \begin{itemize}
+      \lista distribuita in rete
+      \lista interfaccia utente esperto
+      \lista log attività
+   \end{itemize}
+
+   \column{.7\textwidth}
+
+
+   \begin{center}
+   \begin{figure}      
+   \only<1>{
+      \includegraphics[width=\textwidth]{architettura-hidden}
+   }
+   \only<2>{
+      \includegraphics[width=\textwidth]{architettura}
+   }
+   \end{figure}
+   \end{center}
+
+   \end{columns}
+   
+   \vfill
+   \pause
+
    La piattaforma è stata realizzata usando il framework per lo sviluppo di piattaforme multi-agente \textsc{Jade}.\\
+   \textsc{Jade} mette a disposizioni classi che implementano \emph{Agenti}, che comunicano fra di loro tramite messaggi \emph{TCP/IP} e conseguono i propri obiettivi attraverso dei \emph{Behaviour}.
+   \vfill
    Prevede due tipi di agente: \emph{mazziere} e \emph{giocatore}.
    \vfill
 
@@ -275,6 +317,23 @@
       \lista semplice gestione di piattaforme con molti ``tavoli aperti'' e tornei
       \pause
       \lista unico file di log da parte di un giocatore onniscente
+   \end{itemize}
+\end{frame}
+
+%------------------------------------------------------------------------
+
+\begin{frame}
+   \frametitle{L'agente Mazziere (V.2)}
+   L'agente mazziere regola e gestisce la partita. Fra i suoi compiti principali:
+   \begin{itemize}
+      \pause
+      \lista ``aprire un tavolo'' 
+      \pause
+      \lista farsi carico della comunicazione fra agenti (tranne chat)
+      \pause
+      \lista gestire la partita tramite messaggi
+      \pause
+      \lista redigere un file di log
    \end{itemize}
 \end{frame}
 
