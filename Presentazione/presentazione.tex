@@ -9,6 +9,7 @@
 \usepackage{xcolor}
 \usepackage{color}
 
+
 \graphicspath{{Images/}}
 
 \mode<presentation>
@@ -206,9 +207,11 @@
    \vfill
    \pause
    Strategie di \emph{decisione} usano i risultati della fase di \emph{analisi}; strategie di \emph{analisi} si basano su quelle di \emph{decisione}
-   \vfill
-   \pause
-   Un sistema di \emph{conflict resolution} basato sulla priorità assegnata alle regole decide quale carta giocaretra le candidate.
+
+%    \vfill
+%    \pause
+%    Un sistema di \emph{conflict resolution} basato sulla priorità assegnata alle regole decide quale carta giocaretra le candidate.
+
 \end{frame}
 
 
@@ -219,49 +222,29 @@
 
 \begin{frame}
    \frametitle{Architettura della piattaforma}
-   \vfill
-   Requisiti:
-   \begin{itemize}
-      \lista distribuita
-      \lista interfaccia utente esperto
-      \lista log attività
-   \end{itemize}
-   \vfill   
-   \pause
-   La piattaforma è stata realizzata usando il framework per lo sviluppo di piattaforme multi-agente \textsc{Jade}.\\
-   Prevede due tipi di agente: \emph{mazziere} e \emph{giocatore}.
-   \visible<2>{
-   \begin{center}
-   \begin{figure}      
-   \includegraphics[width=.7\textwidth]{architettura}
-   \end{figure}
-   \end{center}
-   }
-\end{frame}
-
-%------------------------------------------------------------------------
-
-\begin{frame}
-   \frametitle{Architettura della piattaforma (V. 2)}
    \begin{columns}
          \column{.3\textwidth}
 
    Requisiti:
    \begin{itemize}
-      \lista distribuita
+      \lista distribuita in rete
       \lista interfaccia utente esperto
       \lista log attività
    \end{itemize}
 
    \column{.7\textwidth}
 
-   \visible<2>{
+
    \begin{center}
    \begin{figure}      
-   \includegraphics[width=\textwidth]{architettura}
+   \only<1>{
+      \includegraphics[width=\textwidth]{architettura-hidden}
+   }
+   \only<2>{
+      \includegraphics[width=\textwidth]{architettura}
+   }
    \end{figure}
    \end{center}
-   }
 
    \end{columns}
    
@@ -283,7 +266,7 @@
    L'agente mazziere regola e gestisce la partita. Fra i suoi compiti principali:
    \begin{itemize}
       \pause
-      \lista ``aprire un tavolo'' (servizio pagine gialle di \textsc{Jade})
+      \lista ``aprire un tavolo'' 
       \pause
       \lista farsi carico della comunicazione fra agenti (tranne chat)
       \pause
@@ -320,7 +303,7 @@
    \end{itemize}
    \vfill
    \pause
-   Nella fase di sperimentazione abbiamo usato un file contenente una trentina di regole generali raccolte su manuali, siti e forum dedicati alla briscola in 5, oltre che dall'esperienza personale.
+   Abbiamo creato un file contenente una trentina di regole generali raccolte da manuali, siti e forum dedicati alla briscola in 5, oltre che dall'esperienza personale, per poter essere usato nella fase di sperimentazione.
 \end{frame}
 
 %------------------------------------------------------------------------
