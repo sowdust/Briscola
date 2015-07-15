@@ -8,6 +8,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{color}
+\usepackage{multimedia}
 %------------------------------------------------------------------------
 \mode<presentation>
 {   
@@ -30,11 +31,12 @@
 %  Lista con segni delle carte
 %------------------------------------------------------------------------
 \newcommand*\lista{\item[$\diamondsuit$]}
+\newcommand*\slista{\item[$\spadesuit$]}
 %------------------------------------------------------------------------
 %  Fa ricomparire l'indice a ogni cambio sezione
 %------------------------------------------------------------------------
 \AtBeginSection[] {
-	\begin{frame}<beamer>{Outline}
+	\begin{frame}<beamer>{Indice}
 		\tableofcontents[currentsection,currentsubsection]
 	\end{frame}
 }
@@ -82,24 +84,23 @@
 %------------------------------------------------------------------------
 %  SOMMARIO
 %------------------------------------------------------------------------
-\section*{Sommario}
-\begin{frame}
-   \frametitle{Sommario}
-   \begin{center}
-   \textbf{Scopo del lavoro:}   
-   \end{center}
-   Costruzione di una piattaforma per il gioco \emph{Briscola in 5} per giocatori umani e virtuali.
-   \vspace*{1em}
-   \begin{center}
-      \textbf{Contributi realizzati:}
-   \end{center}
-   \begin{itemize}
-      \lista Intelligenza artificiale per il giocatore virtuale
-      \lista Piattaforma per il gioco
-   \end{itemize}  
-   
-\end{frame}
-
+% \section*{Sommario}
+% \begin{frame}
+%    \frametitle{Sommario}
+%    \begin{center}
+%    \textbf{Scopo del lavoro:}   
+%    \end{center}
+%    Costruzione di una piattaforma per il gioco \emph{Briscola in 5} per giocatori umani e virtuali.
+%    \vspace*{1em}
+%    \begin{center}
+%       \textbf{Contributi realizzati:}
+%    \end{center}
+%    \begin{itemize}
+%       \lista Intelligenza artificiale per il giocatore virtuale
+%       \lista Piattaforma per il gioco
+%    \end{itemize}  
+%    
+% \end{frame}
 %------------------------------------------------------------------------
 %  INDICE
 %------------------------------------------------------------------------
@@ -108,19 +109,51 @@
    \frametitle{Indice}
    \tableofcontents
 \end{frame}
+%------------------------------------------------------------------------
+%  L'INTELLIGENZA ARTIFICIALE
+%------------------------------------------------------------------------
+\section{L'intelligenza artificiale}
 
+\begin{frame}
+   \frametitle{Intelligenza Artificiale e giochi}
+   
+   Ambito dei giochi esplorato sin dagli albori (anni `50) dell'Intelligenza Artificiale (scacchi, dama, bridge...)
+   \vfill
+   Giochi forniscono \begin{itemize}
+      \lista problemi complessi (ampio spazio di ricerca, incertezza)
+      \lista modelli di situazione riproponibili nel mondo reale
+   \end{itemize}
+
+   
+\end{frame}
+
+
+\begin{frame}
+   \frametitle{Background}
+   Alcune metodologie passate in rassegna:\\
+   \begin{itemize}
+      \lista Ricerca nello spazio degli stati e algoritmo \texttt{minimax} 
+      \lista Teoria dei giochi
+      \lista Sistemi esperti
+   \end{itemize}
+   
+\end{frame}
 %------------------------------------------------------------------------
 %  LA BRISCOLA IN 5
 %------------------------------------------------------------------------
 \section{La briscola in 5}
 
 \begin{frame}
-   \frametitle{Il gioco}
+   \frametitle{Caratteristiche del gioco}
    
    La \emph{briscola in 5} è un gioco di carte derivato dalla briscola classica, ma con qualche significativa differenza:\\
    \begin{itemize}
       \pause
       \lista le squadre non sono simmetriche
+      \begin{itemize}
+         \slista 2 \emph{soci} (\emph{socio} + \emph{giaguaro})
+         \slista 3 \emph{villani}
+      \end{itemize}
       \pause
       \lista vi è una fase d'asta iniziale
       \pause
@@ -129,40 +162,9 @@
 \end{frame}
 
 %------------------------------------------------------------------------
-%  L'INTELLIGENZA ARTIFICIALE
-%------------------------------------------------------------------------
-\section{L'intelligenza artificiale}
 
 \begin{frame}
-   \frametitle{Background}
-   Abbiamo inizialmente passato in rassegna alcuni fra i principali metodi presenti in letteratura per la risoluzione di giochi.\\
-   \begin{itemize}
-      \lista Ricerca nello spazio degli stati e algoritmo \texttt{minimax} 
-      \lista Teoria dei giochi
-      \lista Sistemi esperti
-   \end{itemize}
-   
-\end{frame}
-
-%------------------------------------------------------------------------
-
-\begin{frame}
-   \frametitle{Il problema della briscola in 5}
-   Non essendo le squadre note a tutti i giocatori, alcuni di essi si trovano a giocare con persone (o agenti virtuali) che non possono identificare con certezza nè come compagni nè come avversari.
-   \vfill
-   \pause
-   Per questo motivo l'ambiente della briscola in 5 non può essere considerato nè come \emph{competitivo}, nè come \emph{cooperativo}, rendendo inapplicabili i metodi di ricerca nello spazio degli stati e la teoria dei giochi a causa dell'impossibilità di assegnare \emph{valori di utilità} ben definiti alle mosse.
-   \vfill
-   \pause   
-   Questo ci ha spinti alla decisione di tentare di simulare il comportamento di un giocatore umano tramite un \emph{sistema esperto}.
-   
-\end{frame}
-
-%------------------------------------------------------------------------
-
-
-\begin{frame}
-   \frametitle{Il problema della briscola in 5 (V. 2)}
+   \frametitle{La briscola in 5 dal punto di vista dell'IA}
    \centering
    Informazione incompleta sulle squadre per alcuni giocatori \\
    $\implies$\\
@@ -172,10 +174,18 @@
    Ambiente della briscola in 5: nè \emph{competitivo} nè \emph{cooperativo} \\
    $\implies$\\
    \emph{ricerca nello spazio degli stati} e  \emph{teoria dei giochi} inapplicabili: impossibilità di assegnare \emph{valori di utilità} univoci.
+   \centering
+   %\begin{quotation}
+   \vspace{.7em}
+      \begin{itemize}
+      \item \emph{valori di utilità} dipendono dalla squadra cui appartiene il giocatore che prende la mano
+   \end{itemize}
+   %\end{quotation}
    \vfill
    \pause
    \Large   
    $\Downarrow$\\
+   \vfill
    \normalsize
    \textbf{sistema esperto}
    
@@ -189,14 +199,15 @@
    Il sistema esperto è stato realizzato tramite il \emph{rule engine} \textsc{Jess}.
    \vfill
    \pause
-   Il framework generale realizzato prevede due tipi di strategie:
+   Il framework prevede due tipi di strategie:
    \begin{itemize}
-      \lista di \textbf{analisi}: assegnano empiricamente la ``probabilità'' che un giocatore abbia un certo ruolo
       \lista di \textbf{decisione}: selezionano la carta da giocare
+      \lista di \textbf{analisi}: stimano empiricamente il ruolo degli altri giocatori (\emph{villani} o \emph{soci})
    \end{itemize}
-   \vfill
-   \pause
-   Strategie di \emph{decisione} usano i risultati della fase di \emph{analisi}; strategie di \emph{analisi} si basano su quelle di \emph{decisione}
+   
+   %%% si assume che l'agente sia razionale (segue le regole di decisione)
+   
+%   Strategie di \emph{decisione} usano i risultati della fase di \emph{analisi}; strategie di \emph{analisi} si basano su quelle di \emph{decisione}
 
 %    \vfill
 %    \pause
@@ -205,19 +216,66 @@
 \end{frame}
 
 
+
+
+\begin{frame}[fragile]
+   \frametitle{Il sistema esperto: una regola di decisione}
+   Se sono il \emph{socio} e gioco subito dopo al \emph{chiamante} (o \emph{giaguaro}), prendo per lasciarlo ultimo la mano successiva, soprattutto nelle mani finali.
+\begin{lstlisting}
+( defrule socio-tiene-giaguaro-ultimo
+    ?w <- (calcola-giocata)
+    (mio-ruolo socio)
+    (giaguaro (player ?g))
+    (mio-turno-numero ?n)
+    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?n (mod (+ ?pos 1) 5) ) ) )
+    (briscola (card ?b))
+    (posso-prendere (card ?c&:(<> ?c ?b)))
+=>
+    (gioca ?c (- 100 (?c getValue)))
+    (assert (ora-di-giocare))
+)
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+   \frametitle{Il sistema esperto: una regola di analisi}
+   Se un giocatore prende lasciando ultimo il \emph{giaguaro} la mano successiva, probabilmente è il \emph{socio}, soprattutto se nelle ultime mani.
+
+\begin{lstlisting}
+( defrule vs-socio-tiene-giaguaro-ultimo
+    (not(exists(socio (player ?player))))
+    (mano-numero ?mano-numero)
+    (giaguaro (player ?g))
+    (turno (player ?p&:(= ?p ?g)) (posizione ?pos-giaguaro))
+    (giocata (player ?soc) (tipo ?t&:( or ( = ?t "taglio") (or (= ?t "strozzino")  (= ?t "strozzo") ) )  ))
+    (turno (player ?pl&:(= ?pl ?soc)) (posizione ?pos-soc&:( = ?pos-soc (mod (+ ?pos-giaguaro 1) 5) )))
+=>
+    (if (> ?mano-numero 3) then
+        (bind ?new-sal 80)
+    else
+        (bind ?new-sal 40)
+    )
+    (aumenta-sal-socio ?soc ?new-sal)
+)
+\end{lstlisting}
+\end{frame}
+
 %------------------------------------------------------------------------
 %  LA PIATTAFORMA
 %------------------------------------------------------------------------
 \section{La piattaforma}
 
 \begin{frame}
-   \frametitle{Architettura della piattaforma}
+   \frametitle{Piattaforma di gioco}
    \begin{columns}
          \column{.3\textwidth}
 
    Requisiti:
    \begin{itemize}
       \lista distribuita in rete
+      \lista giocatori umani e virtuali
       \lista interfaccia utente esperto
       \lista log attività
    \end{itemize}
@@ -248,46 +306,6 @@
 
 \end{frame}
 
-%------------------------------------------------------------------------
-
-\begin{frame}
-   \frametitle{Architettura della piattaforma (V. 2)}
-   \begin{columns}
-         \column{.3\textwidth}
-
-   Requisiti:
-   \begin{itemize}
-      \lista distribuita in rete
-      \lista interfaccia utente esperto
-      \lista log attività
-   \end{itemize}
-
-   \column{.7\textwidth}
-
-
-   \begin{center}
-   \begin{figure}      
-   \only<1>{
-      \includegraphics[width=\textwidth]{architettura-hidden}
-   }
-   \only<2>{
-      \includegraphics[width=\textwidth]{architettura}
-   }
-   \end{figure}
-   \end{center}
-
-   \end{columns}
-   
-   \vfill
-   \pause
-
-   La piattaforma è stata realizzata usando il framework per lo sviluppo di piattaforme multi-agente \textsc{Jade}.\\
-   \textsc{Jade} mette a disposizioni classi che implementano \emph{Agenti}, che comunicano fra di loro tramite messaggi \emph{TCP/IP} e conseguono i propri obiettivi attraverso dei \emph{Behaviour}.
-   \vfill
-   Prevede due tipi di agente: \emph{mazziere} e \emph{giocatore}.
-   \vfill
-
-\end{frame}
 
 %------------------------------------------------------------------------
 
@@ -305,36 +323,19 @@
       \lista gestire la partita tramite messaggi
       \pause
       \lista redigere un file di log
-   \end{itemize}
-   \vfill
-   \pause
-   La presenza dell'agente mazziere rende centralizzata la gestione della partita. 
-   Questo presenta alcuni vantaggi:
-   \begin{itemize}
-      \pause
-      \lista rispetto delle regole
-      \pause
-      \lista semplice gestione di piattaforme con molti ``tavoli aperti'' e tornei
-      \pause
-      \lista unico file di log da parte di un giocatore onniscente
-   \end{itemize}
-\end{frame}
-
-%------------------------------------------------------------------------
-
-\begin{frame}
-   \frametitle{L'agente Mazziere (V.2)}
-   L'agente mazziere regola e gestisce la partita. Fra i suoi compiti principali:
-   \begin{itemize}
-      \pause
-      \lista ``aprire un tavolo'' 
-      \pause
-      \lista farsi carico della comunicazione fra agenti (tranne chat)
-      \pause
-      \lista gestire la partita tramite messaggi
-      \pause
-      \lista redigere un file di log
-   \end{itemize}
+    \end{itemize}
+%    \vfill
+%    \pause
+%    La presenza dell'agente mazziere rende centralizzata la gestione della partita. 
+%    Questo presenta alcuni vantaggi:
+%    \begin{itemize}
+%       \pause
+%       \lista rispetto delle regole
+%       \pause
+%       \lista semplice gestione di piattaforme con molti ``tavoli aperti'' e tornei
+%       \pause
+%       \lista unico file di log da parte di un giocatore onniscente
+%    \end{itemize}
 \end{frame}
 
 %------------------------------------------------------------------------
@@ -349,10 +350,12 @@
       \lista manuale
       \lista random
       \lista strategia da file
+      \pause
+      \begin{itemize}
+         \slista Abbiamo creato un file contenente 30 regole di decisione e 15 di analisi, raccolte da siti e forum dedicati alla briscola in 5, per poter essere usato nella fase di sperimentazione.
+      \end{itemize}
    \end{itemize}
-   \vfill
-   \pause
-   Abbiamo creato un file contenente una trentina di regole generali raccolte da manuali, siti e forum dedicati alla briscola in 5, oltre che dall'esperienza personale, per poter essere usato nella fase di sperimentazione.
+   
 \end{frame}
 
 %------------------------------------------------------------------------
@@ -362,9 +365,7 @@
 \section{Risultati sperimentali e conclusioni}
 \begin{frame}
    \frametitle{Risultati}
-   Abbiamo condotto degli esperimenti facendo giocare delle partite a dei giocatori con una strategia basilare contro dei giocatori random in diverse configurazioni.
-   Alcuni fra i risultati più significativi:
-   
+ 
    
 \def\angle{0}
 \def\radius{3}
@@ -374,13 +375,13 @@
 
 
 \begin{columns}
-   \column{.5\textwidth}
+   \column{.4\textwidth}
    \vfill
    
 \begin{figure}
    \tiny
    \centering
-\begin{tikzpicture}[scale=.37]
+\begin{tikzpicture}[scale=.4]
   \foreach \percent/\name in {
       66.7/Soci,
       30/Villani,
@@ -408,18 +409,18 @@
 \end{tikzpicture}
 \vfill
 \vspace*{2.2em}
-\caption{Random vs Random}
+\caption{Random vs Random. Risultati ottenuti su 30 prove.}
 \end{figure}
 %---
-\column{.5\textwidth}
+\column{.6\textwidth}
 
 \begin{figure}
 
-\subfigure{
+\subfigure[\tiny Soci a strategia, villani random]{
 \tiny
 \cyclecount=-1
 \ind=-1
-\begin{tikzpicture}[scale=.3]%
+\begin{tikzpicture}[scale=.37]%
   \foreach \percent/\name in {%
       80/Vittorie,%
       20/Sconfitte,%
@@ -445,15 +446,14 @@
       \fi%
     };%
 \end{tikzpicture}%
-(a)
 }
 
 
-\subfigure{%
+\subfigure[\tiny villani a strategia, soci random]{%
 \tiny
 \cyclecount=-1
 \ind=-1
-\begin{tikzpicture}[scale=.3]%
+\begin{tikzpicture}[scale=.37]%
   \foreach \percent/\name in {%
       60/Vittorie,%
       40/Sconfitte,%
@@ -479,11 +479,9 @@
       \fi%
     };%
 \end{tikzpicture}%
-(b)
 }%
-\caption{Una squadra a strategie contro una random. In (a) i soci a strategie; in (b) villani a strategie. In blu le \textcolor{blue}{vittorie}, in rosso le \textcolor{red}{sconfitte}}
+\caption{Una squadra a strategie contro una random. In blu le \textcolor{blue}{vittorie}, in rosso le \textcolor{red}{sconfitte}.}
 \end{figure}
-   
    
    
 \end{columns}
@@ -498,40 +496,24 @@
 
 \begin{frame}
    \frametitle{Conclusioni}
-   Abbiamo realizzato una piattaforma \emph{multiagente distribuita} per l'esecuzione di partite di briscola in 5 cui possano partecipare \emph{giocatori sia umani che virtuali}.\\
-   \vfill
-   Viste le peculiarità della briscola in 5, per l'intelligenza artificiale del giocatore virtuale abbiamo optato per un \emph{sistema esperto}.\\
-   \vfill
-   Abbiamo scritto un framework in \textsc{Jess} che permetta l'\emph{implementazione di strategie in maniera semplice}, insieme ad un set di strategie di carattere generale.\\
-   \vfill
-   Abbiamo implementato la piattaforma --- usando \textsc{Jade} --- con \emph{due tipi di agente}, il \emph{mazziere} e il \emph{giocatore} e prevedendo un'\emph{interfaccia per l'utente esperto} che permetta l'annotazione e il suggerimento di nuove regole.\\
-   \vfill
-   Infine abbiamo effettuato delle \emph{sperimentazioni} i cui risultati incoraggiano ulteriori sviluppi.   
+   Contributi:
+   
+   \begin{itemize}
+      \lista Studio del gioco della briscola in 5 dal punto di vista dell'Intelligenza Artificiale
+      \lista Realizzazione di un sistema esperto (in \textsc{Jess}) per il giocatore virtuale
+      \lista Realizzazione di una piattaforma multigiocatore (in \textsc{Jade}) che supporta giocatori umani e artificiali
+      \lista Risultati sperimentali incoraggianti   
+   \end{itemize}
+   
 \end{frame}
-
-%------------------------------------------------------------------------
-
-
-\begin{frame}
-   \frametitle{Conclusioni (V. 2)}
-   Abbiamo realizzato una piattaforma \textbf{multiagente distribuita} per l'esecuzione di partite di briscola in 5 cui possano partecipare \textbf{giocatori sia umani che virtuali}.\\
-   \vfill
-   Viste le peculiarità della briscola in 5, per l'intelligenza artificiale del giocatore virtuale abbiamo optato per un \textbf{sistema esperto}.\\
-   \vfill
-   Abbiamo scritto un framework in \textsc{Jess} che permetta l'\textbf{implementazione di strategie in maniera semplice}, insieme ad un set di strategie di carattere generale.\\
-   \vfill
-   Abbiamo implementato la piattaforma --- usando \textsc{Jade} --- con \textbf{due tipi di agente}, il \textbf{mazziere} e il \textbf{giocatore} e prevedendo un'\textbf{interfaccia per l'utente esperto} che permetta l'annotazione e il suggerimento di nuove regole.\\
-   \vfill
-   Infine abbiamo effettuato delle \textbf{sperimentazioni} i cui risultati incoraggiano ulteriori sviluppi.   
-\end{frame}
-
+   
 %------------------------------------------------------------------------
 
 \begin{frame}
    \frametitle{Possibili sviluppi futuri}
    \begin{itemize}
-      \lista Incorporazione del sistema esperto con un altro metodo nella seconda fase della partita.
-      \lista Utilizzo di metodi di \emph{machine learning} per la raccolta di strategie.
+      \lista Gestione ad hoc quando le squadre sono note.
+      \lista Utilizzo di metodi di \emph{machine learning} per la scoperta di nuove regole di decisione.
       \lista Integrazione di un meccanismo di \emph{reputation} alle strategie di analisi.
       \lista Nuovi criteri di valutazione della validità delle strategie, compreso il confronto con giocatori umani.
    \end{itemize}
@@ -570,49 +552,6 @@
 \end{frame}
 
 
-\begin{frame}[fragile]
-   \frametitle{Il sistema esperto: una regola di decisione}
-   Se sono il socio e gioco subito dopo al chiamante, prendo per lasciarlo ultimo la mano successiva, soprattutto nelle mani finali.
-\begin{lstlisting}
-( defrule socio-tiene-giaguaro-ultimo
-    ?w <- (calcola-giocata)
-    (mio-ruolo socio)
-    (giaguaro (player ?g))
-    (mio-turno-numero ?n)
-    (turno (player ?player&:(= ?player ?g)) (posizione ?pos&:(= ?n (mod (+ ?pos 1) 5) ) ) )
-    (briscola (card ?b))
-    (posso-prendere (card ?c&:(<> ?c ?b)))
-=>
-    (gioca ?c (- 100 (?c getValue)))
-    (assert (ora-di-giocare))
-)
-\end{lstlisting}
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-   \frametitle{Il sistema esperto: una regola di analisi}
-   Se un giocatore prende lasciando ultimo il giaguaro la mano successiva, probabilmente è il socio, soprattutto se nelle ultime mani.
-
-\begin{lstlisting}
-( defrule vs-socio-tiene-giaguaro-ultimo
-    (not(exists(socio (player ?player))))
-    (mano-numero ?mano-numero)
-    (giaguaro (player ?g))
-    (turno (player ?p&:(= ?p ?g)) (posizione ?pos-giaguaro))
-    (giocata (player ?soc) (tipo ?t&:( or ( = ?t "taglio") (or (= ?t "strozzino")  (= ?t "strozzo") ) )  ))
-    (turno (player ?pl&:(= ?pl ?soc)) (posizione ?pos-soc&:( = ?pos-soc (mod (+ ?pos-giaguaro 1) 5) )))
-=>
-    (if (> ?mano-numero 3) then
-        (bind ?new-sal 80)
-    else
-        (bind ?new-sal 40)
-    )
-    (aumenta-sal-socio ?soc ?new-sal)
-)
-\end{lstlisting}
-\end{frame}
 
 %------------------------------------------------------------------------
 %  Listing style per JESS piccolo
@@ -772,5 +711,19 @@ class SendGiocata extends OneShotBehaviour {
 
 \end{frame}
 
+\begin{frame}
+   \frametitle{Dimostrazione}
+   \movie[poster,showcontrols=true,width=\textwidth,height=.56\textwidth]{\includegraphics[width=\textwidth,height=.56\textwidth]{video}}{video.avi}
+\end{frame}
 
+
+\begin{frame}
+   \frametitle{Dimostrazione}
+   \movie[poster,showcontrols=true,width=\textwidth,height=.56\textwidth]{\includegraphics[width=\textwidth,height=.56\textwidth]{video}}{video.mp4}
+\end{frame}
+
+\begin{frame}
+   \frametitle{Dimostrazione (player esterno)}
+   \movie[poster,externalviewer,showcontrols=true,width=\textwidth,height=.56\textwidth]{\includegraphics[width=\textwidth,height=.56\textwidth]{video}}{video.avi}
+\end{frame}
 \end{document}
